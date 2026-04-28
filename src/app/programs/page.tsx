@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ChevronRight, GraduationCap, BookOpen, Coffee, Presentation, ArrowRight, Calendar } from "lucide-react";
+import { GraduationCap, BookOpen, Coffee, Presentation, ArrowRight, Calendar } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "プログラム",
@@ -16,7 +16,6 @@ const programs = [
     target: "玉野市内に在住・通学する高校生",
     period: "5月〜11月（全7回）",
     fee: "無料",
-    color: "bg-accent",
     desc: `玉野市の高校生を対象にした実践型探究プログラムです。
 地域課題の発見・分析から、解決アイデアの立案・実践・発表まで、
 一連のプロセスを体験します。
@@ -39,7 +38,6 @@ const programs = [
     target: "地域活動に関心のある市民（経験不問）",
     period: "年間複数回開催",
     fee: "一部有料（詳細は各回の告知をご確認ください）",
-    color: "bg-amber",
     desc: `地域活動に必要なスキルや知識を学べる市民向け講座です。
 テーマに合わせて専門家や実践者を招き、
 インプットとワークショップを組み合わせた内容で行います。
@@ -61,7 +59,6 @@ const programs = [
     target: "玉野市・近隣市町に在住・在勤の方どなたでも",
     period: "毎月1回（土曜日午後）",
     fee: "無料",
-    color: "bg-primary",
     desc: `予約不要・途中参加退出OKの定期交流会です。
 毎回ゆるやかなテーマを設定し、参加者それぞれの話を
 「聴き合う」場づくりを大切にしています。
@@ -82,7 +79,6 @@ const programs = [
     target: "NPO・自治会・企業担当者など",
     period: "不定期（年間4〜6回程度）",
     fee: "テーマにより異なります",
-    color: "bg-purple-700",
     desc: `地域活動・NPO運営・まちづくりに役立つテーマで、
 外部の専門家を招いた講演会・セミナーを開催します。
 
@@ -100,15 +96,15 @@ export default function ProgramsPage() {
   return (
     <div>
       {/* Page Header */}
-      <div className="bg-primary py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <nav className="flex items-center gap-1.5 text-xs text-slate-400 mb-6">
-            <Link href="/" className="hover:text-white transition-colors">ホーム</Link>
-            <ChevronRight size={12} />
-            <span className="text-white">プログラム</span>
+      <div className="bg-ink py-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <nav className="section-label text-white/40 mb-8 flex items-center gap-2">
+            <Link href="/" className="hover:text-white/70 transition-colors">HOME</Link>
+            <span>/</span>
+            <span className="text-white/60">PROGRAMS</span>
           </nav>
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">プログラム</h1>
-          <p className="text-slate-300 text-lg max-w-xl leading-relaxed">
+          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-5 leading-tight">プログラム</h1>
+          <p className="text-white/80 text-base max-w-xl leading-relaxed">
             市民・高校生・団体向けに多様なプログラムを提供しています。
           </p>
         </div>
@@ -119,30 +115,31 @@ export default function ProgramsPage() {
         <section
           key={p.id}
           id={p.id}
-          className={`py-20 ${i % 2 === 0 ? "bg-white" : "bg-surface"}`}
+          className={`py-20 ${i % 2 === 0 ? "bg-paper" : "bg-paper-alt"}`}
         >
-          <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="max-w-7xl mx-auto px-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
               {/* Info */}
               <div className={i % 2 === 1 ? "lg:order-2" : ""}>
-                <div className={`inline-flex items-center gap-2 ${p.color} text-white text-sm font-bold px-4 py-1.5 rounded-full mb-5`}>
-                  <p.icon size={15} />
-                  {p.name}
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-ocean-pale rounded-full flex items-center justify-center">
+                    <p.icon size={20} className="text-ocean" />
+                  </div>
+                  <p className="section-label text-ink-muted">{p.name}</p>
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2">{p.name}</h2>
-                <p className="text-accent font-semibold text-sm mb-5">{p.tagline}</p>
-                <p className="text-slate-600 leading-loose whitespace-pre-line mb-8">{p.desc}</p>
+                <h2 className="text-2xl font-bold text-ink mb-2">{p.name}</h2>
+                <p className="text-ocean font-semibold text-sm mb-5">{p.tagline}</p>
+                <p className="text-ink-muted leading-loose whitespace-pre-line mb-8">{p.desc}</p>
 
-                <div className="bg-surface rounded-xl p-5 space-y-3 border border-border">
+                <div className="border border-border-line bg-white rounded-xl p-5 space-y-3">
                   {[
-                    { label: "対象", value: p.target, icon: "👥" },
-                    { label: "開催時期", value: p.period, icon: "📅" },
-                    { label: "参加費", value: p.fee, icon: "💰" },
+                    { label: "対象", value: p.target },
+                    { label: "開催時期", value: p.period },
+                    { label: "参加費", value: p.fee },
                   ].map((item) => (
-                    <div key={item.label} className="flex gap-3 text-sm">
-                      <span>{item.icon}</span>
-                      <span className="text-slate-500 w-20 shrink-0">{item.label}</span>
-                      <span className="text-slate-700 font-medium">{item.value}</span>
+                    <div key={item.label} className="flex gap-4 text-sm">
+                      <span className="section-label text-ink-muted w-20 shrink-0 mt-0.5">{item.label}</span>
+                      <span className="text-ink-soft">{item.value}</span>
                     </div>
                   ))}
                 </div>
@@ -150,7 +147,7 @@ export default function ProgramsPage() {
                 <div className="mt-6">
                   <Link
                     href="/contact"
-                    className="inline-flex items-center gap-2 bg-primary text-white font-semibold text-sm px-6 py-3 rounded-full hover:bg-primary-light transition-colors"
+                    className="inline-flex items-center gap-2 bg-ocean text-white text-sm font-bold px-6 py-3 rounded-full hover:bg-ocean-dark transition-colors"
                   >
                     参加・申込みを相談する <ArrowRight size={14} />
                   </Link>
@@ -159,18 +156,16 @@ export default function ProgramsPage() {
 
               {/* Flow */}
               <div className={i % 2 === 1 ? "lg:order-1" : ""}>
-                <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-5">
+                <h3 className="section-label text-ink-muted mb-6">
                   プログラムの流れ
                 </h3>
-                <div className="space-y-3">
+                <div className="space-y-3 divide-y divide-border-line border-t border-border-line">
                   {p.flow.map((f) => (
-                    <div key={f.step} className="flex gap-4 items-start bg-white rounded-xl p-4 border border-border">
-                      <div className={`shrink-0 w-8 h-8 rounded-lg ${p.color} flex items-center justify-center`}>
-                        <span className="text-white text-xs font-bold">{f.step}</span>
-                      </div>
+                    <div key={f.step} className="flex gap-4 items-start pt-4">
+                      <span className="section-label text-ocean w-8 shrink-0">{f.step}</span>
                       <div>
-                        <p className="font-bold text-slate-800 text-sm mb-0.5">{f.title}</p>
-                        <p className="text-sm text-slate-500">{f.desc}</p>
+                        <p className="font-bold text-ink text-sm mb-0.5">{f.title}</p>
+                        <p className="text-sm text-ink-muted">{f.desc}</p>
                       </div>
                     </div>
                   ))}
@@ -182,25 +177,25 @@ export default function ProgramsPage() {
       ))}
 
       {/* CTA */}
-      <section className="bg-primary py-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
-          <Calendar size={32} className="text-accent-light mx-auto mb-4" />
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+      <section className="bg-ink py-16">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <Calendar size={32} className="text-white/40 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-white mb-4">
             次回の開催情報はSNS・ニュースでお知らせします
           </h2>
-          <p className="text-slate-300 mb-8">
+          <p className="text-white/70 mb-8">
             最新情報はInstagram・Facebookで随時発信しています。フォローしてお待ちください。
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/media"
-              className="inline-flex items-center gap-2 bg-white text-primary font-semibold text-sm px-6 py-3 rounded-full hover:bg-slate-100 transition-colors"
+              className="inline-flex items-center gap-2 bg-white text-ocean font-bold text-sm px-6 py-3 rounded-full hover:bg-paper transition-colors"
             >
               最新イベント情報を見る <ArrowRight size={14} />
             </Link>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 border-2 border-white/40 text-white font-semibold text-sm px-6 py-3 rounded-full hover:bg-white/10 transition-colors"
+              className="inline-flex items-center gap-2 border-2 border-white text-white text-sm px-6 py-3 rounded-full hover:bg-white/10 transition-colors"
             >
               個別相談・お問い合わせ
             </Link>

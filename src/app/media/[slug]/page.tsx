@@ -1,13 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronRight, Calendar, User, Tag, ArrowLeft } from "lucide-react";
-import { articles, getArticleBySlug, CATEGORY_LABEL, CATEGORY_COLOR } from "@/lib/articles";
-import { cn } from "@/lib/utils";
+import { fetchLatestArticles, fetchArticlesByCategory, fetchArticleBySlug, fetchAllSlugs, CATEGORY_LABEL } from "@/lib/articles";
 import ArticleCard from "@/components/ArticleCard";
 
+export const revalidate = 60;
+export const dynamicParams = true;
+
+const categoryLabelStyle: Record<string, string> = {
+  event: "bg-amber-pale text-amber border border-amber/20",
+  interview: "bg-ocean-pale text-ocean border border-ocean/20",
+  news: "bg-forest-pale text-forest border border-forest/20",
+  story: "bg-coral-pale text-coral border border-coral/20",
+};
+
 export async function generateStaticParams() {
-  return articles.map((a) => ({ slug: a.slug }));
+  const slugs = await fetchAllSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -16,7 +25,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await fetchArticleBySlug(slug);
   if (!article) return { title: "記事が見つかりません" };
   return {
     title: article.title,
@@ -29,6 +38,7 @@ function renderMarkdown(text: string): string {
     .replace(/^### (.+)$/gm, "<h3>$1</h3>")
     .replace(/^## (.+)$/gm, "<h2>$1</h2>")
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/^- (.+)$/gm, "<li>$1</li>")
     .replace(/\n\n/g, "</p><p>")
     .replace(/^/, "<p>")
     .replace(/$/, "</p>");
@@ -40,7 +50,7 @@ export default async function ArticlePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await fetchArticleBySlug(slug);
   if (!article) notFound();
 
   const formattedDate = new Date(article.date).toLocaleDateString("ja-JP", {
@@ -49,111 +59,95 @@ export default async function ArticlePage({
     day: "numeric",
   });
 
-  const related = articles
-    .filter((a) => a.slug !== article.slug && a.category === article.category)
-    .slice(0, 2);
+  const allInCategory = await fetchArticlesByCategory(article.category, 10);
+  const related = allInCategory.filter((a) => a.slug !== article.slug).slice(0, 2);
 
   return (
-    <div className="bg-surface">
+    <div className="bg-paper">
       {/* Header */}
-      <div className="bg-primary py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <nav className="flex items-center gap-1.5 text-xs text-slate-400 mb-6">
-            <Link href="/" className="hover:text-white transition-colors">ホーム</Link>
-            <ChevronRight size={12} />
-            <Link href="/media" className="hover:text-white transition-colors">ニュース・メディア</Link>
-            <ChevronRight size={12} />
-            <span className="text-white truncate max-w-[200px]">{article.title}</span>
+      <div className="bg-ink py-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <nav className="section-label text-white/40 mb-8 flex items-center gap-2 flex-wrap">
+            <Link href="/" className="hover:text-white/70 transition-colors">HOME</Link>
+            <span>/</span>
+            <Link href="/media" className="hover:text-white/70 transition-colors">NEWS & MEDIA</Link>
+            <span>/</span>
+            <span className="text-white/60 truncate max-w-[200px]">{article.title}</span>
           </nav>
-          <div className="flex items-center gap-2 mb-4">
+          <div className="mb-4">
             <span
-              className={cn(
-                "text-xs font-semibold px-3 py-1 rounded-full",
-                CATEGORY_COLOR[article.category]
-              )}
+              className={`text-xs font-bold px-3 py-1 rounded-full ${categoryLabelStyle[article.category]}`}
             >
               {CATEGORY_LABEL[article.category]}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-snug mb-5">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-4 max-w-4xl leading-snug">
             {article.title}
           </h1>
-          <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400">
-            <span className="flex items-center gap-1.5">
-              <Calendar size={13} />
-              {formattedDate}
-            </span>
-            {article.author && (
-              <span className="flex items-center gap-1.5">
-                <User size={13} />
-                {article.author}
-              </span>
-            )}
+          <div className="flex flex-wrap items-center gap-6 section-label text-white/60">
+            <span>{formattedDate}</span>
+            {article.author && <span>{article.author}</span>}
           </div>
         </div>
       </div>
 
       {/* Body */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          <article className="lg:col-span-2">
-            <div className="bg-white rounded-2xl p-6 sm:p-10 border border-border">
-              <p className="text-slate-600 text-base leading-relaxed mb-8 border-l-4 border-accent pl-4 italic">
+      <div className="max-w-7xl mx-auto px-6 py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <article className="lg:col-span-8">
+            <div className="border-l-4 border-ocean pl-6 mb-10">
+              <p className="text-ink-soft text-base leading-relaxed italic">
                 {article.excerpt}
               </p>
-              <div
-                className="prose prose-slate max-w-none prose-headings:font-bold prose-headings:text-primary prose-h2:text-xl prose-h3:text-lg prose-p:leading-relaxed prose-p:text-slate-700"
-                dangerouslySetInnerHTML={{ __html: renderMarkdown(article.body) }}
-              />
-              {article.tags && article.tags.length > 0 && (
-                <div className="mt-10 pt-6 border-t border-border flex flex-wrap gap-2">
-                  <Tag size={14} className="text-slate-400 mt-0.5" />
-                  {article.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-xs bg-surface text-slate-600 px-2.5 py-1 rounded-full border border-border"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
             </div>
+            <div
+              className="prose-article"
+              dangerouslySetInnerHTML={{ __html: article.isHtml ? (article.body || "") : renderMarkdown(article.body || "") }}
+            />
+            {article.tags && article.tags.length > 0 && (
+              <div className="mt-12 pt-8 border-t border-border-line flex flex-wrap gap-2">
+                {article.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-xs border border-border-line text-ink-muted px-3 py-1 rounded-full"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
 
             <Link
               href="/media"
-              className="inline-flex items-center gap-2 mt-6 text-sm font-medium text-slate-500 hover:text-primary transition-colors"
+              className="inline-flex items-center gap-2 mt-10 section-label text-ink-muted hover:text-ink transition-colors"
             >
-              <ArrowLeft size={14} />
-              一覧に戻る
+              ← 一覧に戻る
             </Link>
           </article>
 
           {/* Sidebar */}
-          <aside className="space-y-6">
-            <div className="bg-white rounded-2xl p-5 border border-border">
-              <h2 className="text-sm font-bold text-slate-700 mb-4">関連記事</h2>
-              {related.length > 0 ? (
+          <aside className="lg:col-span-4 space-y-6">
+            {related.length > 0 && (
+              <div className="border border-border-line bg-white p-6 rounded-xl">
+                <h2 className="section-label text-ink-muted mb-4">RELATED ARTICLES</h2>
                 <div>
                   {related.map((a) => (
                     <ArticleCard key={a.slug} article={a} variant="compact" />
                   ))}
                 </div>
-              ) : (
-                <p className="text-sm text-slate-400">関連記事はありません</p>
-              )}
-            </div>
+              </div>
+            )}
 
-            <div className="bg-primary rounded-2xl p-5 text-white">
-              <h2 className="font-bold mb-2">お問い合わせ</h2>
-              <p className="text-sm text-slate-300 mb-4 leading-relaxed">
+            <div className="bg-ocean p-6 rounded-xl">
+              <h2 className="font-bold text-white mb-2">お問い合わせ</h2>
+              <p className="text-sm text-white/70 mb-5 leading-relaxed">
                 この記事についてのご質問や、活動への参加はお気軽にご連絡ください。
               </p>
               <Link
                 href="/contact"
-                className="block text-center bg-white text-primary text-sm font-semibold py-2.5 rounded-full hover:bg-slate-100 transition-colors"
+                className="block text-center bg-white text-ocean text-sm font-bold py-3 rounded-full hover:bg-paper transition-colors"
               >
-                お問い合わせ
+                お問い合わせ →
               </Link>
             </div>
           </aside>

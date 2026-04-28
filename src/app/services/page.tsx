@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ChevronRight, Users, Building2, Lightbulb, Heart, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "事業紹介",
@@ -10,7 +9,6 @@ export const metadata: Metadata = {
 const services = [
   {
     id: "community",
-    icon: Users,
     number: "01",
     title: "地域づくり連携事業",
     subtitle: "Community Development",
@@ -33,11 +31,9 @@ const services = [
         desc: "異なる分野・セクターをつなぐイベントや交流の場を企画・運営します。",
       },
     ],
-    color: "from-primary to-primary-light",
   },
   {
     id: "capacity",
-    icon: Building2,
     number: "02",
     title: "団体基盤整備事業",
     subtitle: "Organizational Support",
@@ -56,11 +52,9 @@ const services = [
         desc: "活動資金獲得のための助成金情報の提供と、申請書作成の支援を行います。",
       },
     ],
-    color: "from-accent to-accent-light",
   },
   {
     id: "research",
-    icon: Lightbulb,
     number: "03",
     title: "調査・政策提言事業",
     subtitle: "Research & Advocacy",
@@ -79,11 +73,9 @@ const services = [
         desc: "先進地域の事例研究や、玉野市内の実践事例のアーカイブ化を行います。",
       },
     ],
-    color: "from-amber to-amber-light",
   },
   {
     id: "facilities",
-    icon: Heart,
     number: "04",
     title: "公共施設有効活用事業",
     subtitle: "Public Facility Utilization",
@@ -102,7 +94,6 @@ const services = [
         desc: "持続可能な施設運営のための収支モデルや管理体制の構築を支援します。",
       },
     ],
-    color: "from-purple-600 to-purple-800",
   },
 ];
 
@@ -110,57 +101,44 @@ export default function ServicesPage() {
   return (
     <div>
       {/* Page Header */}
-      <div className="bg-primary py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <nav className="flex items-center gap-1.5 text-xs text-slate-400 mb-6">
-            <Link href="/" className="hover:text-white transition-colors">ホーム</Link>
-            <ChevronRight size={12} />
-            <span className="text-white">事業紹介</span>
+      <div className="bg-ink py-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <nav className="section-label text-white/40 mb-8 flex items-center gap-2">
+            <Link href="/" className="hover:text-white/70 transition-colors">HOME</Link>
+            <span>/</span>
+            <span className="text-white/60">SERVICES</span>
           </nav>
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">事業紹介</h1>
-          <p className="text-slate-300 text-lg max-w-xl leading-relaxed">
+          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-5 leading-tight">事業紹介</h1>
+          <p className="text-white/80 text-base max-w-xl leading-relaxed">
             私たちは4つの中核事業を通じて、地域の「つながり」を生み出します。
           </p>
         </div>
       </div>
 
       {/* Services */}
-      <div className="bg-white">
+      <div>
         {services.map((s, i) => (
           <section
             key={s.id}
             id={s.id}
-            className={`py-20 ${i % 2 === 1 ? "bg-surface" : "bg-white"}`}
+            className={`py-20 ${i % 2 === 0 ? "bg-paper" : "bg-paper-alt"}`}
           >
-            <div className="max-w-6xl mx-auto px-4 sm:px-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                <div className={`${i % 2 === 1 ? "lg:order-2" : ""}`}>
-                  <div className={`inline-flex items-center gap-3 bg-gradient-to-r ${s.color} text-white text-xs font-bold px-4 py-1.5 rounded-full mb-6`}>
-                    <span className="opacity-70">{s.number}</span>
-                    <span>{s.subtitle}</span>
-                  </div>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-4">{s.title}</h2>
-                  <p className="text-slate-600 text-base leading-relaxed mb-8">{s.lead}</p>
-                  <div className="space-y-4">
+            <div className="max-w-7xl mx-auto px-6">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                <div className="lg:col-span-4">
+                  <p className="section-label text-ink-muted mb-2">{s.number} / {s.subtitle}</p>
+                  <h2 className="text-2xl font-bold text-ink mb-4 leading-tight">{s.title}</h2>
+                  <div className="w-8 h-1 bg-ocean rounded-full mb-6" />
+                  <p className="text-ink-muted leading-relaxed">{s.lead}</p>
+                </div>
+                <div className="lg:col-span-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {s.details.map((d) => (
-                      <div key={d.label} className="flex gap-4">
-                        <div className="shrink-0 mt-1">
-                          <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-slate-800 mb-1">{d.label}</p>
-                          <p className="text-sm text-slate-500 leading-relaxed">{d.desc}</p>
-                        </div>
+                      <div key={d.label} className="bg-white border border-border-line p-6 rounded-xl">
+                        <h3 className="font-bold text-ink mb-3 text-sm">{d.label}</h3>
+                        <p className="text-sm text-ink-muted leading-relaxed">{d.desc}</p>
                       </div>
                     ))}
-                  </div>
-                </div>
-                <div className={`${i % 2 === 1 ? "lg:order-1" : ""}`}>
-                  <div className={`rounded-2xl bg-gradient-to-br ${s.color} p-10 flex items-center justify-center aspect-video`}>
-                    <div className="text-center text-white">
-                      <s.icon size={56} className="mx-auto mb-4 opacity-80" />
-                      <p className="text-xl font-bold">{s.title}</p>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -170,19 +148,19 @@ export default function ServicesPage() {
       </div>
 
       {/* CTA */}
-      <section className="bg-primary py-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+      <section className="bg-ink py-16">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <h2 className="text-2xl font-bold text-white mb-4">
             事業についてのご相談はお気軽に
           </h2>
-          <p className="text-slate-300 mb-8">
+          <p className="text-white/80 mb-8">
             連携・協力のご相談、活動支援のご依頼など、まずはお話をお聞かせください。
           </p>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 bg-white text-primary font-bold px-8 py-4 rounded-full hover:bg-slate-100 transition-colors"
+            className="inline-flex items-center bg-white text-ink font-bold text-sm px-8 py-4 rounded-full hover:bg-paper transition-colors"
           >
-            お問い合わせ <ArrowRight size={16} />
+            お問い合わせ →
           </Link>
         </div>
       </section>

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "プライバシーポリシー",
@@ -8,21 +7,21 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div className="bg-surface min-h-screen">
-      <div className="bg-primary py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <nav className="flex items-center gap-1.5 text-xs text-slate-400 mb-6">
-            <Link href="/" className="hover:text-white transition-colors">ホーム</Link>
-            <ChevronRight size={12} />
-            <span className="text-white">プライバシーポリシー</span>
+    <div className="bg-paper min-h-screen">
+      <div className="bg-ocean py-16">
+        <div className="max-w-7xl mx-auto px-6">
+          <nav className="section-label text-white/60 mb-6 flex items-center gap-2">
+            <Link href="/" className="hover:text-white transition-colors">HOME</Link>
+            <span>/</span>
+            <span className="text-white/80">PRIVACY POLICY</span>
           </nav>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white">プライバシーポリシー</h1>
+          <h1 className="text-3xl sm:text-4xl font-black text-white">プライバシーポリシー</h1>
         </div>
       </div>
 
       <section className="py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <div className="bg-white rounded-2xl p-6 sm:p-12 border border-border prose prose-slate max-w-none prose-headings:text-primary prose-headings:font-bold prose-h2:text-xl prose-p:text-slate-600 prose-p:leading-relaxed">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="bg-white border border-border-line p-8 sm:p-12 rounded-xl prose-article">
             <p>
               特定非営利活動法人 玉野SDGsみらいづくりセンター（以下「当法人」）は、
               お客様の個人情報の保護を重要な責務と考え、以下のプライバシーポリシーを定めます。
@@ -71,7 +70,7 @@ export default function PrivacyPage() {
               TEL: 090-1356-3655（平日9:00〜18:00）
             </p>
 
-            <p className="text-sm text-slate-400">制定日：2024年1月1日</p>
+            <p className="text-xs text-ink-muted mt-8">制定日：2024年1月1日</p>
           </div>
         </div>
       </section>

@@ -1,48 +1,122 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700;900&family=Noto+Serif+JP:wght@400;500;600;700&display=swap');
 
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #1a3c6e;
-  --color-primary-light: #2654a0;
-  --color-primary-dark: #112849;
-  --color-accent: #15803d;
-  --color-accent-light: #16a34a;
-  --color-accent-pale: #dcfce7;
-  --color-amber: #b45309;
-  --color-amber-light: #d97706;
-  --color-amber-pale: #fef3c7;
-  --color-surface: #f7f8fa;
-  --color-border: #e2e8f0;
+  /* Brand colors */
+  --color-ocean: #0b7eaa;
+  --color-ocean-light: #1898c7;
+  --color-ocean-dark: #075e82;
+  --color-ocean-pale: #e0f2fa;
+  --color-forest: #2e7d52;
+  --color-forest-light: #3a9666;
+  --color-forest-pale: #e3f5ec;
+  --color-amber: #c86d1a;
+  --color-amber-light: #e07e24;
+  --color-amber-pale: #fef3e2;
+  --color-coral: #d44d35;
+  --color-coral-pale: #fdecea;
+
+  /* Neutrals */
+  --color-ink: #1a1a1a;
+  --color-ink-soft: #424242;
+  --color-ink-muted: #767676;
+  --color-paper: #fefcf8;
+  --color-paper-alt: #f5f0e8;
+  --color-paper-ocean: #f0f8fd;
+  --color-border-line: #e8e2d9;
 
   --font-sans: 'Noto Sans JP', sans-serif;
+  --font-serif: 'Noto Serif JP', serif;
 }
 
 body {
   font-family: 'Noto Sans JP', sans-serif;
-  color: #1a1a2e;
+  color: #1a1a1a;
+  background-color: #fefcf8;
   -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
 }
 
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* Serif hierarchy: all content headings use Noto Serif JP */
+h1, h2, h3 {
+  font-family: 'Noto Serif JP', serif;
+}
+/* UI overlines/labels marked with .section-label stay sans */
+h1.section-label, h2.section-label, h3.section-label {
+  font-family: 'Noto Sans JP', sans-serif;
 }
 
-.animate-fade-up {
-  animation: fade-up 0.6s ease-out forwards;
-}
-
-.section-heading {
-  font-size: 1.875rem;
+.section-label {
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: -0.01em;
-  line-height: 1.3;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
-.section-subheading {
-  font-size: 0.875rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+/* Article body prose */
+/* Reliable category gradients (avoids Tailwind v4 custom-color opacity issues) */
+.grad-event    { background: linear-gradient(135deg, #c86d1a 0%, #e07e24 60%, #f5a623 100%); }
+.grad-interview{ background: linear-gradient(135deg, #075e82 0%, #0b7eaa 60%, #1898c7 100%); }
+.grad-news     { background: linear-gradient(135deg, #1e5c36 0%, #2e7d52 60%, #3a9666 100%); }
+.grad-story    { background: linear-gradient(135deg, #a83520 0%, #d44d35 60%, #e8623d 100%); }
+
+/* Ring-based shadow system (Claude tone) */
+.shadow-ring {
+  box-shadow: 0px 0px 0px 1px #e8e2d9;
+}
+.shadow-whisper {
+  box-shadow: rgba(0,0,0,0.05) 0px 4px 24px;
+}
+.card-interactive {
+  transition: box-shadow 220ms ease, transform 220ms ease;
+}
+.card-interactive:hover {
+  box-shadow: 0px 0px 0px 1.5px #0b7eaa, rgba(11,126,170,0.06) 0px 6px 28px;
+}
+
+/* Hero background subtle texture */
+.hero-bg {
+  background-color: #fefcf8;
+  background-image: radial-gradient(circle at 80% 20%, rgba(11,126,170,0.06) 0%, transparent 50%),
+                    radial-gradient(circle at 20% 80%, rgba(200,109,26,0.05) 0%, transparent 40%);
+}
+
+.prose-article h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e8e2d9;
+}
+.prose-article h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+.prose-article p {
+  color: #424242;
+  line-height: 1.9;
+  margin-bottom: 1.25rem;
+}
+.prose-article strong { color: #1a1a1a; font-weight: 700; }
+.prose-article ul { list-style: none; padding: 0; margin-bottom: 1.25rem; }
+.prose-article ul li {
+  padding-left: 1.25rem;
+  position: relative;
+  color: #424242;
+  line-height: 1.8;
+  margin-bottom: 0.5rem;
+}
+.prose-article ul li::before {
+  content: '●';
+  position: absolute;
+  left: 0;
+  color: #2e7d52;
+  font-size: 0.5rem;
+  top: 0.55rem;
 }
