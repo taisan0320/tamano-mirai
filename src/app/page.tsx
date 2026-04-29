@@ -126,7 +126,11 @@ export default async function Home() {
               <div className="lg:col-span-6">
                 <Link href={`/media/${visitedFeature.slug}`} className="group block">
                   <div className="relative overflow-hidden rounded-sm aspect-[4/5]">
-                    <MoonHillIllustration paletteIndex={0} className="absolute inset-0 w-full h-full" />
+                    {visitedFeature.thumbnail ? (
+                      <img src={visitedFeature.thumbnail} alt={visitedFeature.title} className="absolute inset-0 w-full h-full object-cover" />
+                    ) : (
+                      <MoonHillIllustration paletteIndex={0} className="absolute inset-0 w-full h-full" />
+                    )}
                     <div className="absolute top-4 left-4 bg-paper/95 text-ink text-[10px] tracking-[.28em] font-bold px-2.5 py-1 rounded-sm">
                       {CATEGORY_LABEL[visitedFeature.category]}
                     </div>
@@ -136,7 +140,9 @@ export default async function Home() {
                       {visitedFeature.title}
                     </h3>
                     <p className="mt-2 text-ink-soft leading-relaxed text-sm line-clamp-2">{visitedFeature.excerpt}</p>
-                    <p className="mt-3 text-[10px] text-ink-muted tracking-[.24em]">{visitedFeature.date}</p>
+                    <p className="mt-3 text-[10px] text-ink-muted tracking-[.24em]">
+                      {new Date(visitedFeature.date).toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" }).replace(/\//g, ".")}
+                    </p>
                   </div>
                 </Link>
               </div>
@@ -147,7 +153,11 @@ export default async function Home() {
               {visitedRest.map((a, i) => (
                 <Link key={a.slug} href={`/media/${a.slug}`} className="group block">
                   <div className="relative overflow-hidden rounded-sm aspect-[5/6]">
-                    <MoonHillIllustration paletteIndex={i + 1} className="absolute inset-0 w-full h-full" />
+                    {a.thumbnail ? (
+                      <img src={a.thumbnail} alt={a.title} className="absolute inset-0 w-full h-full object-cover" />
+                    ) : (
+                      <MoonHillIllustration paletteIndex={i + 1} className="absolute inset-0 w-full h-full" />
+                    )}
                     <div className="absolute top-4 left-4 bg-paper/95 text-ink text-[10px] tracking-[.28em] font-bold px-2.5 py-1 rounded-sm">
                       {CATEGORY_LABEL[a.category]}
                     </div>
@@ -157,7 +167,9 @@ export default async function Home() {
                       {a.title}
                     </h3>
                     <p className="mt-2 text-ink-soft leading-relaxed text-[13px] line-clamp-2">{a.excerpt}</p>
-                    <p className="mt-3 text-[10px] text-ink-muted tracking-[.24em]">{a.date}</p>
+                    <p className="mt-3 text-[10px] text-ink-muted tracking-[.24em]">
+                      {new Date(a.date).toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" }).replace(/\//g, ".")}
+                    </p>
                   </div>
                 </Link>
               ))}
