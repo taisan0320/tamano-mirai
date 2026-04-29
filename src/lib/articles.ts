@@ -232,6 +232,20 @@ export const articles: Article[] = [
 （詳細は準備中です）`,
     tags: ["移住", "陶芸", "インタビュー"],
   },
+  {
+    slug: "interview-fisher-uno",
+    title: "夜明け4時、海と向き合う ── 宇野漁港の林さん",
+    excerpt: "宇野漁港で30年。父から受け継いだ船で、瀬戸内の朝に出る林さんに会いに行きました。",
+    category: "interview",
+    date: "2026-04-18",
+    author: "編集部",
+    body: `## 夜明け4時、海と向き合う
+
+午前4時。宇野漁港はまだ暗い中、すでにエンジン音が響いている。
+
+（詳細は準備中です）`,
+    tags: ["漁業", "宇野漁港", "インタビュー"],
+  },
 ];
 
 export function getArticleBySlug(slug: string): Article | undefined {

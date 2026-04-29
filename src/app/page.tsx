@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {
   fetchArticlesByCategory,
+  getArticlesByCategory,
   CATEGORY_LABEL,
 } from "@/lib/articles";
 import { HeroIllustration, MoonHillIllustration } from "@/components/Illustrations";
@@ -24,7 +25,10 @@ export default async function Home() {
   const featured = eventArticles[0];
   const heroSubs = eventArticles.slice(1, 4);
 
-  const [visitedFeature, ...visitedRest] = interviewArticles;
+  const visited = interviewArticles.length > 0
+    ? interviewArticles
+    : getArticlesByCategory("interview").slice(0, 3);
+  const [visitedFeature, ...visitedRest] = visited;
 
   return (
     <div className="flex flex-col">
