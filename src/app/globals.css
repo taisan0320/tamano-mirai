@@ -186,6 +186,10 @@ h1.section-label, h2.section-label, h3.section-label {
 @keyframes pop { 0% { transform: scale(1) } 40% { transform: scale(1.35) } 100% { transform: scale(1) } }
 .pop { animation: pop .35s ease; }
 
+/* Hero sub-slider fade-in */
+@keyframes fade-slide { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.anim-fade-slide { animation: fade-slide 0.4s ease; }
+
 /* Card hover — editorial lift (no scale) */
 .card-interactive { transition: transform 240ms ease, box-shadow 240ms ease; }
 .card-interactive:hover {

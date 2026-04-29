@@ -7,10 +7,11 @@ import {
 import { HeroIllustration, MoonHillIllustration } from "@/components/Illustrations";
 import HappeningSection from "@/components/HappeningSection";
 import BoardSection from "@/components/BoardSection";
+import HeroSubSlider from "@/components/HeroSubSlider";
 
 export default async function Home() {
   const [eventArticles, interviewArticles, noticeRaw, exploreArticles, volunteerArticles] = await Promise.all([
-    fetchArticlesByCategory("event", 8),
+    fetchArticlesByCategory("event", 10),
     fetchArticlesByCategory("interview", 3),
     Promise.all([
       fetchArticlesByCategory("news", 6),
@@ -23,7 +24,14 @@ export default async function Home() {
   ]);
 
   const featured = eventArticles[0];
-  const heroSubs = eventArticles.slice(1, 4);
+  const heroSliderItems = eventArticles.slice(1).map((a) => ({
+    slug: a.slug,
+    categoryLabel: CATEGORY_LABEL[a.category],
+    date: new Date(a.date).toLocaleDateString("ja-JP", {
+      year: "numeric", month: "2-digit", day: "2-digit",
+    }).replace(/\//g, "."),
+    title: a.title,
+  }));
 
   const visited = interviewArticles.length > 0
     ? interviewArticles
@@ -84,25 +92,8 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* sub-features row */}
-          <div className="mt-12 lg:mt-16 grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-ink">
-            {heroSubs.map((a, i) => (
-              <Link
-                key={a.slug}
-                href={`/media/${a.slug}`}
-                className={`group flex flex-col gap-3 py-6 px-1 md:px-6 ${i > 0 ? "md:border-l border-border-line" : ""}`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="section-label text-ink-muted">{CATEGORY_LABEL[a.category]}</span>
-                  <span className="text-[10px] text-ink-muted tracking-widest">{a.date}</span>
-                </div>
-                <h3 className="font-serif-h text-base lg:text-lg font-bold text-ink leading-snug group-hover:text-coral transition-colors line-clamp-2">
-                  {a.title}
-                </h3>
-                <span className="text-xs text-ink-muted mt-auto">続きを読む →</span>
-              </Link>
-            ))}
-          </div>
+          {/* sub-features auto-slider */}
+          <HeroSubSlider items={heroSliderItems} />
         </div>
       </section>}
 
