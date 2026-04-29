@@ -19,12 +19,16 @@
 
   /* Neutrals */
   --color-ink: #1a1a1a;
+  --color-ink-night: #1d1d1b;
   --color-ink-soft: #424242;
   --color-ink-muted: #767676;
   --color-paper: #fefcf8;
   --color-paper-alt: #f5f0e8;
+  --color-paper-deep: #ebe3d4;
   --color-paper-ocean: #f0f8fd;
   --color-border-line: #e8e2d9;
+  --color-ink-night: #1d1d1b;
+  --color-paper-deep: #ebe3d4;
 
   --font-sans: 'Noto Sans JP', sans-serif;
   --font-serif: 'Noto Serif JP', serif;
@@ -123,3 +127,72 @@ h1.section-label, h2.section-label, h3.section-label {
   font-size: 0.5rem;
   top: 0.55rem;
 }
+
+/* ── Prototype design system ── */
+.font-serif-h { font-family: 'Noto Serif JP', serif; }
+.accent-coral { color: #d44d35; }
+
+/* Paper grain texture overlay */
+.paper-grain { position: relative; }
+.paper-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(0,0,0,.018) 1px, transparent 1px);
+  background-size: 3px 3px;
+  mix-blend-mode: multiply;
+  opacity: .6;
+}
+
+/* Filter chips (Happening section) */
+.chip {
+  font-size: .72rem;
+  padding: .32rem .7rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255,255,255,.18);
+  color: rgba(255,255,255,.8);
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.chip-active {
+  background: #fefcf8;
+  color: #1a1a1a;
+  border-color: #fefcf8;
+}
+
+/* Scroll nav buttons (Board section) */
+.nav-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #1a1a1a;
+  background: #fefcf8;
+  color: #1a1a1a;
+  transition: background .2s, color .2s, transform .15s;
+  cursor: pointer;
+}
+.nav-btn:hover { background: #1a1a1a; color: #fefcf8; }
+.nav-btn:disabled { opacity: .25; pointer-events: none; }
+
+/* Ticker marquee */
+@keyframes ticker { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+.ticker-track { animation: ticker 60s linear infinite; }
+
+/* Reaction pop */
+@keyframes pop { 0% { transform: scale(1) } 40% { transform: scale(1.35) } 100% { transform: scale(1) } }
+.pop { animation: pop .35s ease; }
+
+/* Card hover — editorial lift (no scale) */
+.card-interactive { transition: transform 240ms ease, box-shadow 240ms ease; }
+.card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px #c8c0b4, 0 12px 32px rgba(0,0,0,.07);
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

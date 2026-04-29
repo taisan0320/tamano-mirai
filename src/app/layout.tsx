@@ -25,7 +25,7 @@ export default function RootLayout({
     <html lang="ja" className="h-full scroll-smooth">
       <body className="min-h-full flex flex-col antialiased">
         <Header />
-        <main className="flex-1 pt-14">{children}</main>
+        <main className="flex-1">{children}</main>
         <Footer />
       </body>
     </html>
