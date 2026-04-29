@@ -68,16 +68,18 @@ export default async function Home() {
               </div>
             </div>
 
-            {/* right — illustration */}
+            {/* right — cover image or fallback illustration */}
             <div className="lg:col-span-5">
               <div className="relative aspect-[4/5] lg:aspect-auto lg:h-full min-h-[360px] rounded-sm overflow-hidden shadow-[0_24px_60px_-24px_rgba(0,0,0,0.35)]">
-                <HeroIllustration className="absolute inset-0 w-full h-full" />
-                <div className="absolute left-4 top-4 text-paper/85 text-[10px] tracking-[.32em] font-bold">
-                  SETOUCHI · UNO HARBOR
-                </div>
-                <div className="absolute right-4 bottom-4 text-paper/70 text-[10px] tracking-[.32em]">
-                  ILLUSTRATION
-                </div>
+                {featured.thumbnail ? (
+                  <img
+                    src={featured.thumbnail}
+                    alt={featured.title}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                ) : (
+                  <HeroIllustration className="absolute inset-0 w-full h-full" />
+                )}
               </div>
             </div>
           </div>
