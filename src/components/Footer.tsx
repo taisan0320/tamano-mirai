@@ -2,27 +2,29 @@ import Link from "next/link";
 
 const footerLinks = [
   {
-    heading: "組織情報",
+    heading: "メディア",
     links: [
-      { href: "/about", label: "私たちについて" },
-      { href: "/about#vision", label: "理念・ビジョン" },
-      { href: "/about#team", label: "役員・スタッフ" },
+      { href: "/media?category=event", label: "イベント情報" },
+      { href: "/media?category=interview", label: "まちの人・団体" },
+      { href: "/media?category=blog", label: "日記" },
+      { href: "/media?category=news", label: "お知らせ" },
     ],
   },
   {
-    heading: "活動・事業",
+    heading: "センターについて",
     links: [
-      { href: "/services", label: "事業紹介" },
-      { href: "/programs", label: "プログラム" },
-      { href: "/media", label: "ニュース・メディア" },
+      { href: "/about", label: "法人概要・理念" },
+      { href: "/about#team", label: "役員名簿" },
+      { href: "/about#history", label: "沿革" },
+      { href: "/about#business", label: "事業内容" },
     ],
   },
   {
     heading: "参加・連携",
     links: [
+      { href: "/about#membership", label: "入会・寄付" },
+      { href: "/documents", label: "調査・報告書・資料" },
       { href: "/contact", label: "お問い合わせ" },
-      { href: "/contact#volunteer", label: "ボランティア登録" },
-      { href: "/contact#partner", label: "協力・連携のご相談" },
     ],
   },
 ];
@@ -31,7 +33,6 @@ export default function Footer() {
   return (
     <footer className="bg-paper-alt border-t border-border-line">
       <div className="max-w-7xl mx-auto px-6 pt-14 pb-8">
-        {/* Top row */}
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8 pb-10 border-b border-border-line">
           <div className="max-w-sm">
             <p className="section-label text-ink-muted mb-2">NPO法人</p>
@@ -43,13 +44,12 @@ export default function Footer() {
               住み続けたい玉野の未来をともにつくります。
             </p>
           </div>
-          {/* Social Icons */}
           <div className="flex gap-3">
             <a
               href="https://www.instagram.com/tamano.miraizukuri/"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-9 h-9 flex items-center justify-center bg-ocean/10 hover:bg-ocean/20 text-ocean transition-colors rounded-full"
+              className="w-9 h-9 flex items-center justify-center bg-forest/10 hover:bg-forest/20 text-forest transition-colors rounded-full"
               aria-label="Instagram"
             >
               <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
@@ -60,7 +60,7 @@ export default function Footer() {
               href="https://www.facebook.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-9 h-9 flex items-center justify-center bg-ocean/10 hover:bg-ocean/20 text-ocean transition-colors rounded-full"
+              className="w-9 h-9 flex items-center justify-center bg-forest/10 hover:bg-forest/20 text-forest transition-colors rounded-full"
               aria-label="Facebook"
             >
               <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
@@ -70,7 +70,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Link grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-8 py-10 border-b border-border-line">
           {footerLinks.map((col) => (
             <div key={col.heading}>
@@ -80,7 +79,7 @@ export default function Footer() {
                   <li key={l.href}>
                     <Link
                       href={l.href}
-                      className="text-sm text-ink-soft hover:text-ocean transition-colors"
+                      className="text-sm text-ink-soft hover:text-forest transition-colors"
                     >
                       {l.label}
                     </Link>
@@ -91,16 +90,15 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* Contact info row */}
         <div className="py-8 border-b border-border-line">
           <div className="flex flex-col sm:flex-row gap-6 text-sm text-ink-muted">
             <div>
               <span className="section-label text-ink-muted mr-2">TEL</span>
-              <a href="tel:09013563655" className="text-ink-soft hover:text-ocean transition-colors font-medium">090-1356-3655</a>
+              <a href="tel:09013563655" className="text-ink-soft hover:text-forest transition-colors font-medium">090-1356-3655</a>
             </div>
             <div>
               <span className="section-label text-ink-muted mr-2">EMAIL</span>
-              <a href="mailto:info@npo-tamano-mirai.com" className="text-ink-soft hover:text-ocean transition-colors font-medium">info@npo-tamano-mirai.com</a>
+              <a href="mailto:info@npo-tamano-mirai.com" className="text-ink-soft hover:text-forest transition-colors font-medium">info@npo-tamano-mirai.com</a>
             </div>
             <div>
               <span className="section-label text-ink-muted mr-2">ADDRESS</span>
@@ -109,10 +107,9 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom row */}
         <div className="pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-ink-muted">
           <p>© {new Date().getFullYear()} 特定非営利活動法人 玉野SDGsみらいづくりセンター. All rights reserved.</p>
-          <Link href="/privacy" className="hover:text-ocean transition-colors">
+          <Link href="/privacy" className="hover:text-forest transition-colors">
             プライバシーポリシー
           </Link>
         </div>

@@ -60,6 +60,7 @@ h1.section-label, h2.section-label, h3.section-label {
 .grad-interview{ background: linear-gradient(135deg, #075e82 0%, #0b7eaa 60%, #1898c7 100%); }
 .grad-news     { background: linear-gradient(135deg, #1e5c36 0%, #2e7d52 60%, #3a9666 100%); }
 .grad-story    { background: linear-gradient(135deg, #a83520 0%, #d44d35 60%, #e8623d 100%); }
+.grad-blog     { background: linear-gradient(135deg, #3d6b2c 0%, #558b3a 60%, #6aa84f 100%); }
 
 /* Ring-based shadow system (Claude tone) */
 .shadow-ring {

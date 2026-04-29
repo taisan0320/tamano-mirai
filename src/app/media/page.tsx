@@ -11,7 +11,8 @@ export const metadata: Metadata = {
 const categories: { key: Category | "all"; label: string }[] = [
   { key: "all", label: "すべて" },
   { key: "event", label: "イベント情報" },
-  { key: "interview", label: "インタビュー" },
+  { key: "interview", label: "まちの人・団体" },
+  { key: "blog", label: "日記" },
   { key: "story", label: "玉野の話" },
   { key: "news", label: "お知らせ" },
 ];
@@ -20,6 +21,7 @@ const categoryPillStyle: Record<string, string> = {
   all: "bg-ink text-white",
   event: "bg-amber-pale text-amber border border-amber/20",
   interview: "bg-ocean-pale text-ocean border border-ocean/20",
+  blog: "bg-forest-pale text-forest border border-forest/20",
   story: "bg-coral-pale text-coral border border-coral/20",
   news: "bg-forest-pale text-forest border border-forest/20",
 };
