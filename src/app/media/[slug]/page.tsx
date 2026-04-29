@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { fetchLatestArticles, fetchArticlesByCategory, fetchArticleBySlug, fetchAllSlugs, CATEGORY_LABEL } from "@/lib/articles";
+import { fetchArticlesByCategory, fetchArticleBySlug, CATEGORY_LABEL, CATEGORY_ROUTE } from "@/lib/articles";
 import ArticleCard from "@/components/ArticleCard";
 
 export const revalidate = 60;
@@ -12,12 +12,8 @@ const categoryLabelStyle: Record<string, string> = {
   interview: "bg-ocean-pale text-ocean border border-ocean/20",
   news: "bg-forest-pale text-forest border border-forest/20",
   story: "bg-coral-pale text-coral border border-coral/20",
+  blog: "bg-forest-pale text-forest border border-forest/20",
 };
-
-export async function generateStaticParams() {
-  const slugs = await fetchAllSlugs();
-  return slugs.map((slug) => ({ slug }));
-}
 
 export async function generateMetadata({
   params,
@@ -118,7 +114,7 @@ export default async function ArticlePage({
             )}
 
             <Link
-              href="/media"
+              href={CATEGORY_ROUTE[article.category]}
               className="inline-flex items-center gap-2 mt-10 section-label text-ink-muted hover:text-ink transition-colors"
             >
               ← 一覧に戻る

@@ -5,9 +5,10 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 
 const contentLinks = [
-  { href: "/media?category=event", label: "イベント情報" },
-  { href: "/media?category=interview", label: "まちの人・団体" },
-  { href: "/media?category=blog", label: "日記" },
+  { href: "/events", label: "イベント情報" },
+  { href: "/stories", label: "まちの人・団体" },
+  { href: "/blog", label: "日記" },
+  { href: "/news", label: "お知らせ" },
 ];
 
 const orgLinks = [

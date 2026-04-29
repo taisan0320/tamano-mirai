@@ -10,10 +10,10 @@ import ArticleCard from "@/components/ArticleCard";
 
 const categoryTabs = [
   { href: "/media", label: "すべて", style: "bg-ink text-white hover:bg-ink-soft" },
-  { href: "/media?category=event", label: "イベント情報", style: "bg-amber-pale text-amber border border-amber/20 hover:bg-amber/10" },
-  { href: "/media?category=interview", label: "まちの人・団体", style: "bg-ocean-pale text-ocean border border-ocean/20 hover:bg-ocean/10" },
-  { href: "/media?category=blog", label: "日記", style: "bg-forest-pale text-forest border border-forest/20 hover:bg-forest/10" },
-  { href: "/media?category=news", label: "お知らせ", style: "bg-forest-pale text-forest border border-forest/20 hover:bg-forest/10" },
+  { href: "/events", label: "イベント情報", style: "bg-amber-pale text-amber border border-amber/20 hover:bg-amber/10" },
+  { href: "/stories", label: "まちの人・団体", style: "bg-ocean-pale text-ocean border border-ocean/20 hover:bg-ocean/10" },
+  { href: "/blog", label: "日記", style: "bg-forest-pale text-forest border border-forest/20 hover:bg-forest/10" },
+  { href: "/news", label: "お知らせ", style: "bg-forest-pale text-forest border border-forest/20 hover:bg-forest/10" },
 ];
 
 export default async function Home() {
@@ -154,7 +154,7 @@ export default async function Home() {
               <span className="w-2 h-2 rounded-full bg-amber inline-block" />
               <h2 className="text-xl font-bold text-ink">イベント情報</h2>
               <div className="flex-1 h-px bg-ink/12" />
-              <Link href="/media?category=event" className="section-label text-ink-muted hover:text-ink transition-colors whitespace-nowrap">
+              <Link href="/events" className="section-label text-ink-muted hover:text-ink transition-colors whitespace-nowrap">
                 一覧を見る →
               </Link>
             </div>
@@ -197,7 +197,7 @@ export default async function Home() {
               <span className="w-2 h-2 rounded-full bg-forest inline-block" />
               <h2 className="text-xl font-bold text-ink">コーディネーター日記</h2>
               <div className="flex-1 h-px bg-ink/12" />
-              <Link href="/media?category=blog" className="section-label text-ink-muted hover:text-ink transition-colors whitespace-nowrap">
+              <Link href="/blog" className="section-label text-ink-muted hover:text-ink transition-colors whitespace-nowrap">
                 一覧を見る →
               </Link>
             </div>

@@ -37,6 +37,22 @@ export const CATEGORY_GRADIENT: Record<Category, string> = {
   blog: "grad-blog",
 };
 
+export const CATEGORY_ROUTE: Record<Category, string> = {
+  event: "/events",
+  interview: "/stories",
+  blog: "/blog",
+  news: "/news",
+  story: "/stories",
+};
+
+export function getArticleUrl(article: Pick<Article, "category" | "slug">): string {
+  return `/media/${article.slug}`;
+}
+
+export function getCategoryListUrl(category: Category): string {
+  return CATEGORY_ROUTE[category];
+}
+
 export const CATEGORY_BADGE: Record<Category, string> = {
   event: "bg-amber-pale text-amber border border-amber/30",
   interview: "bg-ocean-pale text-ocean border border-ocean/30",
