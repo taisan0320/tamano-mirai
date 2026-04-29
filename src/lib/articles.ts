@@ -259,7 +259,7 @@ import { createClient, type MicroCMSListContent } from "microcms-js-sdk";
 type CMSArticle = MicroCMSListContent & {
   title: string;
   excerpt: string;
-  category: Category;
+  category: Category | Category[];
   date?: string;
   author?: string;
   thumbnail?: { url: string };
@@ -278,11 +278,12 @@ const client =
     : null;
 
 function cmsToArticle(item: CMSArticle): Article {
+  const category = Array.isArray(item.category) ? item.category[0] : item.category;
   return {
     slug: item.id,
     title: item.title,
     excerpt: item.excerpt,
-    category: item.category,
+    category: category ?? "news",
     date: item.date ?? item.publishedAt ?? new Date().toISOString(),
     author: item.author,
     thumbnail: item.thumbnail?.url,
@@ -310,7 +311,7 @@ export async function fetchArticlesByCategory(
   if (client) {
     const res = await client.getList<CMSArticle>({
       endpoint: "articles",
-      queries: { limit, orders: "-date", filters: `category[equals]${category}` },
+      queries: { limit, orders: "-date", filters: `category[contains]${category}` },
     });
     return res.contents.map(cmsToArticle);
   }
