@@ -8,9 +8,10 @@ import { HeroIllustration, MoonHillIllustration } from "@/components/Illustratio
 import HappeningSection from "@/components/HappeningSection";
 import BoardSection from "@/components/BoardSection";
 import HeroSubSlider from "@/components/HeroSubSlider";
+import { fetchBoardCards } from "@/lib/board";
 
 export default async function Home() {
-  const [eventArticles, interviewArticles, noticeRaw, exploreArticles, volunteerArticles] = await Promise.all([
+  const [eventArticles, interviewArticles, noticeRaw, exploreArticles, volunteerArticles, boardCards] = await Promise.all([
     fetchArticlesByCategory("event", 10),
     fetchArticlesByCategory("interview", 3),
     Promise.all([
@@ -21,6 +22,7 @@ export default async function Home() {
     ),
     fetchArticlesByCategory("explore", 3),
     fetchArticlesByCategory("volunteer", 3),
+    fetchBoardCards(12),
   ]);
 
   const featured = eventArticles[0];
@@ -42,7 +44,7 @@ export default async function Home() {
     <div className="flex flex-col">
 
       {/* ── HERO ── */}
-      {featured && <section className="bg-paper border-b border-border-line">
+      {featured && <section className="bg-paper">
         <div className="max-w-[1400px] mx-auto px-6 pt-10 lg:pt-14 pb-0">
           <div className="flex items-center justify-between mb-6 lg:mb-10">
             <div className="flex items-center gap-3">
@@ -98,7 +100,7 @@ export default async function Home() {
       </section>}
 
       {/* ── VISITED — 訪ねた人・団体 ── */}
-      <section id="visited" className="bg-paper-alt paper-grain border-b border-border-line">
+      <section id="visited" className="bg-paper-alt paper-grain">
         <div className="max-w-[1400px] mx-auto px-6 py-20 lg:py-28">
           <div className="flex items-end justify-between mb-12 gap-6">
             <div>
@@ -196,11 +198,11 @@ export default async function Home() {
       <HappeningSection articles={eventArticles} />
 
       {/* ── BOARD ── */}
-      <BoardSection />
+      <BoardSection cards={boardCards} />
 
       {/* ── お知らせ・日記 ── */}
       {noticeRaw.length > 0 && (
-        <section className="bg-paper border-b border-border-line">
+        <section className="bg-paper">
           <div className="max-w-[1400px] mx-auto px-6 py-16 lg:py-20">
             <div className="flex items-end justify-between mb-10 gap-6">
               <div>
@@ -252,7 +254,7 @@ export default async function Home() {
       )}
 
       {/* ── EXPLORE & VOLUNTEER ── */}
-      <section className="bg-paper-alt py-14 border-b border-border-line">
+      <section className="bg-paper-alt py-14">
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-10">
 

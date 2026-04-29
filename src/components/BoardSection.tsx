@@ -1,62 +1,17 @@
 "use client";
 
 import { useRef, useState, useCallback, useEffect } from "react";
+import type { BoardCard } from "@/lib/board";
 
-interface BoardCard {
-  id: string;
-  author: string;
-  role: string;
-  posted: string;
-  reactions: number;
-  tag: string;
-  title: string;
-  body: string;
+function relativeDate(iso: string): string {
+  const days = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+  if (days === 0) return "今日";
+  if (days === 1) return "昨日";
+  if (days < 7) return `${days}日前`;
+  if (days < 14) return "1週間前";
+  if (days < 30) return `${Math.floor(days / 7)}週間前`;
+  return `${Math.floor(days / 30)}ヶ月前`;
 }
-
-const boardCards: BoardCard[] = [
-  {
-    id: "b-001", author: "西田井", role: "学校連携コーディネーター",
-    posted: "2日前", reactions: 14, tag: "学校 × 地域",
-    title: "高校生が町の人にインタビューする日をつくれないか",
-    body: "玉野高校の探究の時間で、生徒が町の人にインタビューしに行く。受け入れてくれる商店・事業者を募りたい。",
-  },
-  {
-    id: "b-002", author: "田中", role: "玉野市南部・若手農家",
-    posted: "3日前", reactions: 22, tag: "農業 × 食",
-    title: "棚田の田植え体験、子どもたちと一緒にやってみたい",
-    body: "GW明けに棚田の田植え。地域の子どもたちに開いてみたい。サポートしてくれる人を3名くらい募集。",
-  },
-  {
-    id: "b-003", author: "山本", role: "陶芸家",
-    posted: "5日前", reactions: 9, tag: "ものづくり",
-    title: "玉野の土で器を焼く、月いちのワークショップ",
-    body: "工房を月1で開放したい。初心者OK。土と向き合う時間を、一緒に過ごしてくれる人を探しています。",
-  },
-  {
-    id: "b-004", author: "編集部", role: "玉野SDGsみらい",
-    posted: "1週間前", reactions: 31, tag: "メディア",
-    title: "玉野の朝を撮る写真家を探しています",
-    body: "「玉野の話」連載で、朝の風景を撮ってくれる写真家を探しています。地元の方優先。",
-  },
-  {
-    id: "b-005", author: "市役所・観光", role: "玉野市役所",
-    posted: "1週間前", reactions: 6, tag: "行政 × 連携",
-    title: "観光パンフレットの再編集、市民の声を集めたい",
-    body: "今ある観光パンフを、市民目線で書き直したい。月1ミーティングに参加できる方を募集します。",
-  },
-  {
-    id: "b-006", author: "林", role: "宇野漁港・漁師",
-    posted: "2週間前", reactions: 18, tag: "漁業 × 食",
-    title: "朝市を、月1回でも復活させたい",
-    body: "コロナで途絶えてしまった朝市。少人数からでも、もう一度動かしてみませんか。",
-  },
-  {
-    id: "b-007", author: "渋川マリン", role: "水族館スタッフ",
-    posted: "2週間前", reactions: 12, tag: "学び",
-    title: "夜の水族館を企画したい。アイデア募集",
-    body: "閉館後の水族館で、大人だけの夜のイベント。やってみたい人、知恵を貸してください。",
-  },
-];
 
 function ReactionPill({ count }: { count: number }) {
   const [n, setN] = useState(count);
@@ -98,7 +53,7 @@ function Card({ c }: { c: BoardCard }) {
           <span className="w-1.5 h-1.5 rounded-full bg-coral" />
           {c.tag}
         </span>
-        <span className="text-[10px] text-ink-muted tracking-widest">{c.posted}</span>
+        <span className="text-[10px] text-ink-muted tracking-widest">{relativeDate(c.publishedAt)}</span>
       </div>
 
       <h3 className="font-serif-h text-[17px] font-bold text-ink leading-snug">{c.title}</h3>
@@ -115,13 +70,13 @@ function Card({ c }: { c: BoardCard }) {
             <p className="text-[10px] text-ink-muted leading-tight truncate">{c.role}</p>
           </div>
         </div>
-        <ReactionPill count={c.reactions} />
+        <ReactionPill count={0} />
       </div>
     </article>
   );
 }
 
-export default function BoardSection() {
+export default function BoardSection({ cards }: { cards: BoardCard[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
   const [canPrev, setCanPrev] = useState(false);
@@ -158,7 +113,7 @@ export default function BoardSection() {
   };
 
   return (
-    <section className="bg-paper border-b border-border-line">
+    <section className="bg-paper">
       <div className="max-w-[1400px] mx-auto px-6 py-20 lg:py-28">
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
@@ -192,7 +147,7 @@ export default function BoardSection() {
 
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-3 text-[11px] tracking-[.24em] text-ink-muted">
-            <span className="font-bold text-ink">{boardCards.length}</span>
+            <span className="font-bold text-ink">{cards.length}</span>
             <span>POSTS</span>
             <span className="w-1 h-1 rounded-full bg-ink-muted/50" />
             <span>UPDATED WEEKLY</span>
@@ -226,7 +181,7 @@ export default function BoardSection() {
             ref={trackRef}
             className="no-scrollbar flex gap-4 overflow-x-auto snap-x snap-mandatory pb-6 -mx-6 px-6 scroll-smooth"
           >
-            {boardCards.map((c) => <Card key={c.id} c={c} />)}
+            {cards.map((c) => <Card key={c.id} c={c} />)}
             <a
               href="/contact"
               className="snap-start shrink-0 w-[300px] sm:w-[320px] rounded-md border-2 border-dashed border-border-line hover:border-coral hover:bg-coral/[0.04] transition-colors flex flex-col items-center justify-center text-center p-8 group"
