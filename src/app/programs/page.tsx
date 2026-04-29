@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { GraduationCap, BookOpen, Coffee, Presentation, ArrowRight, Calendar } from "lucide-react";
+import { fetchArticlesByCategory, getArticleUrl } from "@/lib/articles";
 
 export const metadata: Metadata = {
   title: "プログラム",
@@ -92,7 +93,9 @@ const programs = [
   },
 ];
 
-export default function ProgramsPage() {
+export default async function ProgramsPage() {
+  const exploreArticles = await fetchArticlesByCategory("explore", 6);
+
   return (
     <div>
       {/* Page Header */}
@@ -109,6 +112,35 @@ export default function ProgramsPage() {
           </p>
         </div>
       </div>
+
+      {/* Explore Articles */}
+      {exploreArticles.length > 0 && (
+        <section className="bg-forest-pale border-b border-border-line py-10">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="flex items-center justify-between border-b border-forest/20 pb-3 mb-5">
+              <h2 className="font-bold text-ink">探究学習・連携レポート</h2>
+              <span className="section-label text-forest">最新情報</span>
+            </div>
+            <div className="divide-y divide-border-line">
+              {exploreArticles.map((a) => (
+                <Link
+                  key={a.slug}
+                  href={getArticleUrl(a)}
+                  className="group flex items-start gap-5 py-4 hover:bg-forest/5 -mx-4 px-4 rounded transition-colors"
+                >
+                  <span className="section-label text-ink-muted w-20 pt-0.5 shrink-0">
+                    {new Date(a.date).toLocaleDateString("ja-JP", { month: "2-digit", day: "2-digit" }).replace("/", ".")}
+                  </span>
+                  <h3 className="text-sm font-medium text-ink group-hover:text-forest transition-colors leading-snug line-clamp-2 flex-1">
+                    {a.title}
+                  </h3>
+                  <span className="shrink-0 text-ink/20 group-hover:text-forest transition-colors font-bold pt-0.5">→</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Program List */}
       {programs.map((p, i) => (

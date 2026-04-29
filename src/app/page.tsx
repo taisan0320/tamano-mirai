@@ -9,11 +9,11 @@ import {
 import ArticleCard from "@/components/ArticleCard";
 
 const categoryTabs = [
-  { href: "/media", label: "すべて", style: "bg-ink text-white hover:bg-ink-soft" },
-  { href: "/events", label: "イベント情報", style: "bg-amber-pale text-amber border border-amber/20 hover:bg-amber/10" },
-  { href: "/stories", label: "まちの人・団体", style: "bg-ocean-pale text-ocean border border-ocean/20 hover:bg-ocean/10" },
-  { href: "/blog", label: "日記", style: "bg-forest-pale text-forest border border-forest/20 hover:bg-forest/10" },
-  { href: "/news", label: "お知らせ", style: "bg-forest-pale text-forest border border-forest/20 hover:bg-forest/10" },
+  { href: "/media", label: "すべて" },
+  { href: "/events", label: "イベント情報" },
+  { href: "/stories", label: "まちの人・団体" },
+  { href: "/blog", label: "日記" },
+  { href: "/news", label: "お知らせ" },
 ];
 
 export default async function Home() {
@@ -24,10 +24,12 @@ export default async function Home() {
     weekday: "short",
   });
 
-  const [latestArticles, eventArticles, blogArticles] = await Promise.all([
+  const [latestArticles, eventArticles, blogArticles, exploreArticles, volunteerArticles] = await Promise.all([
     fetchLatestArticles(8),
     fetchArticlesByCategory("event", 5),
     fetchArticlesByCategory("blog", 3),
+    fetchArticlesByCategory("explore", 3),
+    fetchArticlesByCategory("volunteer", 3),
   ]);
 
   const featured = latestArticles[0];
@@ -53,7 +55,7 @@ export default async function Home() {
             {/* Featured — large */}
             <Link
               href={`/media/${featured.slug}`}
-              className="relative overflow-hidden rounded-xl group card-interactive min-h-[280px] lg:min-h-0"
+              className="relative overflow-hidden rounded-lg group card-interactive min-h-[280px] lg:min-h-0"
             >
               <div className={`absolute inset-0 ${CATEGORY_GRADIENT[featured.category]}`} />
               {featured.thumbnail && (
@@ -65,10 +67,10 @@ export default async function Home() {
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
               <div className="relative h-full p-8 flex flex-col justify-end">
-                <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full mb-4 w-fit ${CATEGORY_BADGE[featured.category]}`}>
+                <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded mb-4 w-fit ${CATEGORY_BADGE[featured.category]}`}>
                   {CATEGORY_LABEL[featured.category]}
                 </span>
-                <h2 className="text-2xl lg:text-3xl font-bold text-white leading-snug mb-3 line-clamp-2 group-hover:opacity-80 transition-opacity">
+                <h2 className="text-2xl lg:text-3xl font-bold text-white leading-snug mb-3 line-clamp-2">
                   {featured.title}
                 </h2>
                 <p className="text-white/65 text-sm leading-relaxed line-clamp-2">
@@ -84,7 +86,7 @@ export default async function Home() {
                 <Link
                   key={article.slug}
                   href={`/media/${article.slug}`}
-                  className="relative overflow-hidden rounded-xl group card-interactive flex-1 min-h-[120px]"
+                  className="relative overflow-hidden rounded-lg group card-interactive flex-1 min-h-[120px]"
                 >
                   <div className={`absolute inset-0 ${CATEGORY_GRADIENT[article.category]}`} />
                   {article.thumbnail && (
@@ -96,10 +98,10 @@ export default async function Home() {
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                   <div className="relative h-full p-5 flex flex-col justify-end">
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 w-fit ${CATEGORY_BADGE[article.category]}`}>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded mb-2 w-fit ${CATEGORY_BADGE[article.category]}`}>
                       {CATEGORY_LABEL[article.category]}
                     </span>
-                    <h3 className="text-sm font-bold text-white leading-snug line-clamp-2 group-hover:opacity-80 transition-opacity">
+                    <h3 className="text-sm font-bold text-white leading-snug line-clamp-2">
                       {article.title}
                     </h3>
                   </div>
@@ -112,14 +114,14 @@ export default async function Home() {
       </section>
 
       {/* ── CATEGORY TABS ── */}
-      <div className="bg-white border-y border-border-line sticky top-14 z-40">
+      <div className="bg-white border-b border-border-line sticky top-14 z-40">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex gap-2 overflow-x-auto py-3 scrollbar-hide">
+          <div className="flex overflow-x-auto scrollbar-hide">
             {categoryTabs.map((c) => (
               <Link
                 key={c.href}
                 href={c.href}
-                className={`shrink-0 section-label px-4 py-2 rounded-full transition-colors ${c.style}`}
+                className="shrink-0 section-label px-4 py-4 text-ink-muted hover:text-ink border-b-2 border-transparent hover:border-ink transition-colors whitespace-nowrap"
               >
                 {c.label}
               </Link>
@@ -129,12 +131,11 @@ export default async function Home() {
       </div>
 
       {/* ── LATEST ARTICLES ── */}
-      <section className="bg-paper py-16">
+      <section className="bg-paper py-14">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center gap-4 mb-8">
-            <span className="section-label text-ink/30">最新記事</span>
-            <div className="flex-1 h-px bg-ink/12" />
-            <Link href="/media" className="section-label text-ink-muted hover:text-ink transition-colors whitespace-nowrap">
+          <div className="flex items-center justify-between border-b border-ink pb-3 mb-8">
+            <h2 className="font-black text-ink tracking-tight">最新記事</h2>
+            <Link href="/media" className="section-label text-ink-muted hover:text-ink transition-colors">
               すべて見る →
             </Link>
           </div>
@@ -148,17 +149,18 @@ export default async function Home() {
 
       {/* ── EVENTS LIST ── */}
       {eventArticles.length > 0 && (
-        <section className="bg-white py-16">
+        <section className="bg-white py-14">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="flex items-center gap-4 mb-8">
-              <span className="w-2 h-2 rounded-full bg-amber inline-block" />
-              <h2 className="text-xl font-bold text-ink">イベント情報</h2>
-              <div className="flex-1 h-px bg-ink/12" />
-              <Link href="/events" className="section-label text-ink-muted hover:text-ink transition-colors whitespace-nowrap">
+            <div className="flex items-end justify-between border-b-2 border-amber pb-3 mb-6">
+              <div>
+                <p className="section-label text-amber mb-1">開催予定</p>
+                <h2 className="font-bold text-ink leading-none">イベント情報</h2>
+              </div>
+              <Link href="/events" className="section-label text-ink-muted hover:text-ink transition-colors pb-0.5">
                 一覧を見る →
               </Link>
             </div>
-            <div className="divide-y divide-border-line border-t border-border-line">
+            <div className="divide-y divide-border-line">
               {eventArticles.map((article) => {
                 const d = new Date(article.date);
                 return (
@@ -189,15 +191,91 @@ export default async function Home() {
         </section>
       )}
 
+      {/* ── EXPLORE & VOLUNTEER ── */}
+      <section className="bg-paper-alt py-14">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-10">
+
+            {/* 探究学習 */}
+            <div>
+              <div className="flex items-end justify-between border-b-2 border-forest pb-3 mb-5">
+                <div>
+                  <p className="section-label text-forest mb-1">学校・地域連携</p>
+                  <h2 className="font-bold text-ink leading-none">探究学習サポート</h2>
+                </div>
+                <Link href="/programs" className="section-label text-ink-muted hover:text-forest transition-colors pb-0.5">
+                  詳しく見る →
+                </Link>
+              </div>
+              {exploreArticles.length === 0 ? (
+                <p className="text-sm text-ink-muted py-6">現在、探究学習に関する情報はありません</p>
+              ) : (
+                <div className="divide-y divide-border-line">
+                  {exploreArticles.map((a) => (
+                    <Link
+                      key={a.slug}
+                      href={`/media/${a.slug}`}
+                      className="group flex items-start gap-4 py-4 hover:bg-white transition-colors -mx-4 px-4 rounded"
+                    >
+                      <span className="section-label text-ink-muted w-16 pt-0.5 shrink-0">
+                        {new Date(a.date).toLocaleDateString("ja-JP", { month: "2-digit", day: "2-digit" }).replace("/", ".")}
+                      </span>
+                      <h3 className="text-sm font-medium text-ink group-hover:text-forest transition-colors leading-snug line-clamp-2">
+                        {a.title}
+                      </h3>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* ボランティア */}
+            <div>
+              <div className="flex items-end justify-between border-b-2 border-coral pb-3 mb-5">
+                <div>
+                  <p className="section-label text-coral mb-1">参加・サポート</p>
+                  <h2 className="font-bold text-ink leading-none">ボランティア募集</h2>
+                </div>
+                <Link href="/join" className="section-label text-ink-muted hover:text-coral transition-colors pb-0.5">
+                  詳しく見る →
+                </Link>
+              </div>
+              {volunteerArticles.length === 0 ? (
+                <p className="text-sm text-ink-muted py-6">現在、ボランティアの募集はありません</p>
+              ) : (
+                <div className="divide-y divide-border-line">
+                  {volunteerArticles.map((a) => (
+                    <Link
+                      key={a.slug}
+                      href={`/media/${a.slug}`}
+                      className="group flex items-start gap-4 py-4 hover:bg-white transition-colors -mx-4 px-4 rounded"
+                    >
+                      <span className="section-label text-ink-muted w-16 pt-0.5 shrink-0">
+                        {new Date(a.date).toLocaleDateString("ja-JP", { month: "2-digit", day: "2-digit" }).replace("/", ".")}
+                      </span>
+                      <h3 className="text-sm font-medium text-ink group-hover:text-coral transition-colors leading-snug line-clamp-2">
+                        {a.title}
+                      </h3>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+          </div>
+        </div>
+      </section>
+
       {/* ── COORDINATOR DIARY ── */}
       {blogArticles.length > 0 && (
-        <section className="bg-paper-alt py-16">
+        <section className="bg-white py-14">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="flex items-center gap-4 mb-8">
-              <span className="w-2 h-2 rounded-full bg-forest inline-block" />
-              <h2 className="text-xl font-bold text-ink">コーディネーター日記</h2>
-              <div className="flex-1 h-px bg-ink/12" />
-              <Link href="/blog" className="section-label text-ink-muted hover:text-ink transition-colors whitespace-nowrap">
+            <div className="flex items-end justify-between border-b-2 border-forest pb-3 mb-6">
+              <div>
+                <p className="section-label text-forest mb-1">スタッフより</p>
+                <h2 className="font-bold text-ink leading-none">コーディネーター日記</h2>
+              </div>
+              <Link href="/blog" className="section-label text-ink-muted hover:text-ink transition-colors pb-0.5">
                 一覧を見る →
               </Link>
             </div>
@@ -209,6 +287,55 @@ export default async function Home() {
           </div>
         </section>
       )}
+
+      {/* ── AUDIENCE CTA STRIP ── */}
+      <section className="bg-ink">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="border-b border-white/10 py-4">
+            <p className="section-label text-white/30">このサイトの使い方 — どなたをお探しですか</p>
+          </div>
+          <div className="divide-y divide-white/10">
+            {([
+              {
+                num: "01",
+                color: "text-forest",
+                title: "学校の先生・地域コーディネーターの方へ",
+                desc: "「総合的な探究の時間」の授業づくりや地域連携をサポートします",
+                href: "/programs",
+              },
+              {
+                num: "02",
+                color: "text-amber",
+                title: "ボランティアとして参加したい方へ",
+                desc: "玉野のまちづくりに、あなたの力を貸してください",
+                href: "/join",
+              },
+              {
+                num: "03",
+                color: "text-ocean",
+                title: "玉野への移住・定住を考えている方へ",
+                desc: "ここで暮らす人たちのリアルな声をお届けします",
+                href: "/stories",
+              },
+            ] as const).map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="group flex items-center gap-6 lg:gap-12 py-7 -mx-6 px-6 hover:bg-white/5 transition-colors"
+              >
+                <span className={`font-black ${item.color} opacity-25 group-hover:opacity-100 transition-opacity w-12 lg:w-16 text-right shrink-0 text-3xl lg:text-4xl`}>
+                  {item.num}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-base lg:text-xl font-bold text-white leading-snug mb-1">{item.title}</h3>
+                  <p className="text-sm text-white/40 hidden sm:block">{item.desc}</p>
+                </div>
+                <span className={`shrink-0 font-bold text-xl ${item.color} opacity-25 group-hover:opacity-100 transition-opacity`}>→</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ── ABOUT STRIP ── */}
       <section className="bg-paper py-14 border-t border-border-line">
@@ -224,13 +351,13 @@ export default async function Home() {
             <div className="lg:col-span-4 flex flex-wrap gap-3">
               <Link
                 href="/about"
-                className="text-sm font-bold text-white bg-forest px-5 py-2.5 rounded-full hover:bg-forest-light transition-colors"
+                className="text-sm font-bold text-white bg-forest px-5 py-2.5 rounded hover:bg-forest-light transition-colors"
               >
                 センターについて →
               </Link>
               <Link
                 href="/contact"
-                className="text-sm font-bold text-forest border border-forest/40 px-5 py-2.5 rounded-full hover:bg-forest/5 transition-colors"
+                className="text-sm font-bold text-forest border border-forest/40 px-5 py-2.5 rounded hover:bg-forest/5 transition-colors"
               >
                 お問い合わせ
               </Link>

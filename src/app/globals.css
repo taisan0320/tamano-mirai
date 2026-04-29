@@ -61,6 +61,8 @@ h1.section-label, h2.section-label, h3.section-label {
 .grad-news     { background: linear-gradient(135deg, #1e5c36 0%, #2e7d52 60%, #3a9666 100%); }
 .grad-story    { background: linear-gradient(135deg, #a83520 0%, #d44d35 60%, #e8623d 100%); }
 .grad-blog     { background: linear-gradient(135deg, #3d6b2c 0%, #558b3a 60%, #6aa84f 100%); }
+.grad-explore  { background: linear-gradient(135deg, #075e82 0%, #0b7eaa 60%, #1898c7 100%); }
+.grad-volunteer{ background: linear-gradient(135deg, #a83520 0%, #c45030 60%, #d44d35 100%); }
 
 /* Ring-based shadow system (Claude tone) */
 .shadow-ring {
@@ -70,10 +72,10 @@ h1.section-label, h2.section-label, h3.section-label {
   box-shadow: rgba(0,0,0,0.05) 0px 4px 24px;
 }
 .card-interactive {
-  transition: box-shadow 220ms ease, transform 220ms ease;
+  transition: box-shadow 200ms ease;
 }
 .card-interactive:hover {
-  box-shadow: 0px 0px 0px 1.5px #0b7eaa, rgba(11,126,170,0.06) 0px 6px 28px;
+  box-shadow: 0px 0px 0px 1px #c8c0b4, rgba(0,0,0,0.07) 0px 8px 24px;
 }
 
 /* Hero background subtle texture */

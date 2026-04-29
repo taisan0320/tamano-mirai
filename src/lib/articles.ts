@@ -1,4 +1,4 @@
-export type Category = "event" | "interview" | "news" | "story" | "blog";
+export type Category = "event" | "interview" | "news" | "story" | "blog" | "explore" | "volunteer";
 
 export interface Article {
   slug: string;
@@ -19,6 +19,8 @@ export const CATEGORY_LABEL: Record<Category, string> = {
   news: "お知らせ",
   story: "玉野の話",
   blog: "日記",
+  explore: "探究学習サポート",
+  volunteer: "ボランティア募集",
 };
 
 export const CATEGORY_COLOR: Record<Category, string> = {
@@ -27,6 +29,8 @@ export const CATEGORY_COLOR: Record<Category, string> = {
   news: "bg-forest-pale text-forest",
   story: "bg-coral-pale text-coral",
   blog: "bg-forest-pale text-forest",
+  explore: "bg-ocean-pale text-ocean",
+  volunteer: "bg-coral-pale text-coral",
 };
 
 export const CATEGORY_GRADIENT: Record<Category, string> = {
@@ -35,6 +39,8 @@ export const CATEGORY_GRADIENT: Record<Category, string> = {
   news: "grad-news",
   story: "grad-story",
   blog: "grad-blog",
+  explore: "grad-explore",
+  volunteer: "grad-volunteer",
 };
 
 export const CATEGORY_ROUTE: Record<Category, string> = {
@@ -43,6 +49,8 @@ export const CATEGORY_ROUTE: Record<Category, string> = {
   blog: "/blog",
   news: "/news",
   story: "/stories",
+  explore: "/programs",
+  volunteer: "/join",
 };
 
 export function getArticleUrl(article: Pick<Article, "category" | "slug">): string {
@@ -59,6 +67,8 @@ export const CATEGORY_BADGE: Record<Category, string> = {
   news: "bg-forest-pale text-forest border border-forest/30",
   story: "bg-coral-pale text-coral border border-coral/30",
   blog: "bg-forest-pale text-forest border border-forest/30",
+  explore: "bg-ocean-pale text-ocean border border-ocean/30",
+  volunteer: "bg-coral-pale text-coral border border-coral/30",
 };
 
 export const articles: Article[] = [
@@ -187,6 +197,26 @@ export const articles: Article[] = [
 
 （詳細は準備中です）`,
     tags: ["農業", "若者", "インタビュー"],
+  },
+  {
+    slug: "explore-school-collaboration",
+    title: "玉野高校・探究学習「エジソンプロジェクト」に伴走しました",
+    excerpt: "玉野高校2年生が地域課題に向き合う探究授業をサポート。生徒たちの問いが、地域の大人を動かすまでの記録です。",
+    category: "explore",
+    date: "2026-04-10",
+    author: "玉野SDGsみらいづくりセンター",
+    body: "（詳細は準備中です）",
+    tags: ["探究学習", "高校連携", "エジソン"],
+  },
+  {
+    slug: "volunteer-mirai-cafe-staff",
+    title: "【募集中】みらいcafé 運営スタッフ（月1回・土曜）",
+    excerpt: "毎月開催の市民交流会「みらいcafé」の企画・運営をお手伝いいただけるボランティアを募集しています。地域に関わる第一歩としてぴったりです。",
+    category: "volunteer",
+    date: "2026-04-20",
+    author: "玉野SDGsみらいづくりセンター",
+    body: "（詳細は準備中です）",
+    tags: ["ボランティア", "みらいcafé"],
   },
   {
     slug: "interview-ceramics-artist",
