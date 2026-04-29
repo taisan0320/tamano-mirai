@@ -11,7 +11,7 @@ import HeroSubSlider from "@/components/HeroSubSlider";
 import { fetchBoardCards } from "@/lib/board";
 
 export default async function Home() {
-  const [eventArticles, interviewArticles, noticeRaw, exploreArticles, volunteerArticles, boardCards] = await Promise.all([
+  const [eventArticles, interviewArticles, noticeRaw, boardCards] = await Promise.all([
     fetchArticlesByCategory("event", 10),
     fetchArticlesByCategory("interview", 3),
     Promise.all([
@@ -20,8 +20,6 @@ export default async function Home() {
     ]).then(([news, blog]) =>
       [...news, ...blog].sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, 8)
     ),
-    fetchArticlesByCategory("explore", 3),
-    fetchArticlesByCategory("volunteer", 3),
     fetchBoardCards(12),
   ]);
 
@@ -253,78 +251,6 @@ export default async function Home() {
         </section>
       )}
 
-      {/* ── EXPLORE & VOLUNTEER ── */}
-      <section className="bg-paper-alt py-14">
-        <div className="max-w-[1400px] mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-10">
-
-            <div>
-              <div className="flex items-end justify-between border-b-2 border-forest pb-3 mb-5">
-                <div>
-                  <p className="section-label text-forest mb-1">学校・地域連携</p>
-                  <h2 className="font-bold text-ink leading-none">探究学習サポート</h2>
-                </div>
-                <Link href="/programs" className="section-label text-ink-muted hover:text-forest transition-colors pb-0.5">
-                  詳しく見る →
-                </Link>
-              </div>
-              {exploreArticles.length === 0 ? (
-                <p className="text-sm text-ink-muted py-6">現在、探究学習に関する情報はありません</p>
-              ) : (
-                <div className="divide-y divide-border-line">
-                  {exploreArticles.map((a) => (
-                    <Link
-                      key={a.slug}
-                      href={`/media/${a.slug}`}
-                      className="group flex items-start gap-4 py-4 hover:bg-white transition-colors -mx-4 px-4 rounded"
-                    >
-                      <span className="section-label text-ink-muted w-16 pt-0.5 shrink-0">
-                        {new Date(a.date).toLocaleDateString("ja-JP", { month: "2-digit", day: "2-digit" }).replace("/", ".")}
-                      </span>
-                      <h3 className="text-sm font-medium text-ink group-hover:text-forest transition-colors leading-snug line-clamp-2">
-                        {a.title}
-                      </h3>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div>
-              <div className="flex items-end justify-between border-b-2 border-coral pb-3 mb-5">
-                <div>
-                  <p className="section-label text-coral mb-1">参加・サポート</p>
-                  <h2 className="font-bold text-ink leading-none">ボランティア募集</h2>
-                </div>
-                <Link href="/join" className="section-label text-ink-muted hover:text-coral transition-colors pb-0.5">
-                  詳しく見る →
-                </Link>
-              </div>
-              {volunteerArticles.length === 0 ? (
-                <p className="text-sm text-ink-muted py-6">現在、ボランティアの募集はありません</p>
-              ) : (
-                <div className="divide-y divide-border-line">
-                  {volunteerArticles.map((a) => (
-                    <Link
-                      key={a.slug}
-                      href={`/media/${a.slug}`}
-                      className="group flex items-start gap-4 py-4 hover:bg-white transition-colors -mx-4 px-4 rounded"
-                    >
-                      <span className="section-label text-ink-muted w-16 pt-0.5 shrink-0">
-                        {new Date(a.date).toLocaleDateString("ja-JP", { month: "2-digit", day: "2-digit" }).replace("/", ".")}
-                      </span>
-                      <h3 className="text-sm font-medium text-ink group-hover:text-coral transition-colors leading-snug line-clamp-2">
-                        {a.title}
-                      </h3>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-
-          </div>
-        </div>
-      </section>
 
       {/* ── CTA TRIO ── */}
       <section className="bg-ink">
