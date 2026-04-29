@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import type { Article } from "@/lib/articles";
 
@@ -24,8 +23,6 @@ const KIND_COLOR: Record<string, string> = {
   "探究学習": "text-forest-light",
 };
 
-const FILTERS = ["すべて", "イベント", "募集", "日記", "お知らせ"];
-
 function parseDate(dateStr: string) {
   const d = new Date(dateStr);
   return {
@@ -36,15 +33,15 @@ function parseDate(dateStr: string) {
 }
 
 export default function HappeningSection({ articles }: { articles: Article[] }) {
-  const [active, setActive] = useState("すべて");
-
   const today = new Date().toLocaleDateString("ja-JP", {
     year: "numeric", month: "long", day: "numeric",
   });
 
-  const items = articles
-    .map((a) => ({ ...a, kind: CATEGORY_KIND[a.category] ?? "その他", ...parseDate(a.date) }))
-    .filter((a) => active === "すべて" || a.kind === active);
+  const items = articles.map((a) => ({
+    ...a,
+    kind: CATEGORY_KIND[a.category] ?? "その他",
+    ...parseDate(a.date),
+  }));
 
   return (
     <section id="happening" className="bg-ink-night text-paper border-b border-ink-night">
@@ -56,24 +53,11 @@ export default function HappeningSection({ articles }: { articles: Article[] }) 
       </div>
 
       <div className="max-w-[1400px] mx-auto px-6 py-20 lg:py-28">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
-          <div>
-            <p className="section-label text-paper/40 mb-4">ライブボード</p>
-            <h2 className="font-serif-h text-5xl lg:text-7xl font-black leading-none">
-              いま、玉野で<br />起きている<span className="accent-coral">。</span>
-            </h2>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {FILTERS.map((f) => (
-              <button
-                key={f}
-                onClick={() => setActive(f)}
-                className={`chip ${active === f ? "chip-active" : ""}`}
-              >
-                {f}
-              </button>
-            ))}
-          </div>
+        <div className="mb-12">
+          <p className="section-label text-paper/40 mb-4">ライブボード</p>
+          <h2 className="font-serif-h text-5xl lg:text-7xl font-black leading-none">
+            いま、玉野で<br />起きている<span className="accent-coral">。</span>
+          </h2>
         </div>
 
         <ul className="divide-y divide-white/10 border-y border-white/10">

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import {
-  fetchLatestArticles,
   fetchArticlesByCategory,
   CATEGORY_LABEL,
 } from "@/lib/articles";
@@ -9,33 +8,29 @@ import HappeningSection from "@/components/HappeningSection";
 import BoardSection from "@/components/BoardSection";
 
 export default async function Home() {
-  const [latestArticles, interviewArticles, happeningArticles, exploreArticles, volunteerArticles] = await Promise.all([
-    fetchLatestArticles(4),
+  const [eventArticles, interviewArticles, noticeRaw, exploreArticles, volunteerArticles] = await Promise.all([
+    fetchArticlesByCategory("event", 8),
     fetchArticlesByCategory("interview", 3),
     Promise.all([
-      fetchArticlesByCategory("event", 4),
-      fetchArticlesByCategory("blog", 2),
-      fetchArticlesByCategory("volunteer", 2),
-      fetchArticlesByCategory("news", 2),
-    ]).then((groups) => groups.flat().sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, 8)),
+      fetchArticlesByCategory("news", 6),
+      fetchArticlesByCategory("blog", 6),
+    ]).then(([news, blog]) =>
+      [...news, ...blog].sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, 8)
+    ),
     fetchArticlesByCategory("explore", 3),
     fetchArticlesByCategory("volunteer", 3),
   ]);
 
-  const featured = latestArticles[0];
-  const subFeatures = latestArticles.slice(1, 4);
+  const featured = eventArticles[0];
+  const heroSubs = eventArticles.slice(1, 4);
 
-  const visitedArticles = interviewArticles.length > 0
-    ? interviewArticles
-    : latestArticles.slice(0, 3);
-
-  const [visitedFeature, ...visitedRest] = visitedArticles;
+  const [visitedFeature, ...visitedRest] = interviewArticles;
 
   return (
     <div className="flex flex-col">
 
       {/* ── HERO ── */}
-      <section className="bg-paper border-b border-border-line">
+      {featured && <section className="bg-paper border-b border-border-line">
         <div className="max-w-[1400px] mx-auto px-6 pt-10 lg:pt-14 pb-0">
           <div className="flex items-center justify-between mb-6 lg:mb-10">
             <div className="flex items-center gap-3">
@@ -85,7 +80,7 @@ export default async function Home() {
 
           {/* sub-features row */}
           <div className="mt-12 lg:mt-16 grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-ink">
-            {subFeatures.map((a, i) => (
+            {heroSubs.map((a, i) => (
               <Link
                 key={a.slug}
                 href={`/media/${a.slug}`}
@@ -103,7 +98,7 @@ export default async function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </section>}
 
       {/* ── VISITED — 訪ねた人・団体 ── */}
       <section id="visited" className="bg-paper-alt paper-grain border-b border-border-line">
@@ -189,10 +184,63 @@ export default async function Home() {
       </section>
 
       {/* ── HAPPENING ── */}
-      <HappeningSection articles={happeningArticles} />
+      <HappeningSection articles={eventArticles} />
 
       {/* ── BOARD ── */}
       <BoardSection />
+
+      {/* ── お知らせ・日記 ── */}
+      {noticeRaw.length > 0 && (
+        <section className="bg-paper border-b border-border-line">
+          <div className="max-w-[1400px] mx-auto px-6 py-16 lg:py-20">
+            <div className="flex items-end justify-between mb-10 gap-6">
+              <div>
+                <p className="section-label text-ink-muted mb-3">NPO法人からのお知らせ</p>
+                <h2 className="font-serif-h text-3xl lg:text-4xl font-bold text-ink leading-tight">
+                  お知らせ<span className="accent-coral">・</span>日記
+                </h2>
+              </div>
+              <Link
+                href="/news"
+                className="hidden md:inline-flex items-center gap-2 text-sm font-bold text-ink-soft hover:text-ink transition-colors whitespace-nowrap pb-1"
+              >
+                すべて見る <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+
+            <ul className="divide-y divide-border-line border-y border-border-line">
+              {noticeRaw.map((a) => {
+                const d = new Date(a.date);
+                const dateStr = d.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" }).replace(/\//g, ".");
+                const isNews = a.category === "news";
+                return (
+                  <li key={a.slug}>
+                    <Link
+                      href={`/media/${a.slug}`}
+                      className="group flex items-start gap-5 lg:gap-8 py-5 hover:bg-paper-alt transition-colors -mx-3 lg:-mx-6 px-3 lg:px-6 rounded-sm"
+                    >
+                      <span className="shrink-0 text-[13px] text-ink-muted tracking-widest pt-0.5 w-28">{dateStr}</span>
+                      <span className={`shrink-0 text-[10px] font-bold tracking-[.22em] pt-1 w-20 ${isNews ? "text-ocean" : "text-forest"}`}>
+                        {isNews ? "お知らせ" : "日記"}
+                      </span>
+                      <h3 className="text-[15px] font-medium text-ink group-hover:text-coral transition-colors leading-snug line-clamp-2">
+                        {a.title}
+                      </h3>
+                      <span className="hidden lg:block shrink-0 text-ink/25 group-hover:text-coral group-hover:translate-x-0.5 transition-all ml-auto pt-0.5" aria-hidden="true">→</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <div className="mt-6 flex justify-end">
+              <Link href="/news" className="text-sm text-ink-soft hover:text-ink border-b border-border-line hover:border-ink transition-colors pb-0.5 md:hidden">
+                すべて見る →
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── EXPLORE & VOLUNTEER ── */}
       <section className="bg-paper-alt py-14 border-b border-border-line">
