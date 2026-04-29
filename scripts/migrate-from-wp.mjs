@@ -105,7 +105,7 @@ async function createArticle(payload) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-MICROCMS-WRITE-API-KEY": WRITE_API_KEY,
+        "X-MICROCMS-API-KEY": WRITE_API_KEY,
       },
       body: JSON.stringify(payload),
     }
@@ -146,7 +146,7 @@ async function main() {
     const payload = {
       title: rawTitle,
       excerpt,
-      category,
+      category: [category],   // microCMS では配列型
       date: post.date,
       body: post.content?.rendered ?? "",
     };
