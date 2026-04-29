@@ -8,6 +8,7 @@ export interface BoardCard {
   role: string;
   tag: string;
   publishedAt: string;
+  thumbnail?: string;
 }
 
 type CMSBoardCard = MicroCMSListContent & {
@@ -16,6 +17,7 @@ type CMSBoardCard = MicroCMSListContent & {
   author: string;
   role: string;
   tag: string;
+  thumbnail?: { url: string };
 };
 
 const client =
@@ -48,6 +50,7 @@ export async function fetchBoardCards(limit = 12): Promise<BoardCard[]> {
       role: c.role,
       tag: c.tag,
       publishedAt: c.publishedAt ?? new Date().toISOString(),
+      thumbnail: c.thumbnail?.url,
     }));
   }
   return FALLBACK;
