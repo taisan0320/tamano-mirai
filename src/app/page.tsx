@@ -4,10 +4,9 @@ import {
   getArticlesByCategory,
   CATEGORY_LABEL,
 } from "@/lib/articles";
-import { HeroIllustration, MoonHillIllustration } from "@/components/Illustrations";
+import { MoonHillIllustration } from "@/components/Illustrations";
 import HappeningSection from "@/components/HappeningSection";
 import BoardSection from "@/components/BoardSection";
-import HeroSubSlider from "@/components/HeroSubSlider";
 import { fetchBoardCards } from "@/lib/board";
 
 export default async function Home() {
@@ -23,8 +22,10 @@ export default async function Home() {
     fetchBoardCards(12),
   ]);
 
-  const featured = eventArticles[0];
-  const heroSliderItems = eventArticles.slice(1).map((a) => ({
+  const recentUpdates = [...eventArticles.slice(0, 2), ...noticeRaw.slice(0, 2)]
+    .sort((a, b) => (a.date < b.date ? 1 : -1))
+    .slice(0, 4)
+    .map((a) => ({
     slug: a.slug,
     categoryLabel: CATEGORY_LABEL[a.category],
     date: new Date(a.date).toLocaleDateString("ja-JP", {
@@ -37,74 +38,89 @@ export default async function Home() {
     ? interviewArticles
     : getArticlesByCategory("interview").slice(0, 3);
   const [visitedFeature, ...visitedRest] = visited;
+  const visitedSliderItems = visitedFeature ? [visitedFeature, ...visitedRest] : visitedRest;
 
   return (
     <div className="flex flex-col">
 
       {/* ── HERO ── */}
-      {featured && <section className="bg-paper">
-        <div className="max-w-[1400px] mx-auto px-6 pt-10 lg:pt-14 pb-0">
-          <div className="flex items-center justify-between mb-6 lg:mb-10">
-            <div className="flex items-center gap-3">
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-coral" />
-              <span className="section-label text-ink-soft">この季節の特集</span>
-            </div>
-            <span className="section-label text-ink-muted hidden sm:inline">No.04 / Spring 2026</span>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-stretch">
-            {/* left — featured text */}
-            <div className="lg:col-span-7 flex flex-col justify-between">
-              <div>
-                <p className="section-label text-coral mb-6">{CATEGORY_LABEL[featured.category]}</p>
-                <h1 className="font-serif-h font-black leading-[0.98] tracking-[-0.01em] text-[14vw] sm:text-[10vw] lg:text-[7.5rem] xl:text-[8.5rem] text-ink line-clamp-3">
-                  {featured.title}
-                </h1>
-                <p className="mt-8 text-[15px] leading-[2] text-ink-soft max-w-[34rem] line-clamp-3">
-                  {featured.excerpt}
-                </p>
-              </div>
-              <div className="mt-10 flex flex-wrap items-center gap-4">
+      <section className="bg-paper">
+        <div className="max-w-[1400px] mx-auto px-6 py-14 lg:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-end">
+            <div className="lg:col-span-7">
+              <h1 className="font-serif-h font-black leading-[1.12] text-[10vw] sm:text-[6.5vw] lg:text-[3.6rem] xl:text-[4.5rem] text-ink">
+                玉野の声を、<br />
+                <span className="whitespace-nowrap"><span className="accent-coral">つながる力</span>に。</span>
+              </h1>
+              <p className="mt-7 text-[15px] leading-[2.1] text-ink-soft max-w-[40rem]">
+                市民・団体・企業・行政をつなぎ、相談・伴走・情報発信で、地域の活動を支えます。
+              </p>
+              <div className="mt-9 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl">
                 <Link
-                  href={`/media/${featured.slug}`}
-                  className="inline-flex items-center gap-3 bg-ink text-paper px-6 py-3 rounded-full text-sm font-bold hover:bg-ink-night transition-colors"
+                  href="/contact"
+                  className="group rounded-sm border border-border-line bg-paper-alt px-5 py-4 hover:border-forest/50 hover:bg-forest-pale transition-colors"
                 >
-                  この記事を読む
-                  <span aria-hidden="true">→</span>
+                  <span className="section-label text-forest">相談する</span>
+                  <span className="mt-2 block font-serif-h text-lg font-bold text-ink group-hover:text-forest transition-colors">話してみる</span>
                 </Link>
-                <span className="text-xs text-ink-muted tracking-widest">{featured.date}</span>
+                <Link
+                  href="/events"
+                  className="group rounded-sm border border-border-line bg-paper-alt px-5 py-4 hover:border-amber/50 hover:bg-amber-pale transition-colors"
+                >
+                  <span className="section-label text-amber">参加する</span>
+                  <span className="mt-2 block font-serif-h text-lg font-bold text-ink group-hover:text-amber transition-colors">イベントを見る</span>
+                </Link>
+                <Link
+                  href="/stories"
+                  className="group rounded-sm border border-border-line bg-paper-alt px-5 py-4 hover:border-ocean/50 hover:bg-ocean-pale transition-colors"
+                >
+                  <span className="section-label text-ocean">知る</span>
+                  <span className="mt-2 block font-serif-h text-lg font-bold text-ink group-hover:text-ocean transition-colors">活動を読む</span>
+                </Link>
               </div>
             </div>
 
-            {/* right — cover image or fallback illustration */}
             <div className="lg:col-span-5">
-              <div className="relative aspect-[4/5] lg:aspect-auto lg:h-full min-h-[360px] rounded-sm overflow-hidden shadow-[0_24px_60px_-24px_rgba(0,0,0,0.35)]">
-                {featured.thumbnail ? (
-                  <img
-                    src={featured.thumbnail}
-                    alt={featured.title}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                ) : (
-                  <HeroIllustration className="absolute inset-0 w-full h-full" />
-                )}
+              <div className="border-y border-border-line">
+                <div className="flex items-center justify-between py-4">
+                  <p className="section-label text-ink-muted">最近の動き</p>
+                  <Link href="/media" className="text-sm font-bold text-ink-soft hover:text-ink border-b border-border-line hover:border-ink transition-colors pb-0.5">
+                    一覧 →
+                  </Link>
+                </div>
+                <div className="divide-y divide-border-line">
+                  {recentUpdates.map((item) => (
+                    <Link
+                      key={item.slug}
+                      href={`/media/${item.slug}`}
+                      className="group grid grid-cols-[96px_1fr] gap-4 py-4 hover:bg-paper-alt transition-colors -mx-3 px-3 rounded-sm"
+                    >
+                      <div>
+                        <span className="block text-[11px] text-ink-muted tracking-widest">{item.date}</span>
+                        <span className="mt-2 inline-flex rounded-full bg-paper-alt px-2 py-1 text-[10px] font-bold tracking-[.16em] text-ink-muted">
+                          {item.categoryLabel}
+                        </span>
+                      </div>
+                      <h2 className="text-[15px] font-bold leading-snug text-ink group-hover:text-coral transition-colors line-clamp-2">
+                        {item.title}
+                      </h2>
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-
-          {/* sub-features auto-slider */}
-          <HeroSubSlider items={heroSliderItems} />
         </div>
-      </section>}
+      </section>
 
       {/* ── VISITED — 訪ねた人・団体 ── */}
       <section id="visited" className="bg-paper-alt paper-grain">
-        <div className="max-w-[1400px] mx-auto px-6 py-20 lg:py-28">
+        <div className="max-w-[1400px] mx-auto px-6 pt-20 pb-12 lg:pt-28 lg:pb-14">
           <div className="flex items-end justify-between mb-12 gap-6">
             <div>
               <p className="section-label text-ink-muted mb-4">Voices from Tamano</p>
-              <h2 className="font-serif-h text-5xl lg:text-7xl font-black leading-none text-ink">
-                訪ねた人<span className="accent-coral">・</span>団体<span className="accent-coral">。</span>
+              <h2 className="font-serif-h text-4xl sm:text-5xl lg:text-6xl font-black leading-tight text-ink">
+                玉野で動く人たち<span className="accent-coral">。</span>
               </h2>
             </div>
             <Link
@@ -120,7 +136,39 @@ export default async function Home() {
             編集部が訪ね、聞き、撮ってきた記録を、ひとつずつ。
           </p>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
+          <div className="lg:hidden -mx-6 overflow-x-auto no-scrollbar snap-x snap-mandatory px-6 pb-6">
+            <div className="flex gap-4">
+              {visitedSliderItems.map((a, i) => (
+                <Link
+                  key={a.slug}
+                  href={`/media/${a.slug}`}
+                  className="group block w-[78vw] max-w-[320px] shrink-0 snap-start"
+                >
+                  <div className="relative overflow-hidden rounded-sm aspect-[4/5]">
+                    {a.thumbnail ? (
+                      <img src={a.thumbnail} alt={a.title} className="absolute inset-0 w-full h-full object-cover" />
+                    ) : (
+                      <MoonHillIllustration paletteIndex={i} className="absolute inset-0 w-full h-full" />
+                    )}
+                    <div className="absolute top-4 left-4 bg-paper/95 text-ink text-[10px] tracking-[.28em] font-bold px-2.5 py-1 rounded-sm">
+                      {CATEGORY_LABEL[a.category]}
+                    </div>
+                  </div>
+                  <div className="mt-5 pb-5 border-b border-border-line">
+                    <h3 className="font-serif-h font-bold text-ink leading-snug group-hover:text-coral transition-colors text-lg line-clamp-2">
+                      {a.title}
+                    </h3>
+                    <p className="mt-2 text-ink-soft leading-relaxed text-[13px] line-clamp-2">{a.excerpt}</p>
+                    <p className="mt-3 text-[10px] text-ink-muted tracking-[.24em]">
+                      {new Date(a.date).toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" }).replace(/\//g, ".")}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className="hidden lg:grid lg:grid-cols-12 gap-6 lg:gap-10">
             {/* feature card */}
             {visitedFeature && (
               <div className="lg:col-span-6">

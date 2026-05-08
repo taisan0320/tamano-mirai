@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Mark } from "@/components/Mark";
+import Image from "next/image";
 
 const footerNav = [
   {
@@ -37,16 +37,14 @@ export default function Footer() {
         {/* big wordmark + lead */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-end pb-12 border-b border-border-line">
           <div className="lg:col-span-8">
-            <p className="section-label text-ink-muted mb-5">NPO法人 · 中間支援</p>
-            <h2 className="font-serif-h font-black leading-[0.95] tracking-[-0.01em] text-[12vw] sm:text-[8vw] lg:text-[6.5rem] text-ink">
-              玉野で、<br />
-              <span className="accent-coral">やってみたい</span>を、形に<span>。</span>
+            <h2 className="font-serif-h font-black leading-[1.08] text-[10vw] sm:text-[6.5vw] lg:text-[4.6rem] text-ink">
+              玉野の声を、<br />
+              <span className="accent-coral">つながる力</span>に<span>。</span>
             </h2>
           </div>
           <div className="lg:col-span-4">
             <p className="text-[14px] leading-[2] text-ink-soft mb-6">
-              市民・企業・行政をつなぐ中間支援NPO。<br />
-              玉野で活動する人・団体のハブとして、人・情報・活動をつなぎます。
+              市民・団体・企業・行政をつなぎ、相談・伴走・情報発信で、地域の活動を支えます。
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <Link
@@ -133,13 +131,18 @@ export default function Footer() {
         {/* bottom row */}
         <div className="pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-[11px] text-ink-muted">
           <div className="flex items-center gap-3">
-            <Mark size={24} />
+            <Image
+              src="/tamano-sdgs-mark.png"
+              alt="玉野SDGsみらいづくりセンター"
+              width={224}
+              height={240}
+              className="h-7 w-auto"
+            />
             <p>© {new Date().getFullYear()} 特定非営利活動法人 玉野SDGsみらいづくりセンター</p>
           </div>
           <div className="flex items-center gap-5">
             <Link href="/privacy" className="hover:text-ink transition-colors">プライバシーポリシー</Link>
             <Link href="/privacy" className="hover:text-ink transition-colors">利用規約</Link>
-            <span className="tracking-[.24em]">DESIGNED IN TAMANO</span>
           </div>
         </div>
       </div>
