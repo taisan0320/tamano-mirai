@@ -40,13 +40,11 @@ export default function ContactPage() {
               <div className="bg-white border border-border-line p-8 sm:p-12 rounded-xl">
                 <h2 className="text-xl font-bold text-ink mb-8 pb-6 border-b border-border-line">お問い合わせフォーム</h2>
                 <form
-                  action="https://formsubmit.co/info@npo-tamano-mirai.com"
+                  action="https://formspree.io/f/xwvyngzj"
                   method="POST"
                   className="space-y-6"
                 >
-                  <input type="hidden" name="_subject" value="【HPお問い合わせ】玉野SDGsみらいづくりセンター" />
                   <input type="hidden" name="_next" value="https://npo-tamano-mirai.com/contact/thanks" />
-                  <input type="hidden" name="_captcha" value="false" />
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
