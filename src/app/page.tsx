@@ -3,11 +3,68 @@ import {
   fetchArticlesByCategory,
   getArticlesByCategory,
   CATEGORY_LABEL,
+  type Article,
 } from "@/lib/articles";
 import { MoonHillIllustration } from "@/components/Illustrations";
 import HappeningSection from "@/components/HappeningSection";
 import BoardSection from "@/components/BoardSection";
 import { fetchBoardCards } from "@/lib/board";
+
+const manualHeroGalleryItems: { src: string; alt: string }[] = [
+  { src: "/images/hero-gallery/miyama-park.jpg", alt: "深山公園の緑と広場" },
+  { src: "/images/hero-gallery/pond-and-greenery.jpg", alt: "緑に囲まれた池の風景" },
+  { src: "/images/hero-gallery/uno-station.jpg", alt: "宇野駅の駅舎" },
+  { src: "/images/hero-gallery/uno-ferry.jpg", alt: "宇野港に停泊するフェリー" },
+  { src: "/images/hero-gallery/ojigadake-rocks.jpg", alt: "王子が岳から見える瀬戸内海と岩場" },
+  { src: "/images/hero-gallery/bamboo-red-door.jpg", alt: "竹林の中に立つ赤い扉" },
+];
+
+function buildHeroGalleryItems(sources: Article[]) {
+  if (manualHeroGalleryItems.length >= 3) {
+    return manualHeroGalleryItems.slice(0, 8);
+  }
+
+  const items = sources
+    .filter((article) => article.thumbnail)
+    .map((article) => ({
+      src: article.thumbnail as string,
+      alt: article.title,
+    }));
+
+  const uniqueItems = items.filter(
+    (item, index, array) => array.findIndex((candidate) => candidate.src === item.src) === index
+  );
+
+  return [...manualHeroGalleryItems, ...uniqueItems].slice(0, 8);
+}
+
+function HeroGalleryStrip({ items }: { items: { src: string; alt: string }[] }) {
+  if (items.length < 3) return null;
+
+  const loopItems = [...items, ...items];
+
+  return (
+    <div className="mt-12 lg:mt-14">
+      <div className="hero-gallery-mask -mx-6 overflow-hidden px-6">
+        <div className="hero-gallery-track flex w-max gap-4">
+          {loopItems.map((item, index) => (
+            <div
+              key={`${item.src}-${index}`}
+              className="relative h-[112px] w-[180px] shrink-0 overflow-hidden rounded-sm border border-border-line bg-paper-alt shadow-[0_1px_0_#e8e2d9] sm:h-[132px] sm:w-[220px] lg:h-[148px] lg:w-[260px]"
+            >
+              <img
+                src={item.src}
+                alt={item.alt}
+                className="absolute inset-0 h-full w-full object-cover"
+                loading={index < items.length ? "eager" : "lazy"}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default async function Home() {
   const [eventArticles, interviewArticles, noticeRaw, boardCards] = await Promise.all([
@@ -39,6 +96,11 @@ export default async function Home() {
     : getArticlesByCategory("interview").slice(0, 3);
   const [visitedFeature, ...visitedRest] = visited;
   const visitedSliderItems = visitedFeature ? [visitedFeature, ...visitedRest] : visitedRest;
+  const heroGalleryItems = buildHeroGalleryItems([
+    ...eventArticles,
+    ...interviewArticles,
+    ...noticeRaw,
+  ]);
 
   return (
     <div className="flex flex-col">
@@ -110,11 +172,13 @@ export default async function Home() {
               </div>
             </div>
           </div>
+
+          <HeroGalleryStrip items={heroGalleryItems} />
         </div>
       </section>
 
       {/* ── VISITED — 訪ねた人・団体 ── */}
-      <section id="visited" className="bg-paper-alt paper-grain">
+      <section id="visited" className="bg-paper-alt blend-from-paper paper-grain">
         <div className="max-w-[1400px] mx-auto px-6 pt-20 pb-12 lg:pt-28 lg:pb-14">
           <div className="flex items-end justify-between mb-12 gap-6">
             <div>
@@ -248,7 +312,7 @@ export default async function Home() {
 
 
       {/* ── CTA TRIO ── */}
-      <section className="bg-paper-alt border-t border-border-line">
+      <section className="bg-paper-alt blend-from-paper">
         <div className="max-w-[1400px] mx-auto px-6 py-16 lg:py-20">
           <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>

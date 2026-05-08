@@ -6,9 +6,7 @@ import type { Article } from "@/lib/articles";
 function parseDate(dateStr: string) {
   const d = new Date(dateStr);
   return {
-    day: d.getDate(),
-    mon: d.toLocaleDateString("en-US", { month: "short" }).toUpperCase(),
-    year: d.getFullYear().toString(),
+    displayDate: `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`,
   };
 }
 
@@ -34,10 +32,12 @@ export default function HappeningSection({
       ...a,
       ...parseDate(a.date),
     }));
+  const noticeItems = notices.slice(0, 4);
+  const [featuredNotice, ...noticeList] = noticeItems;
 
   return (
-    <section id="happening" className="bg-paper-alt paper-grain text-ink border-b border-border-line">
-      <div className="max-w-[1400px] mx-auto px-6 pt-10 pb-16 lg:pt-12 lg:pb-24">
+    <section id="happening" className="bg-paper-alt paper-grain text-ink">
+      <div className="max-w-[1400px] mx-auto px-6 pt-10 pb-12 lg:pt-12 lg:pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-12">
           <div className="lg:col-span-7">
             <p className="section-label text-ink-muted mb-4">Events / News</p>
@@ -52,116 +52,119 @@ export default function HappeningSection({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-start">
-          <div className="bg-paper rounded-sm border border-border-line p-5 sm:p-6 lg:p-7 shadow-[0_1px_0_#e8e2d9,0_18px_42px_-28px_rgba(0,0,0,0.18)]">
-            <div className="flex items-center justify-between gap-5 mb-6">
+        <div className="border-y border-border-line py-8 lg:py-10">
+          <div className="flex items-end justify-between gap-5 mb-7">
+            <div>
+              <p className="section-label text-coral mb-2">Event Calendar</p>
+              <h3 className="font-serif-h text-2xl lg:text-3xl font-bold text-ink leading-tight">イベントカレンダー</h3>
+            </div>
+            <Link
+              href="/events"
+              className="shrink-0 text-sm font-bold text-ink-soft hover:text-ink border-b border-border-line hover:border-ink transition-colors pb-1"
+            >
+              すべて見る →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-5">
+            {eventItems.map((a) => (
+              <Link
+                key={a.slug}
+                href={`/media/${a.slug}`}
+                className="group rounded-sm border border-border-line bg-paper p-3 shadow-[0_1px_0_#e8e2d9] hover:border-amber/45 hover:bg-amber-pale/30 transition-colors"
+              >
+                <div className="mb-3 border-b border-border-line pb-2">
+                  <span className="text-[12px] font-bold tracking-[.08em] text-amber">{a.displayDate}</span>
+                </div>
+
+                <div className="grid grid-cols-[96px_1fr] gap-4">
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-sm bg-amber-pale border border-border-line">
+                    {a.thumbnail ? (
+                      <img src={a.thumbnail} alt="" className="absolute inset-0 h-full w-full object-cover" />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-amber bg-amber-pale">
+                        <svg width="34" height="34" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                          <rect x="8" y="10" width="20" height="18" rx="2" stroke="currentColor" strokeWidth="1.8" />
+                          <path d="M12 7v6M24 7v6M8 16h20" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                          <path d="M13 21h3M20 21h3M13 25h3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  <h4 className="text-[15px] font-bold leading-snug text-ink group-hover:text-amber transition-colors line-clamp-2 break-words">
+                    {a.title}
+                  </h4>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {featuredNotice && (
+          <aside className="pt-10 lg:pt-12">
+            <div className="flex items-end justify-between gap-5 mb-7">
               <div>
-                <p className="section-label text-coral mb-2">Event Calendar</p>
-                <h3 className="font-serif-h text-2xl lg:text-3xl font-bold text-ink leading-tight">イベントカレンダー</h3>
+                <p className="section-label text-ink-muted mb-2">News / Journal</p>
+                <h3 className="font-serif-h text-2xl lg:text-3xl font-bold text-ink leading-tight">
+                  お知らせ<span className="accent-coral">・</span>日記
+                </h3>
               </div>
               <Link
-                href="/events"
+                href="/news"
                 className="shrink-0 text-sm font-bold text-ink-soft hover:text-ink border-b border-border-line hover:border-ink transition-colors pb-1"
               >
                 すべて見る →
               </Link>
             </div>
 
-            <ul className="divide-y divide-border-line border-y border-border-line">
-              {eventItems.map((a) => (
-                <li key={a.slug}>
-                  <Link
-                    href={`/media/${a.slug}`}
-                    className="group grid grid-cols-[74px_1fr] sm:grid-cols-[82px_88px_1fr] gap-4 py-4 hover:bg-paper-alt transition-colors -mx-3 px-3 rounded-sm"
-                  >
-                    <div className="flex items-baseline gap-2 pt-0.5">
-                      <span className="font-serif-h text-3xl lg:text-4xl font-black leading-none text-ink">{a.day}</span>
-                      <div className="flex flex-col leading-tight">
-                        <span className="text-[10px] tracking-[.24em] text-ink-muted">{a.mon}</span>
-                        <span className="text-[10px] tracking-[.24em] text-ink-muted/70">{a.year}</span>
-                      </div>
-                    </div>
-
-                    <div className="hidden sm:block relative h-[64px] w-[88px] overflow-hidden rounded-sm bg-amber-pale border border-border-line">
-                      {a.thumbnail ? (
-                        <img src={a.thumbnail} alt="" className="absolute inset-0 h-full w-full object-cover" />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center text-amber">
-                          <svg width="34" height="34" viewBox="0 0 36 36" fill="none" aria-hidden="true">
-                            <rect x="8" y="10" width="20" height="18" rx="2" stroke="currentColor" strokeWidth="1.8" />
-                            <path d="M12 7v6M24 7v6M8 16h20" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                            <path d="M13 21h3M20 21h3M13 25h3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                          </svg>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="min-w-0">
-                      <h4 className="text-[15px] font-bold leading-snug text-ink group-hover:text-coral transition-colors line-clamp-2">
-                        {a.title}
-                      </h4>
-                      <p className="text-[12px] leading-relaxed text-ink-soft mt-1.5 line-clamp-2">
-                        {a.excerpt}
-                      </p>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {notices.length > 0 && (
-            <aside className="bg-paper text-ink rounded-sm border border-border-line p-5 sm:p-6 lg:p-7 shadow-[0_1px_0_#e8e2d9,0_18px_42px_-28px_rgba(0,0,0,0.18)]">
-              <div className="flex items-center justify-between gap-5 mb-6">
-                <div>
-                  <p className="section-label text-ink-muted mb-2">News / Journal</p>
-                  <h3 className="font-serif-h text-2xl lg:text-3xl font-bold text-ink leading-tight">
-                    お知らせ<span className="accent-coral">・</span>日記
-                  </h3>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-stretch">
+              <Link
+                href={`/media/${featuredNotice.slug}`}
+                className="group lg:col-span-5 rounded-sm border border-border-line bg-paper p-5 lg:p-6 shadow-[0_1px_0_#e8e2d9] hover:border-forest/45 hover:bg-forest-pale/30 transition-colors"
+              >
+                <div className="flex items-center gap-3 mb-5">
+                  <span className="text-[11px] text-ink-muted tracking-widest leading-tight">{formatDate(featuredNotice.date)}</span>
+                  <span className={`inline-flex rounded-full bg-paper-alt px-2 py-1 text-[10px] font-bold tracking-[.18em] ${featuredNotice.category === "news" ? "text-ocean" : "text-forest"}`}>
+                    {featuredNotice.category === "news" ? "お知らせ" : "日記"}
+                  </span>
                 </div>
-                <Link
-                  href="/news"
-                  className="shrink-0 text-sm font-bold text-ink-soft hover:text-ink border-b border-border-line hover:border-ink transition-colors pb-1"
-                >
-                  すべて見る →
-                </Link>
-              </div>
+                <h4 className="font-serif-h text-2xl font-bold leading-snug text-ink group-hover:text-coral transition-colors line-clamp-2 break-words">
+                  {featuredNotice.title}
+                </h4>
+                <p className="mt-4 text-[13px] leading-[1.9] text-ink-soft line-clamp-3">
+                  {featuredNotice.excerpt}
+                </p>
+              </Link>
 
-              <ul className="divide-y divide-border-line border-y border-border-line">
-                {notices.map((a) => {
+              <div className="lg:col-span-7 rounded-sm border-y border-border-line">
+                {noticeList.map((a) => {
                   const isNews = a.category === "news";
                   return (
-                    <li key={a.slug}>
-                      <Link
-                        href={`/media/${a.slug}`}
-                        className="group grid grid-cols-[88px_1fr] gap-4 py-4 hover:bg-paper-alt transition-colors -mx-3 px-3 rounded-sm"
-                      >
-                        <div className="pt-0.5">
-                          <span className="block text-[11px] text-ink-muted tracking-widest leading-tight">{formatDate(a.date)}</span>
-                          <span className={`mt-2 inline-flex rounded-full bg-paper px-2 py-1 text-[10px] font-bold tracking-[.18em] ${isNews ? "text-ocean" : "text-forest"}`}>
-                            {isNews ? "お知らせ" : "日記"}
-                          </span>
-                        </div>
-                        <div className="min-w-0">
-                          <h4 className="text-[15px] font-bold text-ink group-hover:text-coral transition-colors leading-snug line-clamp-2">
-                            {a.title}
-                          </h4>
-                          <p className="mt-1.5 text-[12px] leading-relaxed text-ink-soft line-clamp-2">
-                            {a.excerpt}
-                          </p>
-                        </div>
-                      </Link>
-                    </li>
+                    <Link
+                      key={a.slug}
+                      href={`/media/${a.slug}`}
+                      className="group grid grid-cols-[88px_1fr] gap-4 border-b border-border-line px-3 py-4 last:border-b-0 hover:bg-paper transition-colors"
+                    >
+                      <div className="pt-0.5">
+                        <span className="block text-[11px] text-ink-muted tracking-widest leading-tight">{formatDate(a.date)}</span>
+                        <span className={`mt-2 inline-flex rounded-full bg-paper px-2 py-1 text-[10px] font-bold tracking-[.18em] ${isNews ? "text-ocean" : "text-forest"}`}>
+                          {isNews ? "お知らせ" : "日記"}
+                        </span>
+                      </div>
+                      <h4 className="min-w-0 text-[15px] font-bold text-ink group-hover:text-coral transition-colors leading-snug line-clamp-2 break-words">
+                        {a.title}
+                      </h4>
+                    </Link>
                   );
                 })}
-              </ul>
-            </aside>
-          )}
-        </div>
+              </div>
+            </div>
+          </aside>
+        )}
 
         <div className="mt-10 flex items-center justify-between">
           <span className="text-[11px] tracking-[.24em] text-ink-muted">
-            {eventItems.length} EVENTS · {notices.length} UPDATES
+            {eventItems.length} EVENTS · {noticeItems.length} UPDATES
           </span>
           <Link
             href="/media"

@@ -132,6 +132,38 @@ h1.section-label, h2.section-label, h3.section-label {
 .font-serif-h { font-family: 'Noto Serif JP', serif; }
 .accent-coral { color: #d44d35; }
 
+/* Soft section transitions */
+.blend-from-paper {
+  background-image: linear-gradient(to bottom, #fefcf8 0, rgba(254,252,248,0) 150px);
+}
+.blend-from-paper-alt {
+  background-image: linear-gradient(to bottom, #f5f0e8 0, rgba(245,240,232,0) 150px);
+}
+.blend-from-paper,
+.blend-from-paper-alt {
+  background-repeat: no-repeat;
+}
+
+.hero-gallery-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%);
+}
+.hero-gallery-track {
+  animation: hero-gallery-scroll 42s linear infinite;
+}
+.hero-gallery-mask:hover .hero-gallery-track {
+  animation-play-state: paused;
+}
+@keyframes hero-gallery-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-gallery-track {
+    animation: none;
+  }
+}
+
 /* Paper grain texture overlay */
 .paper-grain { position: relative; }
 .paper-grain::after {

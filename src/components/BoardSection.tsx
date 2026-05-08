@@ -182,8 +182,8 @@ export default function BoardSection({ cards }: { cards: BoardCard[] }) {
   };
 
   return (
-    <section className="bg-paper">
-      <div className="max-w-[1400px] mx-auto px-6 py-20 lg:py-28">
+    <section className="bg-paper blend-from-paper-alt">
+      <div className="max-w-[1400px] mx-auto px-6 pt-14 pb-20 lg:pt-18 lg:pb-28">
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
           <div className="lg:col-span-7">
