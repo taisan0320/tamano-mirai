@@ -232,6 +232,13 @@ export default function BoardSection({ cards }: { cards: BoardCard[] }) {
           </div>
         </div>
 
+        {cards.length === 0 && (
+          <div className="py-16 flex flex-col items-center justify-center text-center border border-dashed border-border-line rounded-sm mb-6">
+            <p className="section-label text-ink-muted mb-3">Coming Soon</p>
+            <p className="text-[15px] text-ink-soft leading-relaxed">近日中に随時公開いたします。</p>
+          </div>
+        )}
+
         <div className="relative">
           <div
             ref={trackRef}

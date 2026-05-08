@@ -3,7 +3,6 @@ export const revalidate = 60;
 import Link from "next/link";
 import {
   fetchArticlesByCategory,
-  getArticlesByCategory,
   CATEGORY_LABEL,
   type Article,
 } from "@/lib/articles";
@@ -93,9 +92,7 @@ export default async function Home() {
     title: a.title,
   }));
 
-  const visited = interviewArticles.length > 0
-    ? interviewArticles
-    : getArticlesByCategory("interview").slice(0, 3);
+  const visited = interviewArticles;
   const [visitedFeature, ...visitedRest] = visited;
   const visitedSliderItems = visitedFeature ? [visitedFeature, ...visitedRest] : visitedRest;
   const heroGalleryItems = buildHeroGalleryItems([
@@ -201,6 +198,13 @@ export default async function Home() {
             玉野のまちで、自分の手で何かを動かしている人たち。<br />
             編集部が訪ね、聞き、撮ってきた記録を、ひとつずつ。
           </p>
+
+          {visited.length === 0 && (
+            <div className="py-16 flex flex-col items-center justify-center text-center border border-dashed border-border-line rounded-sm">
+              <p className="section-label text-ink-muted mb-3">Coming Soon</p>
+              <p className="text-[15px] text-ink-soft leading-relaxed">近日中に随時公開いたします。</p>
+            </div>
+          )}
 
           <div className="lg:hidden -mx-6 overflow-x-auto no-scrollbar snap-x snap-mandatory px-6 pb-6">
             <div className="flex gap-4">
