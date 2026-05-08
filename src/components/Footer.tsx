@@ -1,12 +1,6 @@
 import Link from "next/link";
 import { Mark } from "@/components/Mark";
 
-const tickerWords = [
-  "市民・企業・行政をつなぐ", "中間支援NPO", "玉野市迫間2252-3",
-  "Founded 2018", "玉野でやってみたいを、形に",
-  "Setouchi inland sea", "市民・企業・行政をつなぐ", "中間支援NPO",
-];
-
 const footerNav = [
   {
     heading: "MEDIA / メディア",
@@ -39,18 +33,6 @@ const footerNav = [
 export default function Footer() {
   return (
     <footer className="bg-paper-alt paper-grain text-ink border-t border-border-line">
-      {/* ticker */}
-      <div className="bg-ink-night text-paper overflow-hidden border-b border-ink-night">
-        <div className="ticker-track flex whitespace-nowrap py-3 text-[11px] tracking-[.32em] uppercase">
-          {[...tickerWords, ...tickerWords].map((w, i) => (
-            <span key={i} className="px-6 text-paper/60 flex items-center gap-6">
-              {w}
-              <span className="inline-block w-1 h-1 rounded-full bg-paper/30" />
-            </span>
-          ))}
-        </div>
-      </div>
-
       <div className="max-w-[1400px] mx-auto px-6 pt-20 pb-10">
         {/* big wordmark + lead */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-end pb-12 border-b border-border-line">

@@ -102,23 +102,30 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Mission */}
+      {/* Greeting */}
       <section className="bg-paper py-16">
         <div className="max-w-7xl mx-auto px-6">
           <div className="max-w-3xl">
-            <p className="section-label text-ink-muted mb-4">MISSION</p>
-            <h2 className="text-2xl font-bold text-ink mb-6">地域の魅力を伝え、「つなぐ」お手伝いをする</h2>
+            <p className="section-label text-ink-muted mb-4">MESSAGE</p>
+            <h2 className="text-2xl font-bold text-ink mb-6">理事長からのご挨拶</h2>
             <p className="text-ink-muted leading-relaxed mb-4">
-              玉野市は、瀬戸内海に面した豊かな自然と、造船業で栄えた歴史を持つまちです。
-              しかし今、人口減少・少子高齢化という大きな波に直面しています。
+              私たちが住む自然豊かな玉野には、穏やかな瀬戸内の海と山、そしてこれまでこの町を支えてこられた人や、
+              これからを支えていく人たちが尊重し暮らしています。
             </p>
             <p className="text-ink-muted leading-relaxed mb-4">
-              「この町で暮らし、感じてきたことを語り合い、個々の思いを実現していく」——
-              そんな場をつくるために、2020年に設立しました。
+              任意団体「みらい」は、2020年から、この町で暮らし、感じてきたことを語り合い、
+              個々の思いを実現していくためのまちづくりを支えるために設立をしました。
+            </p>
+            <p className="text-ink-muted leading-relaxed mb-4">
+              2024年からは、特定非営利活動法人として、さらに行政、企業とも連携を取りながら
+              「温故知新」色々な世代の方々と未来に向けた話し合いを行い、
+              夢を応援してくれる町、各々の強みを生かし目指していきたいと考えております。
             </p>
             <p className="text-ink-muted leading-relaxed">
-              市民・企業・行政の間に立つ中間支援組織として、地域で活動するあらゆる人・団体のハブとなり、
-              住み続けたい・住んでみたい玉野の未来をともにつくっていきます。
+              これからもどうぞよろしくお願いします。
+            </p>
+            <p className="mt-8 text-right text-ink font-bold">
+              理事長　東りえ
             </p>
           </div>
         </div>

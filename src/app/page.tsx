@@ -193,117 +193,75 @@ export default async function Home() {
       </section>
 
       {/* ── HAPPENING ── */}
-      <HappeningSection articles={eventArticles} />
+      <HappeningSection articles={eventArticles} notices={noticeRaw} />
 
       {/* ── BOARD ── */}
       <BoardSection cards={boardCards} />
 
-      {/* ── お知らせ・日記 ── */}
-      {noticeRaw.length > 0 && (
-        <section className="bg-paper">
-          <div className="max-w-[1400px] mx-auto px-6 py-16 lg:py-20">
-            <div className="flex items-end justify-between mb-10 gap-6">
-              <div>
-                <p className="section-label text-ink-muted mb-3">NPO法人からのお知らせ</p>
-                <h2 className="font-serif-h text-3xl lg:text-4xl font-bold text-ink leading-tight">
-                  お知らせ<span className="accent-coral">・</span>日記
-                </h2>
-              </div>
-              <Link
-                href="/news"
-                className="hidden md:inline-flex items-center gap-2 text-sm font-bold text-ink-soft hover:text-ink transition-colors whitespace-nowrap pb-1"
-              >
-                すべて見る <span aria-hidden="true">→</span>
-              </Link>
-            </div>
-
-            <ul className="divide-y divide-border-line border-y border-border-line">
-              {noticeRaw.map((a) => {
-                const d = new Date(a.date);
-                const dateStr = d.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" }).replace(/\//g, ".");
-                const isNews = a.category === "news";
-                return (
-                  <li key={a.slug}>
-                    <Link
-                      href={`/media/${a.slug}`}
-                      className="group flex items-start gap-5 lg:gap-8 py-5 hover:bg-paper-alt transition-colors -mx-3 lg:-mx-6 px-3 lg:px-6 rounded-sm"
-                    >
-                      <span className="shrink-0 text-[13px] text-ink-muted tracking-widest pt-0.5 w-28">{dateStr}</span>
-                      <span className={`shrink-0 text-[10px] font-bold tracking-[.22em] pt-1 w-20 ${isNews ? "text-ocean" : "text-forest"}`}>
-                        {isNews ? "お知らせ" : "日記"}
-                      </span>
-                      <h3 className="text-[15px] font-medium text-ink group-hover:text-coral transition-colors leading-snug line-clamp-2">
-                        {a.title}
-                      </h3>
-                      <span className="hidden lg:block shrink-0 text-ink/25 group-hover:text-coral group-hover:translate-x-0.5 transition-all ml-auto pt-0.5" aria-hidden="true">→</span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-
-            <div className="mt-6 flex justify-end">
-              <Link href="/news" className="text-sm text-ink-soft hover:text-ink border-b border-border-line hover:border-ink transition-colors pb-0.5 md:hidden">
-                すべて見る →
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
-
 
       {/* ── CTA TRIO ── */}
-      <section className="bg-ink">
-        <div className="max-w-[1400px] mx-auto px-6 py-5 border-b border-white/10">
-          <p className="section-label text-white/30">センターに関わる</p>
-        </div>
-        <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10">
-
-          <Link href="/join" className="group flex flex-col gap-6 px-8 lg:px-12 py-12 lg:py-16 hover:bg-white/[0.04] transition-colors">
-            <span className="section-label text-amber/60 group-hover:text-amber transition-colors">01 · Support</span>
+      <section className="bg-paper-alt border-t border-border-line">
+        <div className="max-w-[1400px] mx-auto px-6 py-16 lg:py-20">
+          <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <h3 className="font-serif-h text-2xl lg:text-[28px] font-bold text-white leading-snug mb-3">
+              <p className="section-label text-ink-muted mb-3">センターに関わる</p>
+              <h2 className="font-serif-h text-3xl lg:text-4xl font-bold text-ink leading-tight">
+                次の一歩を、ここから<span className="accent-coral">。</span>
+              </h2>
+            </div>
+            <p className="max-w-md text-[14px] leading-[2] text-ink-soft">
+              支援、相談、資料の確認。目的に合わせて、必要な入口へ進めます。
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
+
+          <Link href="/join" className="group flex min-h-[230px] flex-col gap-6 rounded-sm border border-border-line bg-paper px-6 py-7 lg:px-8 lg:py-9 shadow-[0_1px_0_#e8e2d9] hover:border-amber/50 hover:shadow-[0_1px_0_#d6b98b,0_16px_36px_-28px_rgba(0,0,0,0.22)] transition-all">
+            <span className="section-label text-amber">01 · Support</span>
+            <div>
+              <h3 className="font-serif-h text-2xl lg:text-[28px] font-bold text-ink leading-snug mb-3">
                 寄付・入会
               </h3>
-              <p className="text-[13px] text-white/40 leading-[1.9]">
+              <p className="text-[13px] text-ink-soft leading-[1.9]">
                 寄付・賛助会員として、玉野のまちづくりを継続的にサポートしていただけませんか。
               </p>
             </div>
-            <span className="mt-auto inline-flex items-center gap-2 text-amber text-[13px] font-bold opacity-50 group-hover:opacity-100 group-hover:gap-3 transition-all">
+            <span className="mt-auto inline-flex items-center gap-2 text-amber text-[13px] font-bold group-hover:gap-3 transition-all">
               くわしく見る →
             </span>
           </Link>
 
-          <Link href="/contact" className="group flex flex-col gap-6 px-8 lg:px-12 py-12 lg:py-16 hover:bg-white/[0.04] transition-colors">
-            <span className="section-label text-ocean/60 group-hover:text-ocean transition-colors">02 · Contact</span>
+          <Link href="/contact" className="group flex min-h-[230px] flex-col gap-6 rounded-sm border border-border-line bg-paper px-6 py-7 lg:px-8 lg:py-9 shadow-[0_1px_0_#e8e2d9] hover:border-ocean/50 hover:shadow-[0_1px_0_#9ccadb,0_16px_36px_-28px_rgba(0,0,0,0.22)] transition-all">
+            <span className="section-label text-ocean">02 · Contact</span>
             <div>
-              <h3 className="font-serif-h text-2xl lg:text-[28px] font-bold text-white leading-snug mb-3">
+              <h3 className="font-serif-h text-2xl lg:text-[28px] font-bold text-ink leading-snug mb-3">
                 お問い合わせ
               </h3>
-              <p className="text-[13px] text-white/40 leading-[1.9]">
+              <p className="text-[13px] text-ink-soft leading-[1.9]">
                 連携・協力・取材のご相談、イベントへのお申し込みなど、お気軽にご連絡ください。
               </p>
             </div>
-            <span className="mt-auto inline-flex items-center gap-2 text-ocean text-[13px] font-bold opacity-50 group-hover:opacity-100 group-hover:gap-3 transition-all">
+            <span className="mt-auto inline-flex items-center gap-2 text-ocean text-[13px] font-bold group-hover:gap-3 transition-all">
               フォームを開く →
             </span>
           </Link>
 
-          <Link href="/documents" className="group flex flex-col gap-6 px-8 lg:px-12 py-12 lg:py-16 hover:bg-white/[0.04] transition-colors">
-            <span className="section-label text-forest/60 group-hover:text-forest transition-colors">03 · Documents</span>
+          <Link href="/documents" className="group flex min-h-[230px] flex-col gap-6 rounded-sm border border-border-line bg-paper px-6 py-7 lg:px-8 lg:py-9 shadow-[0_1px_0_#e8e2d9] hover:border-forest/50 hover:shadow-[0_1px_0_#a7c9b6,0_16px_36px_-28px_rgba(0,0,0,0.22)] transition-all">
+            <span className="section-label text-forest">03 · Documents</span>
             <div>
-              <h3 className="font-serif-h text-2xl lg:text-[28px] font-bold text-white leading-snug mb-3">
+              <h3 className="font-serif-h text-2xl lg:text-[28px] font-bold text-ink leading-snug mb-3">
                 資料・報告書
               </h3>
-              <p className="text-[13px] text-white/40 leading-[1.9]">
+              <p className="text-[13px] text-ink-soft leading-[1.9]">
                 調査報告書・機関誌・定款・決算書など、センターの活動記録を公開しています。
               </p>
             </div>
-            <span className="mt-auto inline-flex items-center gap-2 text-forest text-[13px] font-bold opacity-50 group-hover:opacity-100 group-hover:gap-3 transition-all">
+            <span className="mt-auto inline-flex items-center gap-2 text-forest text-[13px] font-bold group-hover:gap-3 transition-all">
               一覧を見る →
             </span>
           </Link>
 
+          </div>
         </div>
       </section>
 
