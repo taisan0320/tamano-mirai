@@ -1,3 +1,5 @@
+export const revalidate = 60;
+
 import type { Metadata } from "next";
 import Link from "next/link";
 import { fetchArticlesByCategory, getArticleUrl, CATEGORY_GRADIENT, CATEGORY_BADGE, CATEGORY_LABEL } from "@/lib/articles";
