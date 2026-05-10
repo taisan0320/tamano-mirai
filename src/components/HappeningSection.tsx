@@ -143,15 +143,15 @@ export default function HappeningSection({
                     <Link
                       key={a.slug}
                       href={`/media/${a.slug}`}
-                      className="group grid grid-cols-[88px_1fr] gap-4 border-b border-border-line px-3 py-4 last:border-b-0 hover:bg-paper transition-colors"
+                      className="group block border-b border-border-line px-3 py-4 last:border-b-0 hover:bg-paper transition-colors"
                     >
-                      <div className="pt-0.5">
-                        <span className="block text-[11px] text-ink-muted tracking-widest leading-tight">{formatDate(a.date)}</span>
-                        <span className={`mt-2 inline-flex rounded-full bg-paper px-2 py-1 text-[10px] font-bold tracking-[.18em] ${isNews ? "text-ocean" : "text-forest"}`}>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="text-[11px] text-ink-muted tracking-widest leading-tight">{formatDate(a.date)}</span>
+                        <span className={`inline-flex rounded-full bg-paper px-2 py-0.5 text-[10px] font-bold tracking-[.18em] ${isNews ? "text-ocean" : "text-forest"}`}>
                           {isNews ? "お知らせ" : "日記"}
                         </span>
                       </div>
-                      <h4 className="min-w-0 text-[15px] font-bold text-ink group-hover:text-coral transition-colors leading-snug line-clamp-2 break-words">
+                      <h4 className="text-[15px] font-bold text-ink group-hover:text-coral transition-colors leading-snug">
                         {a.title}
                       </h4>
                     </Link>
