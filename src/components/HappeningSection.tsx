@@ -151,7 +151,7 @@ export default function HappeningSection({
                           {isNews ? "お知らせ" : "日記"}
                         </span>
                       </div>
-                      <h4 className="text-[15px] font-bold text-ink group-hover:text-coral transition-colors leading-snug">
+                      <h4 className="font-serif-h text-[15px] font-bold text-ink group-hover:text-coral transition-colors leading-snug">
                         {a.title}
                       </h4>
                     </Link>
