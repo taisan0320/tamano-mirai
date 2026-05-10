@@ -127,6 +127,41 @@ h1.section-label, h2.section-label, h3.section-label {
   font-size: 0.5rem;
   top: 0.55rem;
 }
+.prose-article blockquote {
+  border-left: 4px solid #0b7eaa;
+  margin: 1.75rem 0;
+  padding: 0.75rem 1.25rem;
+  background: #e0f2fa;
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: #424242;
+  font-style: italic;
+  line-height: 1.8;
+}
+.prose-article a {
+  color: #0b7eaa;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose-article a:hover { color: #075e82; }
+.prose-article code {
+  background: #f5f0e8;
+  color: #d44d35;
+  font-size: 0.875em;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-family: ui-monospace, monospace;
+}
+.prose-article hr {
+  border: none;
+  border-top: 2px solid #e8e2d9;
+  margin: 2rem 0;
+}
+.prose-article img {
+  width: 100%;
+  border-radius: 0.75rem;
+  margin: 1.5rem 0;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
 
 /* ── Prototype design system ── */
 .font-serif-h { font-family: 'Noto Serif JP', serif; }
