@@ -154,15 +154,15 @@ export default async function Home() {
                     <Link
                       key={item.slug}
                       href={`/media/${item.slug}`}
-                      className="group grid grid-cols-[96px_1fr] gap-4 py-4 hover:bg-paper-alt transition-colors -mx-3 px-3 rounded-sm"
+                      className="group block py-4 hover:bg-paper-alt transition-colors -mx-3 px-3 rounded-sm"
                     >
-                      <div>
-                        <span className="block text-[11px] text-ink-muted tracking-widest">{item.date}</span>
-                        <span className="mt-2 inline-flex rounded-full bg-paper-alt px-2 py-1 text-[10px] font-bold tracking-[.16em] text-ink-muted">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="text-[11px] text-ink-muted tracking-widest">{item.date}</span>
+                        <span className="inline-flex rounded-full bg-paper-alt px-2 py-0.5 text-[10px] font-bold tracking-[.16em] text-ink-muted">
                           {item.categoryLabel}
                         </span>
                       </div>
-                      <h2 className="text-[15px] font-bold leading-snug text-ink group-hover:text-coral transition-colors line-clamp-2">
+                      <h2 className="text-[15px] font-bold leading-snug text-ink group-hover:text-coral transition-colors">
                         {item.title}
                       </h2>
                     </Link>
