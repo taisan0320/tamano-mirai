@@ -91,7 +91,7 @@ export default function HappeningSection({
                       </div>
                     )}
                   </div>
-                  <h4 className="text-[15px] font-bold leading-snug text-ink group-hover:text-amber transition-colors line-clamp-2 break-words">
+                  <h4 className="font-serif-h text-[15px] font-bold leading-snug text-ink group-hover:text-amber transition-colors line-clamp-2 break-words">
                     {a.title}
                   </h4>
                 </div>
