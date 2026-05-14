@@ -7,7 +7,7 @@ import { Menu, X } from "lucide-react";
 
 const contentLinks = [
   { href: "/events", label: "イベント情報" },
-  { href: "/stories", label: "まちの人・団体" },
+  { href: "/interviews", label: "動く人たち" },
   { href: "/blog", label: "日記" },
   { href: "/news", label: "お知らせ" },
 ];

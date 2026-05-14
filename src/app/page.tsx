@@ -6,7 +6,7 @@ import {
   CATEGORY_LABEL,
   type Article,
 } from "@/lib/articles";
-import { MoonHillIllustration } from "@/components/Illustrations";
+import { fetchAllInterviews, type Interview } from "@/lib/interviews";
 import HappeningSection from "@/components/HappeningSection";
 import BoardSection from "@/components/BoardSection";
 import { fetchBoardCards } from "@/lib/board";
@@ -70,7 +70,7 @@ function HeroGalleryStrip({ items }: { items: { src: string; alt: string }[] }) 
 export default async function Home() {
   const [eventArticles, interviewArticles, noticeRaw, boardCards] = await Promise.all([
     fetchArticlesByCategory("event", 10),
-    fetchArticlesByCategory("interview", 3),
+    fetchAllInterviews(3),
     Promise.all([
       fetchArticlesByCategory("news", 6),
       fetchArticlesByCategory("blog", 6),
@@ -97,7 +97,6 @@ export default async function Home() {
   const visitedSliderItems = visitedFeature ? [visitedFeature, ...visitedRest] : visitedRest;
   const heroGalleryItems = buildHeroGalleryItems([
     ...eventArticles,
-    ...interviewArticles,
     ...noticeRaw,
   ]);
 
@@ -187,7 +186,7 @@ export default async function Home() {
               </h2>
             </div>
             <Link
-              href="/stories"
+              href="/interviews"
               className="hidden md:inline-flex items-center gap-2 text-sm font-bold text-ink-soft hover:text-ink transition-colors whitespace-nowrap pb-2"
             >
               すべての対話を見る <span aria-hidden="true">→</span>
@@ -206,105 +205,103 @@ export default async function Home() {
             </div>
           )}
 
+          {/* Mobile: 横スクロール・オーバーレイカード */}
           <div className="lg:hidden -mx-6 overflow-x-auto no-scrollbar snap-x snap-mandatory px-6 pb-6">
-            <div className="flex gap-4">
-              {visitedSliderItems.map((a, i) => (
+            <div className="flex gap-3">
+              {visitedSliderItems.map((iv) => (
                 <Link
-                  key={a.slug}
-                  href={`/media/${a.slug}`}
-                  className="group block w-[78vw] max-w-[320px] shrink-0 snap-start"
+                  key={iv.slug}
+                  href={`/interviews/${iv.slug}`}
+                  className="group relative block w-[72vw] max-w-[280px] shrink-0 snap-start overflow-hidden rounded-sm"
+                  style={{ minHeight: "340px" }}
                 >
-                  <div className="relative overflow-hidden rounded-sm aspect-[4/5]">
-                    {a.thumbnail ? (
-                      <img src={a.thumbnail} alt={a.title} className="absolute inset-0 w-full h-full object-cover" />
-                    ) : (
-                      <MoonHillIllustration paletteIndex={i} className="absolute inset-0 w-full h-full" />
-                    )}
-                    <div className="absolute top-4 left-4 bg-paper/95 text-ink text-[10px] tracking-[.28em] font-bold px-2.5 py-1 rounded-sm">
-                      {CATEGORY_LABEL[a.category]}
-                    </div>
-                  </div>
-                  <div className="mt-5 pb-5 border-b border-border-line">
-                    <h3 className="font-serif-h font-bold text-ink leading-snug group-hover:text-coral transition-colors text-lg line-clamp-2">
-                      {a.title}
-                    </h3>
-                    <p className="mt-2 text-ink-soft leading-relaxed text-[13px] line-clamp-2">{a.excerpt}</p>
-                    <p className="mt-3 text-[10px] text-ink-muted tracking-[.24em]">
-                      {new Date(a.date).toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" }).replace(/\//g, ".")}
+                  {iv.photo ? (
+                    <img src={iv.photo} alt={iv.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" />
+                  ) : (
+                    <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, #3d1f05 0%, #6b3209 40%, #c86d1a 100%)" }} />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-5">
+                    <p className="text-white/50 text-[10px] tracking-widest mb-2">{iv.role}</p>
+                    <p className="font-serif text-white leading-snug mb-2" style={{ fontSize: "clamp(1rem, 4vw, 1.15rem)" }}>
+                      ❝ {iv.catchphrase} ❞
                     </p>
+                    <p className="text-white font-bold text-sm">{iv.name}</p>
                   </div>
                 </Link>
               ))}
             </div>
           </div>
 
-          <div className="hidden lg:grid lg:grid-cols-12 gap-6 lg:gap-10">
-            {/* feature card */}
+          {/* Desktop: アシンメトリー・オーバーレイグリッド */}
+          <div className="hidden lg:grid lg:grid-cols-12 gap-4 h-[580px]">
+
+            {/* フィーチャーカード（左・大） */}
             {visitedFeature && (
-              <div className="lg:col-span-6">
-                <Link href={`/media/${visitedFeature.slug}`} className="group block">
-                  <div className="relative overflow-hidden rounded-sm aspect-[4/5]">
-                    {visitedFeature.thumbnail ? (
-                      <img src={visitedFeature.thumbnail} alt={visitedFeature.title} className="absolute inset-0 w-full h-full object-cover" />
-                    ) : (
-                      <MoonHillIllustration paletteIndex={0} className="absolute inset-0 w-full h-full" />
-                    )}
-                    <div className="absolute top-4 left-4 bg-paper/95 text-ink text-[10px] tracking-[.28em] font-bold px-2.5 py-1 rounded-sm">
-                      {CATEGORY_LABEL[visitedFeature.category]}
-                    </div>
-                  </div>
-                  <div className="mt-5 pb-5 border-b border-border-line">
-                    <h3 className="font-serif-h font-bold text-ink leading-snug group-hover:text-coral transition-colors text-2xl lg:text-[28px]">
-                      {visitedFeature.title}
-                    </h3>
-                    <p className="mt-2 text-ink-soft leading-relaxed text-sm line-clamp-2">{visitedFeature.excerpt}</p>
-                    <p className="mt-3 text-[10px] text-ink-muted tracking-[.24em]">
-                      {new Date(visitedFeature.date).toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" }).replace(/\//g, ".")}
-                    </p>
-                  </div>
-                </Link>
-              </div>
+              <Link
+                href={`/interviews/${visitedFeature.slug}`}
+                className="lg:col-span-7 group relative overflow-hidden rounded-sm h-full"
+              >
+                {visitedFeature.photo ? (
+                  <img src={visitedFeature.photo} alt={visitedFeature.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700" />
+                ) : (
+                  <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, #3d1f05 0%, #6b3209 40%, #c86d1a 100%)" }} />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/5" />
+                <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10">
+                  <p className="section-label text-white/40 mb-4">INTERVIEW</p>
+                  <p
+                    className="font-serif text-white leading-tight mb-5"
+                    style={{ fontSize: "clamp(1.5rem, 2.5vw, 2rem)" }}
+                  >
+                    ❝ {visitedFeature.catchphrase} ❞
+                  </p>
+                  <div className="w-8 h-px mb-4" style={{ background: "#c86d1a" }} />
+                  <p className="text-white/50 text-xs tracking-widest mb-1">{visitedFeature.role}</p>
+                  <p className="text-white font-bold text-lg font-serif">{visitedFeature.name}</p>
+                </div>
+              </Link>
             )}
 
-            {/* secondary cards */}
-            <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
-              {visitedRest.map((a, i) => (
-                <Link key={a.slug} href={`/media/${a.slug}`} className="group block">
-                  <div className="relative overflow-hidden rounded-sm aspect-[5/6]">
-                    {a.thumbnail ? (
-                      <img src={a.thumbnail} alt={a.title} className="absolute inset-0 w-full h-full object-cover" />
-                    ) : (
-                      <MoonHillIllustration paletteIndex={i + 1} className="absolute inset-0 w-full h-full" />
-                    )}
-                    <div className="absolute top-4 left-4 bg-paper/95 text-ink text-[10px] tracking-[.28em] font-bold px-2.5 py-1 rounded-sm">
-                      {CATEGORY_LABEL[a.category]}
-                    </div>
-                  </div>
-                  <div className="mt-5 pb-5 border-b border-border-line">
-                    <h3 className="font-serif-h font-bold text-ink leading-snug group-hover:text-coral transition-colors text-lg line-clamp-2">
-                      {a.title}
-                    </h3>
-                    <p className="mt-2 text-ink-soft leading-relaxed text-[13px] line-clamp-2">{a.excerpt}</p>
-                    <p className="mt-3 text-[10px] text-ink-muted tracking-[.24em]">
-                      {new Date(a.date).toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" }).replace(/\//g, ".")}
+            {/* サブカード（右・縦2分割） */}
+            <div className="lg:col-span-5 flex flex-col gap-4 h-full">
+              {visitedRest.map((iv) => (
+                <Link
+                  key={iv.slug}
+                  href={`/interviews/${iv.slug}`}
+                  className="group relative overflow-hidden rounded-sm flex-1"
+                >
+                  {iv.photo ? (
+                    <img src={iv.photo} alt={iv.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700" />
+                  ) : (
+                    <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, #3d1f05 0%, #6b3209 40%, #c86d1a 100%)" }} />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <p className="text-white/50 text-[10px] tracking-widest mb-2">{iv.role}</p>
+                    <p className="font-serif text-white leading-snug mb-2" style={{ fontSize: "clamp(1rem, 1.5vw, 1.25rem)" }}>
+                      ❝ {iv.catchphrase} ❞
                     </p>
+                    <p className="text-white font-bold text-sm">{iv.name}</p>
                   </div>
                 </Link>
               ))}
 
-              {/* see-all tile */}
-              <Link
-                href="/stories"
-                className="hidden sm:flex sm:col-span-2 items-center justify-between bg-ink text-paper rounded-sm p-6 hover:bg-ink-night transition-colors group"
-              >
-                <div>
-                  <p className="section-label text-paper/50 mb-2">Archive</p>
-                  <p className="font-serif-h text-xl font-bold leading-tight">
-                    もっと、たくさんの<br />対話を読む。
-                  </p>
-                </div>
-                <span className="text-3xl font-light group-hover:translate-x-1 transition-transform" aria-hidden="true">→</span>
-              </Link>
+              {/* 記事が2件未満のときは「すべて見る」タイル */}
+              {visitedRest.length < 2 && (
+                <Link
+                  href="/interviews"
+                  className="group relative overflow-hidden rounded-sm flex-1 bg-ink flex items-center justify-between px-7 py-6 hover:bg-ink-night transition-colors"
+                >
+                  <div>
+                    <p className="section-label text-paper/40 mb-2">Archive</p>
+                    <p className="font-serif-h text-xl font-bold text-paper leading-tight">
+                      もっと、たくさんの<br />対話を読む。
+                    </p>
+                  </div>
+                  <span className="text-3xl font-light text-paper/60 group-hover:translate-x-1 transition-transform" aria-hidden="true">→</span>
+                </Link>
+              )}
             </div>
           </div>
         </div>

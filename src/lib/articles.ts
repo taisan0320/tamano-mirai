@@ -45,7 +45,7 @@ export const CATEGORY_GRADIENT: Record<Category, string> = {
 
 export const CATEGORY_ROUTE: Record<Category, string> = {
   event: "/events",
-  interview: "/stories",
+  interview: "/interviews",
   blog: "/blog",
   news: "/news",
   story: "/stories",
