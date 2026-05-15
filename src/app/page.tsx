@@ -9,6 +9,7 @@ import {
 import { fetchAllInterviews, type Interview } from "@/lib/interviews";
 import HappeningSection from "@/components/HappeningSection";
 import BoardSection from "@/components/BoardSection";
+import StudentTrialSection from "@/components/StudentTrialSection";
 import { fetchBoardCards } from "@/lib/board";
 
 const manualHeroGalleryItems: { src: string; alt: string }[] = [
@@ -182,7 +183,7 @@ export default async function Home() {
             <div>
               <p className="section-label text-ink-muted mb-4">Voices from Tamano</p>
               <h2 className="font-serif-h text-4xl sm:text-5xl lg:text-6xl font-black leading-tight text-ink">
-                玉野で動く人たち<span className="accent-coral">。</span>
+                玉野で<span className="accent-coral">動く人</span>たち<span className="accent-coral">。</span>
               </h2>
             </div>
             <Link
@@ -309,6 +310,9 @@ export default async function Home() {
 
       {/* ── HAPPENING ── */}
       <HappeningSection articles={eventArticles} notices={noticeRaw} />
+
+      {/* ── STUDENT TRIAL ── */}
+      <StudentTrialSection />
 
       {/* ── BOARD ── */}
       <BoardSection cards={boardCards} />

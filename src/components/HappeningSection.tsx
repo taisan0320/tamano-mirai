@@ -42,7 +42,7 @@ export default function HappeningSection({
           <div className="lg:col-span-7">
             <p className="section-label text-ink-muted mb-4">Events / News</p>
             <h2 className="font-serif-h text-4xl sm:text-5xl lg:text-6xl font-black leading-tight">
-              これからの予定と<br />お知らせ<span className="accent-coral">。</span>
+              これからの<span className="accent-coral">予定</span>と<br /><span className="accent-coral">お知らせ</span><span className="accent-coral">。</span>
             </h2>
           </div>
           <div className="lg:col-span-5 flex items-end">
