@@ -17,6 +17,8 @@ const members = [
   { role: "理事", name: "妹尾 恵美" },
   { role: "理事", name: "松岡 康弘" },
   { role: "理事", name: "石東 丈典" },
+  { role: "理事", name: "竹中 理香" },
+  { role: "理事", name: "内藤 紀恵" },
   { role: "監事", name: "加藤 珪一" },
   { role: "監事", name: "池上 茂" },
 ];
@@ -217,7 +219,7 @@ export default function AboutPage() {
                   ["Email", "info@npo-tamano-mirai.com"],
                   ["営業時間", "平日 9:00〜18:00（土日祝日は定休）"],
                   ["主要取引銀行", "中国銀行・トマト銀行"],
-                  ["役員数", "12名"],
+                  ["役員数", "14名"],
                 ].map(([label, value]) => (
                   <tr key={label}>
                     <td className="py-5 pr-8 section-label text-ink-muted w-1/3 whitespace-nowrap align-top">{label}</td>
