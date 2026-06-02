@@ -10,6 +10,7 @@ import { fetchAllInterviews, type Interview } from "@/lib/interviews";
 import HappeningSection from "@/components/HappeningSection";
 import BoardSection from "@/components/BoardSection";
 import StudentTrialSection from "@/components/StudentTrialSection";
+import MiraiCafeSection from "@/components/MiraiCafeSection";
 import { fetchBoardCards } from "@/lib/board";
 
 const manualHeroGalleryItems: { src: string; alt: string }[] = [
@@ -307,6 +308,9 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* ── MIRAI CAFE ── */}
+      <MiraiCafeSection />
 
       {/* ── HAPPENING ── */}
       <HappeningSection articles={eventArticles} notices={noticeRaw} />
