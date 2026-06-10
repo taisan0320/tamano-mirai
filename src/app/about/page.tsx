@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SpeakerPhoto from "@/components/SpeakerPhoto";
 
 export const metadata: Metadata = {
   title: "センターについて",
@@ -90,6 +91,7 @@ export default function AboutPage() {
               { href: "#team", label: "役員名簿" },
               { href: "#history", label: "沿革" },
               { href: "#overview", label: "法人概要" },
+              { href: "#speakers", label: "講演・ファシリテーター" },
               { href: "#membership", label: "入会・寄付" },
             ].map((l) => (
               <a
@@ -229,6 +231,48 @@ export default function AboutPage() {
               </tbody>
             </table>
           </div>
+        </div>
+      </section>
+
+      {/* Speakers */}
+      <section id="speakers" className="bg-paper-alt py-16 scroll-mt-14">
+        <div className="max-w-7xl mx-auto px-6">
+          <p className="section-label text-ink-muted mb-3">SPEAKER / FACILITATOR</p>
+          <h2 className="text-2xl font-bold text-ink mb-3">講演・ファシリテーターのご依頼</h2>
+          <p className="text-ink-muted text-sm leading-relaxed mb-10 max-w-xl">
+            理事長・副理事長が講演やワークショップのファシリテーターを承ります。
+            テーマや費用などはお気軽にお問い合わせください。
+          </p>
+          <div className="space-y-4 max-w-2xl mb-10">
+            {[
+              { name: "東 りえ", role: "理事長", photo: "/speaker-azuma.jpg", initial: "東" },
+              { name: "西田井 祐也", role: "副理事長", photo: "/speaker-nishidai.jpg", initial: "西" },
+            ].map((person) => (
+              <div key={person.name} className="bg-white border border-border-line rounded-xl p-5 flex items-center gap-6">
+                <SpeakerPhoto src={person.photo} alt={person.name} initial={person.initial} />
+                <div className="flex-1 min-w-0">
+                  <p className="section-label text-forest mb-0.5">{person.role}</p>
+                  <h3 className="text-lg font-bold text-ink mb-3">{person.name}</h3>
+                  <dl className="flex flex-wrap gap-x-8 gap-y-2 text-sm">
+                    <div className="flex gap-2">
+                      <dt className="text-ink-muted shrink-0">講演内容</dt>
+                      <dd className="text-ink-soft">現在準備中</dd>
+                    </div>
+                    <div className="flex gap-2">
+                      <dt className="text-ink-muted shrink-0">費用など</dt>
+                      <dd className="text-ink-soft">お問い合わせください</dd>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+            ))}
+          </div>
+          <Link
+            href="/contact"
+            className="inline-flex items-center bg-forest text-white font-bold text-sm px-6 py-3 rounded-full hover:bg-forest/85 transition-colors"
+          >
+            講演・ファシリテーターについて問い合わせる →
+          </Link>
         </div>
       </section>
 

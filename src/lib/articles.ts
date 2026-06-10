@@ -323,11 +323,15 @@ export async function fetchArticlesByCategory(
   limit = 10
 ): Promise<Article[]> {
   if (client) {
-    const res = await client.getList<CMSArticle>({
-      endpoint: "articles",
-      queries: { limit, orders: "-date", filters: `category[contains]${category}` },
-    });
-    return res.contents.map(cmsToArticle);
+    try {
+      const res = await client.getList<CMSArticle>({
+        endpoint: "articles",
+        queries: { limit, orders: "-date", filters: `category[equals]${category}` },
+      });
+      return res.contents.map(cmsToArticle);
+    } catch {
+      return getArticlesByCategory(category).slice(0, limit);
+    }
   }
   return getArticlesByCategory(category).slice(0, limit);
 }
