@@ -133,7 +133,7 @@ export default async function Home() {
                   <span className="mt-2 block font-serif-h text-lg font-bold text-ink group-hover:text-amber transition-colors">イベントを見る</span>
                 </Link>
                 <Link
-                  href="/stories"
+                  href="/interviews"
                   className="group rounded-sm border border-border-line bg-paper-alt px-5 py-4 hover:border-ocean/50 hover:bg-ocean-pale transition-colors"
                 >
                   <span className="section-label text-ocean">知る</span>
