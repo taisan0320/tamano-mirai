@@ -328,12 +328,13 @@ export async function fetchArticlesByCategory(
         endpoint: "articles",
         queries: { limit: 100, orders: "-date" },
       });
-      return res.contents
+      const results = res.contents
         .map(cmsToArticle)
         .filter((a) => a.category === category)
         .slice(0, limit);
+      if (results.length > 0) return results;
     } catch {
-      return getArticlesByCategory(category).slice(0, limit);
+      // fall through to static data
     }
   }
   return getArticlesByCategory(category).slice(0, limit);
