@@ -326,9 +326,12 @@ export async function fetchArticlesByCategory(
     try {
       const res = await client.getList<CMSArticle>({
         endpoint: "articles",
-        queries: { limit, orders: "-date", filters: `category[equals]${category}` },
+        queries: { limit: 100, orders: "-date" },
       });
-      return res.contents.map(cmsToArticle);
+      return res.contents
+        .map(cmsToArticle)
+        .filter((a) => a.category === category)
+        .slice(0, limit);
     } catch {
       return getArticlesByCategory(category).slice(0, limit);
     }
