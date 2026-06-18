@@ -14,6 +14,7 @@ const contentLinks = [
 
 const orgLinks = [
   { href: "/about", label: "みらいづくりセンターについて" },
+  { href: "/about#speakers", label: "講演のご依頼" },
   { href: "/documents", label: "各種資料・報告書" },
 ];
 

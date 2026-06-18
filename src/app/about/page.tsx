@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import SpeakerPhoto from "@/components/SpeakerPhoto";
 
@@ -70,6 +71,28 @@ const membershipTypes = [
   { type: "ユース会員", fee: "無料", note: "学生・若者向け" },
 ];
 
+const speakers = [
+  {
+    name: "東 りえ",
+    role: "理事長",
+    credential: "総務省 地域力創造アドバイザー",
+    photo: "/speaker-azuma.jpg",
+    initial: "東",
+    topics: [
+      "地域づくりの人材育成、教育",
+      "地域と教育機関の連携（高校魅力化、地域学連携など）",
+    ],
+  },
+  {
+    name: "西田井 祐也",
+    role: "副理事長",
+    credential: "玉野市 地域学校連携コーディネーター / 社会教育士",
+    photo: "/speaker-nishidai.jpg",
+    initial: "西",
+    topics: ["探究学習とは"],
+  },
+];
+
 export default function AboutPage() {
   return (
     <div>
@@ -109,28 +132,50 @@ export default function AboutPage() {
       {/* Greeting */}
       <section className="bg-paper py-16">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="max-w-3xl">
-            <p className="section-label text-ink-muted mb-4">MESSAGE</p>
-            <h2 className="text-2xl font-bold text-ink mb-6">理事長からのご挨拶</h2>
-            <p className="text-ink-muted leading-relaxed mb-4">
-              私たちが住む自然豊かな玉野には、穏やかな瀬戸内の海と山、そしてこれまでこの町を支えてこられた人や、
-              これからを支えていく人たちが尊重し暮らしています。
-            </p>
-            <p className="text-ink-muted leading-relaxed mb-4">
-              任意団体「みらい」は、2020年から、この町で暮らし、感じてきたことを語り合い、
-              個々の思いを実現していくためのまちづくりを支えるために設立をしました。
-            </p>
-            <p className="text-ink-muted leading-relaxed mb-4">
-              2024年からは、特定非営利活動法人として、さらに行政、企業とも連携を取りながら
-              「温故知新」色々な世代の方々と未来に向けた話し合いを行い、
-              夢を応援してくれる町、各々の強みを生かし目指していきたいと考えております。
-            </p>
-            <p className="text-ink-muted leading-relaxed">
-              これからもどうぞよろしくお願いします。
-            </p>
-            <p className="mt-8 text-right text-ink font-bold">
-              理事長　東りえ
-            </p>
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+            <div className="max-w-3xl">
+              <p className="section-label text-ink-muted mb-4">MESSAGE</p>
+              <h2 className="text-2xl font-bold text-ink mb-6">理事長からのご挨拶</h2>
+              <div className="space-y-4 text-ink-muted leading-relaxed">
+                <p>
+                  私たちが住む自然豊かな玉野には、穏やかな瀬戸内の海と山、そしてこれまでこの町を支えてこられた人や、
+                  これからを支えていく人たちが尊重し暮らしています。
+                </p>
+                <p>
+                  任意団体「みらい」は、2020年から、この町で暮らし、感じてきたことを語り合い、
+                  個々の思いを実現していくためのまちづくりを支えるために設立をしました。
+                </p>
+                <p>
+                  2024年からは、特定非営利活動法人として、さらに行政、企業とも連携を取りながら
+                  「温故知新」色々な世代の方々と未来に向けた話し合いを行い、
+                  夢を応援してくれる町、各々の強みを生かし目指していきたいと考えております。
+                </p>
+                <p>
+                  これからもどうぞよろしくお願いします。
+                </p>
+              </div>
+              <p className="mt-8 text-right text-ink font-bold">
+                理事長　東りえ
+              </p>
+            </div>
+            <figure className="w-full max-w-sm lg:max-w-none">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-lg border border-border-line bg-paper-deep shadow-whisper">
+                <Image
+                  src="/speaker-azuma.jpg"
+                  alt="玉野SDGsみらいづくりセンター 理事長 東りえ"
+                  fill
+                  sizes="(min-width: 1024px) 360px, 100vw"
+                  className="object-cover object-top"
+                />
+              </div>
+              <figcaption className="mt-5 border-l-4 border-forest pl-4">
+                <p className="section-label text-forest mb-1">CHAIRPERSON</p>
+                <p className="font-bold text-ink">東 りえ</p>
+                <p className="mt-1 text-sm text-ink-muted leading-relaxed">
+                  玉野SDGsみらいづくりセンター 理事長 / 総務省 地域力創造アドバイザー
+                </p>
+              </figcaption>
+            </figure>
           </div>
         </div>
       </section>
@@ -244,22 +289,29 @@ export default function AboutPage() {
             テーマや費用などはお気軽にお問い合わせください。
           </p>
           <div className="space-y-4 max-w-2xl mb-10">
-            {[
-              { name: "東 りえ", role: "理事長", photo: "/speaker-azuma.jpg", initial: "東" },
-              { name: "西田井 祐也", role: "副理事長", photo: "/speaker-nishidai.jpg", initial: "西" },
-            ].map((person) => (
-              <div key={person.name} className="bg-white border border-border-line rounded-xl p-5 flex items-center gap-6">
+            {speakers.map((person) => (
+              <div key={person.name} className="bg-white border border-border-line rounded-xl p-5 flex flex-col sm:flex-row sm:items-start gap-5 sm:gap-6">
                 <SpeakerPhoto src={person.photo} alt={person.name} initial={person.initial} />
                 <div className="flex-1 min-w-0">
                   <p className="section-label text-forest mb-0.5">{person.role}</p>
                   <h3 className="text-lg font-bold text-ink mb-3">{person.name}</h3>
-                  <dl className="flex flex-wrap gap-x-8 gap-y-2 text-sm">
-                    <div className="flex gap-2">
-                      <dt className="text-ink-muted shrink-0">講演内容</dt>
-                      <dd className="text-ink-soft">現在準備中</dd>
+                  <dl className="space-y-3 text-sm">
+                    <div className="grid gap-1 sm:grid-cols-[8em_1fr]">
+                      <dt className="text-ink-muted shrink-0 whitespace-nowrap">担当・専門領域</dt>
+                      <dd className="text-ink-soft">{person.credential}</dd>
                     </div>
-                    <div className="flex gap-2">
-                      <dt className="text-ink-muted shrink-0">費用など</dt>
+                    <div className="grid gap-1 sm:grid-cols-[8em_1fr]">
+                      <dt className="text-ink-muted shrink-0 whitespace-nowrap">講演内容</dt>
+                      <dd className="text-ink-soft">
+                        <ul className="space-y-1">
+                          {person.topics.map((topic) => (
+                            <li key={topic}>{topic}</li>
+                          ))}
+                        </ul>
+                      </dd>
+                    </div>
+                    <div className="grid gap-1 sm:grid-cols-[8em_1fr]">
+                      <dt className="text-ink-muted shrink-0 whitespace-nowrap">費用など</dt>
                       <dd className="text-ink-soft">お問い合わせください</dd>
                     </div>
                   </dl>

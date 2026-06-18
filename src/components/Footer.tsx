@@ -24,6 +24,7 @@ const footerNav = [
     heading: "JOIN / 参加・連携",
     links: [
       { label: "入会・寄付", href: "/about#membership" },
+      { label: "講演のご依頼", href: "/about#speakers" },
       { label: "資料・報告書", href: "/documents" },
       { label: "お問い合わせ", href: "/contact" },
     ],
