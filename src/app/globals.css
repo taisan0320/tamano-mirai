@@ -1,54 +1,62 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700;900&family=Noto+Serif+JP:wght@400;500;600;700&display=swap');
-
 @import "tailwindcss";
 
+/* ============================================================
+   デザイントークン（NewsPicks型：モノクロ基調＋シグナルブルー1色）
+   トークン名は変えず値だけ差し替えているため、
+   既存コンポーネントの Tailwind クラスはそのまま動く。
+   ============================================================ */
 @theme {
-  /* Brand colors */
-  --color-ocean: #0b7eaa;
-  --color-ocean-light: #1898c7;
-  --color-ocean-dark: #075e82;
-  --color-ocean-pale: #e0f2fa;
-  --color-forest: #2e7d52;
-  --color-forest-light: #3a9666;
-  --color-forest-pale: #e3f5ec;
-  --color-amber: #c86d1a;
-  --color-amber-light: #e07e24;
-  --color-amber-pale: #fef3e2;
-  --color-coral: #d44d35;
-  --color-coral-pale: #fdecea;
+  /* アクセント（唯一の色。リンク・CTA・操作できるもの専用） */
+  --color-ocean: #146af5;
+  --color-ocean-light: #2986ff;
+  --color-ocean-dark: #0032ca;
+  --color-ocean-pale: #e8f0fe;
 
-  /* Neutrals */
-  --color-ink: #1a1a1a;
-  --color-ink-night: #1d1d1b;
-  --color-ink-soft: #424242;
-  --color-ink-muted: #767676;
-  --color-paper: #fefcf8;
-  --color-paper-alt: #f5f0e8;
-  --color-paper-deep: #ebe3d4;
-  --color-paper-ocean: #f0f8fd;
-  --color-border-line: #e8e2d9;
-  --color-ink-night: #1d1d1b;
-  --color-paper-deep: #ebe3d4;
+  /* 旧カテゴリ色 → モノクロに集約（色でカテゴリを分けない） */
+  --color-forest: #444444;
+  --color-forest-light: #5a5a5a;
+  --color-forest-pale: #f2f2f2;
+  --color-amber: #4d4d4d;
+  --color-amber-light: #666666;
+  --color-amber-pale: #f2f2f2;
+  --color-coral: #4d4d4d;
+  --color-coral-pale: #f2f2f2;
 
-  --font-sans: 'Noto Sans JP', sans-serif;
-  --font-serif: 'Noto Serif JP', serif;
+  /* 用途限定色（それぞれ1つの縦割りでだけ使う） */
+  --color-gold: #886c0f;       /* 学生トライアル */
+  --color-membership: #00b357; /* 入会・寄付 */
+  --color-cream: #f7f3eb;      /* コーディネーター日記 */
+
+  /* ニュートラル */
+  --color-ink: #222222;
+  --color-ink-night: #222222;
+  --color-ink-soft: #595959;
+  --color-ink-muted: #8a8a8a;
+  --color-paper: #ffffff;
+  --color-paper-alt: #f4f4f4;
+  --color-paper-deep: #ededed;
+  --color-paper-ocean: #f4f7fe;
+  --color-border-line: #dcdcdc;
+
+  /* フォント：Webフォントを使わず OS 標準ゴシックに統一。
+     --font-serif も同じ値にしているので、既存の font-serif 指定は
+     コンポーネントを触らずにゴシックへ切り替わる。 */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Roboto, 'Noto Sans JP', '游ゴシック Medium', 'Yu Gothic', Meiryo, Arial, sans-serif;
+  --font-serif: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Roboto, 'Noto Sans JP', '游ゴシック Medium', 'Yu Gothic', Meiryo, Arial, sans-serif;
 }
 
 body {
-  font-family: 'Noto Sans JP', sans-serif;
-  color: #1a1a1a;
-  background-color: #fefcf8;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Roboto, 'Noto Sans JP', '游ゴシック Medium', 'Yu Gothic', Meiryo, Arial, sans-serif;
+  color: #222222;
+  background-color: #ffffff;
   -webkit-font-smoothing: antialiased;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
-/* Serif hierarchy: all content headings use Noto Serif JP */
+/* 見出しも本文と同じゴシック。ウェイトは normal / bold の2つだけ。 */
 h1, h2, h3 {
-  font-family: 'Noto Serif JP', serif;
-}
-/* UI overlines/labels marked with .section-label stay sans */
-h1.section-label, h2.section-label, h3.section-label {
-  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 700;
+  line-height: 1.25;
 }
 
 .section-label {
@@ -59,63 +67,57 @@ h1.section-label, h2.section-label, h3.section-label {
 }
 
 /* Article body prose */
-/* Reliable category gradients (avoids Tailwind v4 custom-color opacity issues) */
-.grad-event    { background: linear-gradient(135deg, #c86d1a 0%, #e07e24 60%, #f5a623 100%); }
-.grad-interview{ background: linear-gradient(135deg, #075e82 0%, #0b7eaa 60%, #1898c7 100%); }
-.grad-news     { background: linear-gradient(135deg, #1e5c36 0%, #2e7d52 60%, #3a9666 100%); }
-.grad-story    { background: linear-gradient(135deg, #a83520 0%, #d44d35 60%, #e8623d 100%); }
-.grad-blog     { background: linear-gradient(135deg, #3d6b2c 0%, #558b3a 60%, #6aa84f 100%); }
-.grad-explore  { background: linear-gradient(135deg, #075e82 0%, #0b7eaa 60%, #1898c7 100%); }
-.grad-volunteer{ background: linear-gradient(135deg, #a83520 0%, #c45030 60%, #d44d35 100%); }
+/* カテゴリ別グラデーションは廃止（色でカテゴリを分けない）。
+   サムネイル未設定時のプレースホルダは一律グレー。 */
+.grad-event, .grad-interview, .grad-news, .grad-story,
+.grad-blog, .grad-explore, .grad-volunteer { background: #ededed; }
 
 /* Ring-based shadow system (Claude tone) */
 .shadow-ring {
-  box-shadow: 0px 0px 0px 1px #e8e2d9;
+  box-shadow: 0px 0px 0px 1px #dcdcdc;
 }
 .shadow-whisper {
-  box-shadow: rgba(0,0,0,0.05) 0px 4px 24px;
+  box-shadow: none;
 }
 .card-interactive {
-  transition: box-shadow 200ms ease;
+  transition: background-color 150ms ease;
 }
-.card-interactive:hover {
-  box-shadow: 0px 0px 0px 1px #c8c0b4, rgba(0,0,0,0.07) 0px 8px 24px;
-}
+.card-interactive:hover { background-color: rgba(34,34,34,.05); }
 
 /* Hero background subtle texture */
 .hero-bg {
-  background-color: #fefcf8;
-  background-image: radial-gradient(circle at 80% 20%, rgba(11,126,170,0.06) 0%, transparent 50%),
-                    radial-gradient(circle at 20% 80%, rgba(200,109,26,0.05) 0%, transparent 40%);
+  background-color: #ffffff;
+  background-image: radial-gradient(circle at 80% 20%, rgba(34,34,34,0.03) 0%, transparent 50%),
+                    radial-gradient(circle at 20% 80%, rgba(34,34,34,0.02) 0%, transparent 40%);
 }
 
 .prose-article h2 {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #222222;
   margin-top: 2.5rem;
   margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e8e2d9;
+  padding-top: 0.6rem;
+  border-top: 1px solid #dcdcdc;
 }
 .prose-article h3 {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #222222;
   margin-top: 1.75rem;
   margin-bottom: 0.75rem;
 }
 .prose-article p {
-  color: #424242;
+  color: #595959;
   line-height: 1.9;
   margin-bottom: 1.25rem;
 }
-.prose-article strong { color: #1a1a1a; font-weight: 700; }
+.prose-article strong { color: #222222; font-weight: 700; }
 .prose-article ul { list-style: none; padding: 0; margin-bottom: 1.25rem; }
 .prose-article ul li {
   padding-left: 1.25rem;
   position: relative;
-  color: #424242;
+  color: #595959;
   line-height: 1.8;
   margin-bottom: 0.5rem;
 }
@@ -123,29 +125,29 @@ h1.section-label, h2.section-label, h3.section-label {
   content: '●';
   position: absolute;
   left: 0;
-  color: #2e7d52;
+  color: #146af5;
   font-size: 0.5rem;
   top: 0.55rem;
 }
 .prose-article blockquote {
-  border-left: 4px solid #0b7eaa;
+  border-left: 2px solid #dcdcdc;
   margin: 1.75rem 0;
-  padding: 0.75rem 1.25rem;
-  background: #e0f2fa;
-  border-radius: 0 0.5rem 0.5rem 0;
-  color: #424242;
-  font-style: italic;
+  padding: 0.25rem 0 0.25rem 1rem;
+  background: none;
+  border-radius: 0;
+  color: #595959;
+  font-style: normal;
   line-height: 1.8;
 }
 .prose-article a {
-  color: #0b7eaa;
+  color: #146af5;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.prose-article a:hover { color: #075e82; }
+.prose-article a:hover { color: #0032ca; }
 .prose-article code {
-  background: #f5f0e8;
-  color: #d44d35;
+  background: #f4f4f4;
+  color: #4d4d4d;
   font-size: 0.875em;
   padding: 0.15em 0.4em;
   border-radius: 4px;
@@ -153,20 +155,19 @@ h1.section-label, h2.section-label, h3.section-label {
 }
 .prose-article hr {
   border: none;
-  border-top: 2px solid #e8e2d9;
+  border-top: 1px solid #dcdcdc;
   margin: 2rem 0;
 }
 .prose-article img {
   width: 100%;
-  border-radius: 0.75rem;
+  border-radius: 4px;
   margin: 1.5rem 0;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
 }
 
 /* Interview body: QUESTION-marker h2 + amber blockquotes */
 .prose-interview h2 {
   border-bottom: none;
-  border-top: 1px solid #e8e2d9;
+  border-top: 1px solid #dcdcdc;
   padding-top: 2rem;
   padding-bottom: 0;
   margin-top: 3rem;
@@ -175,31 +176,30 @@ h1.section-label, h2.section-label, h3.section-label {
 .prose-interview h2::before {
   content: 'QUESTION';
   display: block;
-  font-family: 'Noto Sans JP', sans-serif;
   font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0.26em;
-  color: #c86d1a;
+  color: #595959;
   margin-bottom: 0.5rem;
 }
 .prose-interview blockquote {
-  border-left-color: #c86d1a;
-  background: rgba(200, 109, 26, 0.07);
+  border-left-color: #4d4d4d;
+  background: rgba(34,34,34,0.05);
   font-style: normal;
   font-size: 1.05rem;
-  color: #2a1a0a;
+  color: #222222;
 }
 
 /* ── Prototype design system ── */
-.font-serif-h { font-family: 'Noto Serif JP', serif; }
-.accent-coral { color: #d44d35; }
+.font-serif-h { font-weight: 700; }
+.accent-coral { color: #4d4d4d; }
 
 /* Soft section transitions */
 .blend-from-paper {
-  background-image: linear-gradient(to bottom, #fefcf8 0, rgba(254,252,248,0) 150px);
+  background-image: linear-gradient(to bottom, #ffffff 0, rgba(255,255,255,0) 150px);
 }
 .blend-from-paper-alt {
-  background-image: linear-gradient(to bottom, #f5f0e8 0, rgba(245,240,232,0) 150px);
+  background-image: linear-gradient(to bottom, #f4f4f4 0, rgba(244,244,244,0) 150px);
 }
 .blend-from-paper,
 .blend-from-paper-alt {
@@ -250,9 +250,9 @@ h1.section-label, h2.section-label, h3.section-label {
   transition: background .15s, color .15s, border-color .15s;
 }
 .chip-active {
-  background: #fefcf8;
-  color: #1a1a1a;
-  border-color: #fefcf8;
+  background: #ffffff;
+  color: #222222;
+  border-color: #ffffff;
 }
 
 /* Scroll nav buttons (Board section) */
@@ -263,13 +263,13 @@ h1.section-label, h2.section-label, h3.section-label {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #1a1a1a;
-  background: #fefcf8;
-  color: #1a1a1a;
+  border: 1px solid #222222;
+  background: #ffffff;
+  color: #222222;
   transition: background .2s, color .2s, transform .15s;
   cursor: pointer;
 }
-.nav-btn:hover { background: #1a1a1a; color: #fefcf8; }
+.nav-btn:hover { background: #222222; color: #ffffff; }
 .nav-btn:disabled { opacity: .25; pointer-events: none; }
 
 /* Reaction pop */
@@ -281,11 +281,9 @@ h1.section-label, h2.section-label, h3.section-label {
 .anim-fade-slide { animation: fade-slide 0.4s ease; }
 
 /* Card hover — editorial lift (no scale) */
-.card-interactive { transition: transform 240ms ease, box-shadow 240ms ease; }
-.card-interactive:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 0 1px #c8c0b4, 0 12px 32px rgba(0,0,0,.07);
-}
+/* カードは持ち上げず、背景をわずかに沈ませるだけ（NewsPicks流） */
+.card-interactive { transition: background-color 150ms ease; }
+.card-interactive:hover { background-color: rgba(34,34,34,.05); }
 
 /* Hide scrollbar utility */
 .no-scrollbar::-webkit-scrollbar { display: none; }
