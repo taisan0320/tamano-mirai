@@ -165,141 +165,78 @@ const QUARTER = EVENTS.filter((e) => ["jul", "aug", "sep"].includes(e.id));
 
 export default function MiraiCafeSection() {
   return (
-    <section id="mirai-cafe">
+    <section id="mirai-cafe" className="mt-12 border-t border-border-line pt-8">
+      <div className="mb-4 flex items-end justify-between gap-4">
+        <h2 className="leading-none">
+          <span className="section-label block text-ink-muted">
+            Original Event · 独自企画
+          </span>
+          <span className="mt-1.5 block text-[19px] font-bold text-ink">
+            みらいCafe
+          </span>
+        </h2>
+        <a
+          href={`mailto:${EMAIL}?subject=${encodeURIComponent(
+            "みらいCafeについてのお問い合わせ"
+          )}`}
+          className="shrink-0 text-[13px] font-bold text-ocean hover:underline"
+        >
+          申し込む →
+        </a>
+      </div>
 
-      {/* ── Header ── */}
-      <div className="bg-paper-alt px-6 pt-12 pb-0 lg:pt-16">
-        <div className="max-w-[1400px] mx-auto">
-          <p className="section-label text-ink-muted mb-4">ORIGINAL EVENT · 独自企画</p>
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 pb-10 border-b border-border-line">
-            <div>
-              <h2
-                className="font-serif-h font-black leading-none text-ink mb-2"
-                style={{ fontSize: "clamp(2.4rem, 6vw, 4rem)" }}
-              >
-                みらいCafe<span className="accent-coral">。</span>
-              </h2>
-              <p className="text-ink-muted text-[13px]">
-                2026年 7〜9月 ・ 毎回 13:00〜16:00 ・ 主催：玉野SDGsみらいづくりセンター
+      <p className="text-[13px] leading-[1.7] text-ink-soft">
+        毎回 13:00〜16:00。地域のことを気軽に話す場です。予約なしでも参加できます。
+        主催：玉野SDGsみらいづくりセンター
+      </p>
+
+      <div className="mt-4 divide-y divide-border-line border-t border-border-line">
+        {QUARTER.map((event) => (
+          <div key={event.id} className="flex items-start gap-3.5 py-3">
+            <div className="w-14 shrink-0 border-r border-border-line pr-2 text-center">
+              <span className="block text-[10px] text-ink-muted">{event.month}</span>
+              <span className="block text-[20px] font-bold leading-none text-ink">
+                {event.date.replace(/日.*$/, "")}
+              </span>
+            </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="text-[14px] font-bold leading-tight text-ink">
+                {event.title}
+              </h3>
+              <p className="mt-1 text-[12px] leading-[1.7] text-ink-muted">
+                {event.venue}
+                {event.fee ? `・${event.fee}` : ""}
               </p>
-            </div>
-            <div className="flex items-center gap-3 shrink-0">
-              <a
-                href={`mailto:${EMAIL}?subject=${encodeURIComponent("みらいCafeについてのお問い合わせ")}`}
-                className="inline-flex items-center gap-2 rounded-sm border border-border-line px-3.5 py-2 text-[11px] font-bold text-ink-soft hover:bg-paper-deep transition-colors"
-              >
-                <MailIcon />
-                メール
-              </a>
-              <a
-                href={INSTAGRAM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-sm border border-border-line px-3.5 py-2 text-[11px] font-bold text-ink-soft hover:bg-paper-deep transition-colors"
-              >
-                <InstagramIcon />
-                Instagram
-              </a>
+              {event.detail && (
+                <p className="mt-1 text-[12px] leading-[1.7] text-ink-soft">
+                  {event.detail}
+                </p>
+              )}
             </div>
           </div>
-        </div>
+        ))}
       </div>
 
-      {/* ── Cards ── */}
-      <div className="bg-paper-alt">
-        <div className="max-w-[1400px] mx-auto px-6 py-10 lg:py-14">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            {QUARTER.map((event) => (
-              <div
-                key={event.id}
-                className={[
-                  "bg-paper rounded-sm flex flex-col",
-                  event.special
-                    ? "border-t-2 border-t-amber border-x border-b border-amber/25"
-                    : "border border-border-line",
-                  event.tbd ? "opacity-60" : "",
-                ].filter(Boolean).join(" ")}
-              >
-                <div className="px-6 pt-6 pb-4 flex items-end gap-3 border-b border-border-line/60">
-                  <span
-                    className="font-serif-h font-black leading-none select-none"
-                    style={{
-                      fontSize: "3.5rem",
-                      color: event.special ? "#c86d1a" : "#c9bfa6",
-                    }}
-                  >
-                    {event.num}
-                  </span>
-                  <div className="pb-1.5">
-                    <p className="text-[11px] text-ink-muted leading-none mb-1">
-                      {event.tbd ? "月" : event.month}
-                    </p>
-                    <p className="text-[15px] font-bold text-ink leading-none">
-                      {event.date}
-                    </p>
-                  </div>
-                  {event.special && (
-                    <span className="ml-auto mb-1.5 text-[9px] font-bold tracking-widest text-amber bg-amber-pale px-2 py-0.5 rounded-full border border-amber/20">
-                      SPECIAL
-                    </span>
-                  )}
-                </div>
-
-                <div className="px-6 py-5 flex flex-col flex-1 gap-3">
-                  <h3 className="font-serif text-[16px] font-bold leading-snug text-ink">
-                    {event.title}
-                  </h3>
-                  {event.detail && (
-                    <p className="text-[12px] leading-relaxed text-ink-soft">
-                      {event.detail}
-                    </p>
-                  )}
-
-                  <div className="mt-auto pt-3 border-t border-border-line/60 flex items-center justify-between gap-2">
-                    <p className="text-[12px] text-ink-muted truncate">
-                      {event.tbd ? "会場未定" : `📍 ${event.venue}`}
-                    </p>
-                    <span className={[
-                      "shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full",
-                      event.fee === "無料" ? "bg-forest-pale text-forest" :
-                      event.fee === "入園料" ? "bg-amber-pale text-amber" :
-                      "bg-paper-alt text-ink-muted",
-                    ].join(" ")}>
-                      {event.fee}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* 共通CTA */}
-          <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <p className="text-[13px] text-ink-muted leading-relaxed">
-              参加は事前申し込み不要の回もあります。詳細はお気軽にお問い合わせください。
-            </p>
-            <div className="flex gap-3 shrink-0">
-              <a
-                href={`mailto:${EMAIL}?subject=${encodeURIComponent("みらいCafeへの参加について")}`}
-                className="inline-flex items-center gap-2 bg-ink text-paper text-[12px] font-bold px-4 py-2 rounded-sm hover:bg-ink-soft transition-colors"
-              >
-                <MailIcon size={11} />
-                メールで申し込む
-              </a>
-              <a
-                href={INSTAGRAM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 border border-border-line text-ink-soft text-[12px] font-bold px-4 py-2 rounded-sm hover:bg-paper-alt transition-colors"
-              >
-                <InstagramIcon size={11} />
-                Instagram をフォロー
-              </a>
-            </div>
-          </div>
-        </div>
+      <div className="mt-4 flex gap-2">
+        <a
+          href={`mailto:${EMAIL}?subject=${encodeURIComponent(
+            "みらいCafeについてのお問い合わせ"
+          )}`}
+          className="inline-flex flex-1 items-center justify-center gap-2 rounded border border-border-line py-2.5 text-[13px] font-bold text-ink hover:bg-[rgba(34,34,34,.05)]"
+        >
+          <MailIcon />
+          メールで申し込む
+        </a>
+        <a
+          href={INSTAGRAM_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex flex-1 items-center justify-center gap-2 rounded border border-border-line py-2.5 text-[13px] font-bold text-ink hover:bg-[rgba(34,34,34,.05)]"
+        >
+          <InstagramIcon />
+          InstagramのDM
+        </a>
       </div>
-
     </section>
   );
 }
