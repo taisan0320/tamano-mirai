@@ -3,92 +3,102 @@ export const revalidate = 60;
 import type { Metadata } from "next";
 import Link from "next/link";
 import { fetchArticlesByCategory, getArticleUrl } from "@/lib/articles";
+import { StaticPageLayout, PageSection, FactList } from "@/components/ArchiveLayout";
+import { MEMBERSHIP_TYPES, BANK_ACCOUNT } from "@/lib/membership";
+import { formatDate } from "@/lib/format";
+
+/* 入会・寄付。
+   以前はページ名が「ボランティア募集」で、フッターの表記（入会・寄付）と
+   食い違っていたため、入会・寄付を主にして募集はその中の1ブロックにした。 */
 
 export const metadata: Metadata = {
-  title: "ボランティア募集",
-  description: "玉野SDGsみらいづくりセンターのボランティア募集情報です。一緒に玉野のまちづくりに関わりませんか。",
+  title: "入会・寄付",
+  description:
+    "玉野SDGsみらいづくりセンターの会員制度と寄付のご案内です。会員としてまちづくりを継続的に支えられます。",
 };
 
 export default async function JoinPage() {
-  const posts = await fetchArticlesByCategory("volunteer", 50);
+  const volunteerPosts = await fetchArticlesByCategory("volunteer", 50);
 
   return (
-    <div>
-      <div className="bg-coral py-20">
-        <div className="max-w-7xl mx-auto px-6">
-          <nav className="section-label text-white/50 mb-8 flex items-center gap-2">
-            <Link href="/" className="hover:text-white/80 transition-colors">HOME</Link>
-            <span>/</span>
-            <span className="text-white/70">ボランティア募集</span>
-          </nav>
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 leading-tight">
-            ボランティア募集
-          </h1>
-          <p className="text-white/80 text-base max-w-lg leading-relaxed">
-            玉野のまちづくりに、あなたの力を貸してください。
-            センターの活動を一緒に支えてくれるボランティアを随時募集しています。
-          </p>
-        </div>
-      </div>
-
-      <section className="bg-paper py-16">
-        <div className="max-w-3xl mx-auto px-6">
-
-          {posts.length === 0 ? (
-            <div className="text-center py-20">
-              <p className="text-ink-muted mb-2">現在、募集中のボランティアはありません。</p>
-              <p className="text-sm text-ink-muted mb-10">
-                新しい募集情報はSNSやお知らせでご案内します。
-              </p>
-              <Link
-                href="/contact"
-                className="inline-block bg-coral text-white text-sm font-bold px-6 py-3 rounded hover:opacity-90 transition-opacity"
-              >
-                参加の意思を伝える →
-              </Link>
-            </div>
-          ) : (
-            <div className="divide-y divide-border-line border-t border-border-line">
-              {posts.map((post) => (
-                <Link
-                  key={post.slug}
-                  href={getArticleUrl(post)}
-                  className="group flex gap-6 py-8 hover:bg-paper-alt transition-colors -mx-4 px-4 rounded"
-                >
-                  <div className="flex-1 min-w-0">
-                    <h2 className="font-bold text-ink group-hover:text-coral transition-colors leading-snug mb-2 text-lg line-clamp-2">
-                      {post.title}
-                    </h2>
-                    <p className="text-sm text-ink-muted leading-relaxed line-clamp-2 mb-3">
-                      {post.excerpt}
-                    </p>
-                    <p className="text-xs text-ink-muted">
-                      {new Date(post.date).toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" })}
-                    </p>
-                  </div>
-                  <div className="shrink-0 text-ink/20 group-hover:text-coral transition-colors font-bold pt-1">
-                    →
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
-
-          <div className="mt-16 pt-10 border-t border-border-line">
-            <h2 className="font-bold text-ink mb-3">参加について</h2>
-            <p className="text-sm text-ink-muted leading-relaxed mb-6">
-              特別なスキルや経験は必要ありません。玉野のまちに関わりたいという気持ちが一番大切です。
-              まずはお気軽にお問い合わせください。
-            </p>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 bg-coral text-white text-sm font-bold px-6 py-3 rounded hover:opacity-90 transition-opacity"
+    <StaticPageLayout
+      label="MEMBERSHIP"
+      title="入会・寄付"
+      description="会員になることで、センターの活動を支援し、議決権（正会員）や各種情報を得られます。どなたでもお気軽にご参加ください。"
+    >
+      <PageSection label="Fee" title="会員の種類と年会費">
+        <div className="rounded border border-border-line">
+          {MEMBERSHIP_TYPES.map((m) => (
+            <div
+              key={m.type}
+              className="flex items-baseline gap-3 border-b border-border-line px-3.5 py-3 last:border-b-0"
             >
-              お問い合わせ →
-            </Link>
-          </div>
+              <span className="w-[110px] shrink-0 text-[13px] font-bold text-ink">
+                {m.type}
+              </span>
+              <span className="text-[15px] font-bold text-ink">{m.fee}</span>
+              {m.note && (
+                <span className="text-[11px] text-ink-muted">{m.note}</span>
+              )}
+            </div>
+          ))}
         </div>
-      </section>
-    </div>
+        <p className="mt-3 text-[12px] leading-[1.7] text-ink-soft">
+          ユース会員（学生・若者）と団体連携会員は無料です。
+        </p>
+      </PageSection>
+
+      <PageSection label="How to Apply" title="お申し込みとお振り込み">
+        <p className="mb-3 text-[13px] leading-[1.8] text-ink-soft">
+          申込書をメール・FAX・郵送・持参のいずれかでご提出のうえ、年会費を下記口座へお振り込みください。
+        </p>
+        <FactList items={BANK_ACCOUNT.map((b) => ({ term: b.term, value: b.value }))} />
+        <Link
+          href="/contact"
+          className="mt-4 block rounded bg-membership py-3 text-center text-[14px] font-bold leading-none text-white hover:opacity-90"
+        >
+          入会申込・お問い合わせ
+        </Link>
+      </PageSection>
+
+      <PageSection label="Volunteer" title="ボランティア募集">
+        <p className="mb-3 text-[13px] leading-[1.8] text-ink-soft">
+          特別なスキルや経験は必要ありません。玉野のまちに関わりたいという気持ちが一番大切です。
+        </p>
+        {volunteerPosts.length === 0 ? (
+          <p className="rounded border border-border-line py-8 text-center text-[13px] text-ink-soft">
+            現在、募集中のボランティアはありません。
+            <br />
+            新しい募集情報はお知らせとInstagramでご案内します。
+          </p>
+        ) : (
+          <div className="divide-y divide-border-line border-t border-border-line">
+            {volunteerPosts.map((post) => (
+              <Link
+                key={post.slug}
+                href={getArticleUrl(post)}
+                className="card-interactive group -mx-3 block rounded px-3 py-3.5"
+              >
+                <span className="block text-[12px] leading-tight text-ink-soft">
+                  {formatDate(post.date)}
+                </span>
+                <span className="mt-1.5 block text-[14px] font-bold leading-[1.5] text-ink group-hover:text-ocean sm:text-[15px]">
+                  {post.title}
+                </span>
+                <span className="mt-1.5 block text-[12px] leading-[1.7] text-ink-soft">
+                  {post.excerpt}
+                </span>
+              </Link>
+            ))}
+          </div>
+        )}
+        <Link
+          href="/contact"
+          className="mt-4 block rounded border border-border-line py-3 text-center text-[14px] font-bold text-ink hover:bg-[rgba(34,34,34,.05)]"
+        >
+          参加について相談する
+        </Link>
+      </PageSection>
+    </StaticPageLayout>
   );
 }
