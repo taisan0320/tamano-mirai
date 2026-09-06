@@ -25,9 +25,7 @@ export const metadata: Metadata = {
 const categories: { key: Category | "all"; label: string }[] = [
   { key: "all", label: "すべて" },
   { key: "event", label: CATEGORY_LABEL.event },
-  { key: "interview", label: CATEGORY_LABEL.interview },
   { key: "blog", label: CATEGORY_LABEL.blog },
-  { key: "story", label: CATEGORY_LABEL.story },
   { key: "news", label: CATEGORY_LABEL.news },
 ];
 

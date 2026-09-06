@@ -48,7 +48,7 @@ export const CATEGORY_ROUTE: Record<Category, string> = {
   interview: "/interviews",
   blog: "/blog",
   news: "/news",
-  story: "/stories",
+  story: "/interviews",
   explore: "/programs",
   volunteer: "/join",
 };
@@ -157,20 +157,6 @@ export const articles: Article[] = [
     tags: ["イベント", "渋川マリン水族館", "体験"],
   },
   {
-    slug: "tamano-sea-story",
-    title: "瀬戸内海と生きる ── 玉野の漁師たちの朝",
-    excerpt: "夜明け前から港に出て、海と向き合い続ける玉野の漁師たち。その暮らしと誇りを追いました。",
-    category: "story",
-    date: "2026-03-28",
-    author: "編集部",
-    body: `## 瀬戸内海と生きる
-
-夜明け前の午前4時。玉野港には、すでに漁船のエンジン音が響いている。
-
-（詳細は準備中です）`,
-    tags: ["漁業", "瀬戸内海", "まち"],
-  },
-  {
     slug: "tamano-high-edison",
     title: "玉野高校のエジソンに参加してきました",
     excerpt: "玉野高校の探究学習発表会「エジソン」を見学しました。生徒たちが地域課題に向き合う姿に、大きな可能性を感じました。",
@@ -183,20 +169,6 @@ export const articles: Article[] = [
 
 （詳細は準備中です）`,
     tags: ["探究学習", "高校生", "まちづくり"],
-  },
-  {
-    slug: "interview-local-farmer",
-    title: "「玉野の農業を次世代へ」〜若手農家・田中さんの挑戦",
-    excerpt: "玉野市で有機農業に取り組む若手農家の田中さんにインタビュー。地域農業の課題と、新しい農業の形について語ってもらいました。",
-    category: "interview",
-    date: "2024-03-20",
-    author: "編集部",
-    body: `## 玉野の農業を次世代へ
-
-玉野市南部で有機農業に取り組む田中さん（29歳）。
-
-（詳細は準備中です）`,
-    tags: ["農業", "若者", "インタビュー"],
   },
   {
     slug: "explore-school-collaboration",
@@ -217,34 +189,6 @@ export const articles: Article[] = [
     author: "玉野SDGsみらいづくりセンター",
     body: "（詳細は準備中です）",
     tags: ["ボランティア", "みらいcafé"],
-  },
-  {
-    slug: "interview-ceramics-artist",
-    title: "「玉野の土で、玉野の器を」陶芸家・山本さんのものづくり",
-    excerpt: "東京での会社員生活を離れ、玉野に移住して陶芸家になった山本さん。地域との向き合い方を聞きました。",
-    category: "interview",
-    date: "2024-02-28",
-    author: "編集部",
-    body: `## 「玉野の土で、玉野の器を」
-
-東京で10年間デザイナーとして働いた山本さん（38歳）が、玉野市に移住して陶芸家になったのは3年前のこと。
-
-（詳細は準備中です）`,
-    tags: ["移住", "陶芸", "インタビュー"],
-  },
-  {
-    slug: "interview-fisher-uno",
-    title: "夜明け4時、海と向き合う ── 宇野漁港の林さん",
-    excerpt: "宇野漁港で30年。父から受け継いだ船で、瀬戸内の朝に出る林さんに会いに行きました。",
-    category: "interview",
-    date: "2026-04-18",
-    author: "編集部",
-    body: `## 夜明け4時、海と向き合う
-
-午前4時。宇野漁港はまだ暗い中、すでにエンジン音が響いている。
-
-（詳細は準備中です）`,
-    tags: ["漁業", "宇野漁港", "インタビュー"],
   },
 ];
 
