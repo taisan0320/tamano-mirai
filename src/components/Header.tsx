@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Search } from "lucide-react";
 
 /* ヘッダー：高さ64px・追従。影はサイト内でここだけに使う。 */
 
@@ -58,6 +58,13 @@ export default function Header() {
         </nav>
 
         <div className="ml-auto flex items-center gap-1">
+          <Link
+            href="/media#search"
+            aria-label="記事を検索する"
+            className="grid h-11 w-11 place-items-center rounded text-ink hover:bg-[rgba(34,34,34,.05)]"
+          >
+            <Search size={20} />
+          </Link>
           <button
             type="button"
             className="grid h-11 w-11 place-items-center rounded text-ink hover:bg-[rgba(34,34,34,.05)] lg:hidden"

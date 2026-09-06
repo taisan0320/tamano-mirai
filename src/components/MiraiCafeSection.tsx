@@ -162,6 +162,9 @@ const EVENTS = [
 
 const QUARTER = EVENTS.filter((e) => ["jul", "aug", "sep"].includes(e.id));
 
+/** サイドバーの「次回のみらいCafe」カードで使う直近1件 */
+export const NEXT_CAFE = QUARTER[0];
+
 export default function MiraiCafeSection() {
   return (
     <section id="mirai-cafe" className="mt-12 border-t border-border-line pt-8">

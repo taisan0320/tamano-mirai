@@ -12,6 +12,14 @@ import {
 import ArticleRow from "@/components/ArticleRow";
 import { CategoryTag, SectionHead, Avatar } from "@/components/ui";
 import { formatDate, readingMinutes, authorName } from "@/lib/format";
+import { writerRole } from "@/lib/writers";
+import CopyLinkButton from "@/components/CopyLinkButton";
+import {
+  SingleWriterCard,
+  PickupCard,
+  MembershipCard,
+  FollowCard,
+} from "@/components/Sidebar";
 
 export const revalidate = 60;
 export const dynamicParams = true;
@@ -61,13 +69,17 @@ export default async function ArticlePage({
   if (!article) notFound();
 
   const name = authorName(article);
+  const role = writerRole(name);
   const minutes = readingMinutes(article.body);
   const isInterview = article.category === "interview" || article.category === "story";
 
-  const [sameCategory, latest] = await Promise.all([
+  const [sameCategory, allArticles] = await Promise.all([
     fetchArticlesByCategory(article.category, 10),
-    fetchLatestArticles(6),
+    fetchLatestArticles(100),
   ]);
+
+  // この執筆者が書いた本数（サイドバーの表示に使う）
+  const writerCount = allArticles.filter((a) => authorName(a) === name).length;
 
   const sorted = [...sameCategory].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
@@ -79,7 +91,7 @@ export default async function ArticlePage({
       ? sorted[currentIndex + 1]
       : null;
   const related = sorted.filter((a) => a.slug !== article.slug).slice(0, 3);
-  const pickups = latest.filter((a) => a.slug !== article.slug).slice(0, 3);
+  const pickups = allArticles.filter((a) => a.slug !== article.slug).slice(0, 3);
 
   const shareUrl = `${BASE_URL}/media/${article.slug}`;
   const twitterShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
@@ -133,7 +145,7 @@ export default async function ArticlePage({
                 {name}
               </span>
               <span className="mt-[3px] block text-[12px] leading-tight text-ink-soft">
-                玉野SDGsみらいづくりセンター
+                {role}
               </span>
             </span>
             <span className="ml-auto shrink-0 text-[12px] text-ink-soft">
@@ -187,6 +199,7 @@ export default async function ArticlePage({
             >
               X でシェア
             </a>
+            <CopyLinkButton url={shareUrl} />
           </div>
 
           {/* ── 執筆者 ── */}
@@ -195,7 +208,7 @@ export default async function ArticlePage({
             <div className="min-w-0">
               <p className="text-[14px] font-bold leading-tight text-ink">{name}</p>
               <p className="mt-1 text-[12px] leading-tight text-ink-soft">
-                玉野SDGsみらいづくりセンター
+                {role}
               </p>
               <p className="mt-2 text-[12px] leading-[1.7] text-ink-soft">
                 市民・団体・企業・行政をつなぎ、相談・伴走・情報発信で地域の活動を支えています。
@@ -263,76 +276,10 @@ export default async function ArticlePage({
       {/* ── サイドバー ── */}
       <aside className="min-w-0 pb-8 pt-4">
         <div className="lg:sticky lg:top-[88px]">
-          <div className="mb-4 rounded border border-border-line p-4">
-            <h2 className="mb-1">
-              <span className="section-label block text-ink-muted">Writer</span>
-              <span className="mt-1 block text-[14px] font-bold text-ink">
-                この記事を書いた人
-              </span>
-            </h2>
-            <div className="mt-3 flex items-center gap-2.5">
-              <Avatar name={name} />
-              <span className="min-w-0">
-                <span className="block text-[13px] font-bold leading-tight text-ink">
-                  {name}
-                </span>
-                <span className="mt-[3px] block text-[12px] leading-tight text-ink-soft">
-                  玉野SDGsみらいづくりセンター
-                </span>
-              </span>
-            </div>
-          </div>
-
-          {pickups.length > 0 && (
-            <div className="mb-4 rounded border border-border-line p-4">
-              <h2 className="mb-1">
-                <span className="section-label block text-ink-muted">
-                  Editors&apos; Pick
-                </span>
-                <span className="mt-1 block text-[14px] font-bold text-ink">
-                  今週のピックアップ
-                </span>
-              </h2>
-              <ol className="mt-2 divide-y divide-border-line">
-                {pickups.map((a, index) => (
-                  <li key={a.slug}>
-                    <Link href={getArticleUrl(a)} className="group flex gap-2.5 py-2.5">
-                      <span className="w-[18px] shrink-0 text-[16px] font-bold leading-tight text-ocean">
-                        {index + 1}
-                      </span>
-                      <span className="min-w-0">
-                        <span className="block text-[13px] font-bold leading-[1.4] text-ink group-hover:text-ocean">
-                          {a.title}
-                        </span>
-                        <span className="mt-1.5 block text-[11px] leading-tight text-ink-soft">
-                          {CATEGORY_LABEL[a.category]}・読了{" "}
-                          {readingMinutes(a.body)}分
-                        </span>
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          )}
-
-          <div className="rounded border border-membership p-4">
-            <h2 className="mb-1">
-              <span className="section-label block text-membership">Membership</span>
-              <span className="mt-1 block text-[14px] font-bold leading-tight text-ink">
-                入会・寄付でセンターを支える
-              </span>
-            </h2>
-            <p className="mt-2 text-[12px] leading-[1.7] text-ink-soft">
-              会員・寄付として、玉野のまちづくりを継続的に支えていただけませんか。
-            </p>
-            <Link
-              href="/join"
-              className="mt-3 block rounded bg-membership py-2.5 text-center text-[14px] font-bold leading-none text-white hover:opacity-90"
-            >
-              入会・寄付について
-            </Link>
-          </div>
+          <SingleWriterCard writer={{ name, role, count: writerCount }} />
+          <PickupCard articles={pickups} />
+          <MembershipCard />
+          <FollowCard />
         </div>
       </aside>
     </div>

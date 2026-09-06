@@ -10,7 +10,16 @@ import {
 } from "@/lib/articles";
 import { fetchAllInterviews, type Interview } from "@/lib/interviews";
 import StudentTrialSection from "@/components/StudentTrialSection";
-import MiraiCafeSection from "@/components/MiraiCafeSection";
+import MiraiCafeSection, { NEXT_CAFE } from "@/components/MiraiCafeSection";
+import {
+  AboutCard,
+  PickupCard,
+  WritersCard,
+  MiraiCafeCard,
+  MembershipCard,
+  FollowCard,
+  DocumentsCard,
+} from "@/components/Sidebar";
 import ArticleRow from "@/components/ArticleRow";
 import { CategoryTag, SectionHead, Avatar, OutlineLink } from "@/components/ui";
 import {
@@ -282,53 +291,16 @@ export default async function Home() {
         {/* ── サイドバー（PCのみ・スマホでは本文の下に回る） ── */}
         <aside className="min-w-0 pb-8 pt-4">
           <div className="lg:sticky lg:top-[88px]">
-            <section>
-              <SectionHead label="Editors' Pick" title="今週のピックアップ" />
-              <ol className="divide-y divide-border-line border-t border-border-line">
-                {pickups.map((article, index) => (
-                  <li key={article.slug}>
-                    <Link
-                      href={getArticleUrl(article)}
-                      className="group flex gap-3 py-3"
-                    >
-                      <span className="w-4 shrink-0 text-[15px] font-bold leading-tight text-ink-muted">
-                        {index + 1}
-                      </span>
-                      <span className="min-w-0">
-                        <span className="block text-[13px] font-bold leading-[1.5] text-ink group-hover:text-ocean">
-                          {article.title}
-                        </span>
-                        <span className="mt-1 block text-[12px] leading-tight text-ink-soft">
-                          {CATEGORY_LABEL[article.category]}・
-                          {formatDate(article.date)}
-                        </span>
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ol>
-            </section>
-
-            <section className="mt-6">
-              <SectionHead label="About" title="センターについて" />
-              <div className="flex flex-col divide-y divide-border-line border-t border-border-line">
-                {[
-                  { label: "理念・法人概要", href: "/about" },
-                  { label: "事業内容", href: "/services" },
-                  { label: "資料・報告書", href: "/documents" },
-                  { label: "入会・寄付", href: "/join" },
-                  { label: "お問い合わせ", href: "/contact" },
-                ].map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="py-3 text-[13px] font-bold text-ink hover:text-ocean"
-                  >
-                    {item.label} →
-                  </Link>
-                ))}
-              </div>
-            </section>
+            <AboutCard />
+            <PickupCard articles={pickups} />
+            <WritersCard articles={latest} />
+            <MiraiCafeCard
+              date={`${NEXT_CAFE.num}/${NEXT_CAFE.date.replace(/日.*$/, "")}`}
+              note={`${NEXT_CAFE.date.replace(/^\d+日/, "")} 13:00〜16:00`}
+            />
+            <MembershipCard />
+            <FollowCard />
+            <DocumentsCard />
           </div>
         </aside>
       </div>
