@@ -4,7 +4,6 @@ import Link from "next/link";
 import {
   fetchLatestArticles,
   fetchArticlesByCategory,
-  CATEGORY_LABEL,
   getArticleUrl,
   type Article,
 } from "@/lib/articles";
@@ -332,7 +331,7 @@ export default async function Home() {
               title: "講演のご依頼",
               text: "理事長・副理事長が講演やワークショップのファシリテーターを承ります。",
               linkText: "依頼について",
-              href: "/about#speakers",
+              href: "/members#speakers",
             },
           ].map((cta) => (
             <Link

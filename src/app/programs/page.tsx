@@ -2,18 +2,19 @@ export const revalidate = 60;
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import { GraduationCap, BookOpen, Coffee, Presentation, ArrowRight, Calendar } from "lucide-react";
 import { fetchArticlesByCategory, getArticleUrl } from "@/lib/articles";
+import { StaticPageLayout, PageSection, FactList } from "@/components/ArchiveLayout";
+import { formatDate } from "@/lib/format";
 
 export const metadata: Metadata = {
-  title: "プログラム",
-  description: "玉野SDGsみらいづくりセンターが実施するプログラム・講座のご案内です。",
+  title: "参加できるプログラム",
+  description:
+    "市民のみなさんが参加できる、玉野SDGsみらいづくりセンターの常設プログラムです。",
 };
 
 const programs = [
   {
     id: "zerochi",
-    icon: GraduationCap,
     name: "ゼロイチラボ",
     tagline: "高校生のまちへの想いをカタチに",
     target: "玉野市内に在住・通学する高校生",
@@ -35,7 +36,6 @@ const programs = [
   },
   {
     id: "idobata",
-    icon: BookOpen,
     name: "いどばた講座",
     tagline: "市民が学び、つながる学習の場",
     target: "地域活動に関心のある市民（経験不問）",
@@ -56,7 +56,6 @@ const programs = [
   },
   {
     id: "mirai-cafe",
-    icon: Coffee,
     name: "みらいcafé",
     tagline: "毎月開催の市民交流会",
     target: "玉野市・近隣市町に在住・在勤の方どなたでも",
@@ -76,7 +75,6 @@ const programs = [
   },
   {
     id: "seminar",
-    icon: Presentation,
     name: "セミナー・講演会",
     tagline: "専門家を招いた実践的な学び",
     target: "NPO・自治会・企業担当者など",
@@ -99,143 +97,82 @@ export default async function ProgramsPage() {
   const exploreArticles = await fetchArticlesByCategory("explore", 6);
 
   return (
-    <div>
-      {/* Page Header */}
-      <div className="bg-ink py-20">
-        <div className="max-w-7xl mx-auto px-6">
-          <nav className="section-label text-white/40 mb-8 flex items-center gap-2">
-            <Link href="/" className="hover:text-white/70 transition-colors">HOME</Link>
-            <span>/</span>
-            <span className="text-white/60">PROGRAMS</span>
-          </nav>
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-5 leading-tight">プログラム</h1>
-          <p className="text-white/80 text-base max-w-xl leading-relaxed">
-            市民・高校生・団体向けに多様なプログラムを提供しています。
-          </p>
-        </div>
-      </div>
-
-      {/* Explore Articles */}
-      {exploreArticles.length > 0 && (
-        <section className="bg-forest-pale border-b border-border-line py-10">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="flex items-center justify-between border-b border-forest/20 pb-3 mb-5">
-              <h2 className="font-bold text-ink">探究学習・連携レポート</h2>
-              <span className="section-label text-forest">最新情報</span>
-            </div>
-            <div className="divide-y divide-border-line">
-              {exploreArticles.map((a) => (
-                <Link
-                  key={a.slug}
-                  href={getArticleUrl(a)}
-                  className="group flex items-start gap-5 py-4 hover:bg-forest/5 -mx-4 px-4 rounded transition-colors"
-                >
-                  <span className="section-label text-ink-muted w-20 pt-0.5 shrink-0">
-                    {new Date(a.date).toLocaleDateString("ja-JP", { month: "2-digit", day: "2-digit" }).replace("/", ".")}
-                  </span>
-                  <h3 className="text-sm font-medium text-ink group-hover:text-forest transition-colors leading-snug line-clamp-2 flex-1">
-                    {a.title}
-                  </h3>
-                  <span className="shrink-0 text-ink/20 group-hover:text-forest transition-colors font-bold pt-0.5">→</span>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Program List */}
-      {programs.map((p, i) => (
-        <section
-          key={p.id}
-          id={p.id}
-          className={`py-20 ${i % 2 === 0 ? "bg-paper" : "bg-paper-alt"}`}
+    <StaticPageLayout
+      label="PROGRAMS"
+      title="参加できるプログラム"
+      description="市民のみなさんが参加できる常設のプログラムです。学校の授業の記録は「学校と、つくる。」にまとめています。"
+    >
+      {programs.map((program) => (
+        <PageSection
+          key={program.id}
+          id={program.id}
+          label={program.tagline}
+          title={program.name}
         >
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-              {/* Info */}
-              <div className={i % 2 === 1 ? "lg:order-2" : ""}>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-ocean-pale rounded-full flex items-center justify-center">
-                    <p.icon size={20} className="text-ocean" />
-                  </div>
-                  <p className="section-label text-ink-muted">{p.name}</p>
-                </div>
-                <h2 className="text-2xl font-bold text-ink mb-2">{p.name}</h2>
-                <p className="text-ocean font-semibold text-sm mb-5">{p.tagline}</p>
-                <p className="text-ink-muted leading-loose whitespace-pre-line mb-8">{p.desc}</p>
+          <p className="whitespace-pre-line text-[13px] leading-[1.9] text-ink-soft">
+            {program.desc}
+          </p>
 
-                <div className="border border-border-line bg-white rounded-xl p-5 space-y-3">
-                  {[
-                    { label: "対象", value: p.target },
-                    { label: "開催時期", value: p.period },
-                    { label: "参加費", value: p.fee },
-                  ].map((item) => (
-                    <div key={item.label} className="flex gap-4 text-sm">
-                      <span className="section-label text-ink-muted w-20 shrink-0 mt-0.5">{item.label}</span>
-                      <span className="text-ink-soft">{item.value}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-6">
-                  <Link
-                    href="/contact"
-                    className="inline-flex items-center gap-2 bg-ocean text-white text-sm font-bold px-6 py-3 rounded-full hover:bg-ocean-dark transition-colors"
-                  >
-                    参加・申込みを相談する <ArrowRight size={14} />
-                  </Link>
-                </div>
-              </div>
-
-              {/* Flow */}
-              <div className={i % 2 === 1 ? "lg:order-1" : ""}>
-                <h3 className="section-label text-ink-muted mb-6">
-                  プログラムの流れ
-                </h3>
-                <div className="space-y-3 divide-y divide-border-line border-t border-border-line">
-                  {p.flow.map((f) => (
-                    <div key={f.step} className="flex gap-4 items-start pt-4">
-                      <span className="section-label text-ocean w-8 shrink-0">{f.step}</span>
-                      <div>
-                        <p className="font-bold text-ink text-sm mb-0.5">{f.title}</p>
-                        <p className="text-sm text-ink-muted">{f.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+          <div className="my-4">
+            <FactList
+              items={[
+                { term: "対象", value: program.target },
+                { term: "開催時期", value: program.period },
+                { term: "参加費", value: program.fee },
+              ]}
+            />
           </div>
-        </section>
+
+          <p className="mb-2 text-[10px] leading-tight tracking-[.12em] text-ink-muted">
+            FLOW / プログラムの流れ
+          </p>
+          <div className="divide-y divide-border-line border-t border-border-line">
+            {program.flow.map((step) => (
+              <div key={step.step} className="flex gap-3 py-3">
+                <span className="w-7 shrink-0 text-[13px] font-bold leading-tight text-ocean">
+                  {step.step}
+                </span>
+                <div className="min-w-0">
+                  <p className="text-[14px] font-bold leading-tight text-ink">
+                    {step.title}
+                  </p>
+                  <p className="mt-1 text-[12px] leading-[1.7] text-ink-soft">
+                    {step.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <Link
+            href="/contact"
+            className="mt-4 block rounded border border-border-line py-3 text-center text-[14px] font-bold text-ink hover:bg-[rgba(34,34,34,.05)]"
+          >
+            参加・申込みを相談する
+          </Link>
+        </PageSection>
       ))}
 
-      {/* CTA */}
-      <section className="bg-ink py-16">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <Calendar size={32} className="text-white/40 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-white mb-4">
-            次回の開催情報はSNS・ニュースでお知らせします
-          </h2>
-          <p className="text-white/70 mb-8">
-            最新情報はInstagram・Facebookで随時発信しています。フォローしてお待ちください。
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/media"
-              className="inline-flex items-center gap-2 bg-white text-ocean font-bold text-sm px-6 py-3 rounded-full hover:bg-paper transition-colors"
-            >
-              最新イベント情報を見る <ArrowRight size={14} />
-            </Link>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 border-2 border-white text-white text-sm px-6 py-3 rounded-full hover:bg-white/10 transition-colors"
-            >
-              個別相談・お問い合わせ
-            </Link>
+      {exploreArticles.length > 0 && (
+        <PageSection label="Reports" title="探究学習・連携レポート">
+          <div className="divide-y divide-border-line border-t border-border-line">
+            {exploreArticles.map((article) => (
+              <Link
+                key={article.slug}
+                href={getArticleUrl(article)}
+                className="card-interactive group -mx-3 block rounded px-3 py-3"
+              >
+                <span className="block text-[12px] leading-tight text-ink-soft">
+                  {formatDate(article.date)}
+                </span>
+                <span className="mt-1.5 block text-[14px] font-bold leading-[1.5] text-ink group-hover:text-ocean">
+                  {article.title}
+                </span>
+              </Link>
+            ))}
           </div>
-        </div>
-      </section>
-    </div>
+        </PageSection>
+      )}
+    </StaticPageLayout>
   );
 }

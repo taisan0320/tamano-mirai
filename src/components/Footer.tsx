@@ -18,8 +18,8 @@ const footerNav = [
     links: [
       { label: "法人概要・理念", href: "/about" },
       { label: "事業内容", href: "/services" },
-      { label: "役員名簿", href: "/about#team" },
-      { label: "沿革", href: "/about#history" },
+      { label: "役員名簿", href: "/members" },
+      { label: "沿革", href: "/history" },
     ],
   },
   {
@@ -28,7 +28,7 @@ const footerNav = [
       { label: "入会・寄付", href: "/join" },
       { label: "学生トライアル", href: "/#student" },
       { label: "学校と、つくる", href: "/lessons" },
-      { label: "講演のご依頼", href: "/about#speakers" },
+      { label: "講演のご依頼", href: "/members#speakers" },
       { label: "資料・報告書", href: "/documents" },
       { label: "お問い合わせ", href: "/contact" },
     ],
