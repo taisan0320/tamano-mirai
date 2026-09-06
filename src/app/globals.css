@@ -66,7 +66,6 @@ h1, h2, h3 {
   text-transform: uppercase;
 }
 
-/* Article body prose */
 /* カテゴリ別グラデーションは廃止（色でカテゴリを分けない）。
    サムネイル未設定時のプレースホルダは一律グレー。 */
 .grad-event, .grad-interview, .grad-news, .grad-story,
@@ -91,53 +90,54 @@ h1, h2, h3 {
                     radial-gradient(circle at 20% 80%, rgba(34,34,34,0.02) 0%, transparent 40%);
 }
 
-.prose-article h2 {
-  font-size: 1.125rem;
-  font-weight: 700;
+/* ── 記事本文（プロトタイプ .prose 準拠：15px / 行間1.9） ── */
+.prose-article {
+  font-size: 15px;
+  line-height: 1.9;
+  margin-top: 20px;
   color: #222222;
-  margin-top: 2.5rem;
-  margin-bottom: 1rem;
-  padding-top: 0.6rem;
-  border-top: 1px solid #dcdcdc;
+}
+.prose-article p { margin-bottom: 1.6em; }
+.prose-article h2 {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 2em 0 .8em;
+  padding-top: .6em;
+  border-top: 1px solid rgba(34,34,34,.12);
 }
 .prose-article h3 {
-  font-size: 1.05rem;
+  font-size: 16px;
   font-weight: 700;
-  color: #222222;
-  margin-top: 1.75rem;
-  margin-bottom: 0.75rem;
+  line-height: 1.5;
+  margin: 1.6em 0 .6em;
 }
-.prose-article p {
-  color: #595959;
-  line-height: 1.9;
-  margin-bottom: 1.25rem;
-}
-.prose-article strong { color: #222222; font-weight: 700; }
-.prose-article ul { list-style: none; padding: 0; margin-bottom: 1.25rem; }
+.prose-article strong { font-weight: 700; }
+.prose-article ul { list-style: none; padding: 0; margin: 1.2em 0; }
 .prose-article ul li {
-  padding-left: 1.25rem;
   position: relative;
-  color: #595959;
-  line-height: 1.8;
-  margin-bottom: 0.5rem;
+  padding-left: 20px;
+  margin-bottom: 8px;
 }
 .prose-article ul li::before {
-  content: '●';
+  content: "";
   position: absolute;
-  left: 0;
-  color: #146af5;
-  font-size: 0.5rem;
-  top: 0.55rem;
+  left: 4px;
+  top: .8em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #146af5;
 }
 .prose-article blockquote {
-  border-left: 2px solid #dcdcdc;
-  margin: 1.75rem 0;
-  padding: 0.25rem 0 0.25rem 1rem;
+  margin: 2em 0;
+  padding: 2px 0 2px 16px;
+  border-left: 2px solid rgba(34,34,34,.16);
+  font-size: 15px;
+  color: rgba(34,34,34,.7);
   background: none;
   border-radius: 0;
-  color: #595959;
   font-style: normal;
-  line-height: 1.8;
 }
 .prose-article a {
   color: #146af5;
@@ -155,38 +155,33 @@ h1, h2, h3 {
 }
 .prose-article hr {
   border: none;
-  border-top: 1px solid #dcdcdc;
-  margin: 2rem 0;
+  border-top: 1px solid rgba(34,34,34,.12);
+  margin: 2em 0;
 }
 .prose-article img {
   width: 100%;
   border-radius: 4px;
-  margin: 1.5rem 0;
+  margin: 1.5em 0;
 }
 
-/* Interview body: QUESTION-marker h2 + amber blockquotes */
-.prose-interview h2 {
-  border-bottom: none;
-  border-top: 1px solid #dcdcdc;
-  padding-top: 2rem;
-  padding-bottom: 0;
-  margin-top: 3rem;
-  font-size: 1.2rem;
-}
-.prose-interview h2::before {
-  content: 'QUESTION';
-  display: block;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.26em;
-  color: #595959;
-  margin-bottom: 0.5rem;
-}
+/* インタビュー本文。見出しは本文と同じ扱いにする
+   （以前は全見出しに QUESTION の文字を付けていたが、
+     実際の見出しは質問文ではないため廃止） */
 .prose-interview blockquote {
-  border-left-color: #4d4d4d;
-  background: rgba(34,34,34,0.05);
+  border-left-color: rgba(34,34,34,.16);
+  background: none;
   font-style: normal;
-  font-size: 1.05rem;
+  font-size: 15px;
+  color: rgba(34,34,34,.7);
+}
+/* 強調したい一文（引き）は太字で大きく */
+.prose-interview .pull {
+  margin: 2em 0;
+  padding: 16px 0 16px 18px;
+  border-left: 3px solid #222222;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.7;
   color: #222222;
 }
 

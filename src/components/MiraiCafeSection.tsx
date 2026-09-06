@@ -1,4 +1,3 @@
-import Link from "next/link";
 
 const EMAIL = "info@npo-tamano-mirai.com";
 const INSTAGRAM_URL = "https://www.instagram.com/tamano.miraizukuri/";

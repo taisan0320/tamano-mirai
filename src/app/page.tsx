@@ -11,6 +11,14 @@ import {
 import { fetchAllInterviews, type Interview } from "@/lib/interviews";
 import StudentTrialSection from "@/components/StudentTrialSection";
 import MiraiCafeSection from "@/components/MiraiCafeSection";
+import ArticleRow from "@/components/ArticleRow";
+import { CategoryTag, SectionHead, Avatar, OutlineLink } from "@/components/ui";
+import {
+  formatDate,
+  formatMonthDay,
+  readingMinutes,
+  authorName,
+} from "@/lib/format";
 
 /* ============================================================
    トップページ（Webマガジン型）
@@ -19,93 +27,7 @@ import MiraiCafeSection from "@/components/MiraiCafeSection";
    寸法はプロトタイプ準拠：本文1232px幅／サイドバー320px／間隔48px。
    ============================================================ */
 
-// ── 表示用のちいさなユーティリティ ──────────────────────────
-
-function formatDate(value: string): string {
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return value;
-  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(
-    d.getDate()
-  ).padStart(2, "0")}`;
-}
-
-function formatMonthDay(value: string): { month: string; day: string } {
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return { month: "", day: "" };
-  return {
-    month: String(d.getMonth() + 1),
-    day: String(d.getDate()).padStart(2, "0"),
-  };
-}
-
-/** 本文の文字数から読了時間を出す（日本語はおよそ500字/分） */
-function readingMinutes(body: string): number {
-  const text = body.replace(/<[^>]*>/g, "").replace(/\s+/g, "");
-  return Math.max(1, Math.round(text.length / 500));
-}
-
-function authorName(article: Article): string {
-  return article.author?.trim() || "編集部";
-}
-
-// ── 部品 ────────────────────────────────────────────────────
-
-/** カテゴリ表示。塗りつぶさず、細い枠だけで示す。 */
-function CategoryTag({ article }: { article: Article }) {
-  return (
-    <span
-      className={`rounded-sm border px-1.5 py-[3px] text-[11px] font-bold leading-tight tracking-[.06em] ${
-        article.category === "blog"
-          ? "border-border-line bg-cream text-ink"
-          : "border-border-line text-ink"
-      }`}
-    >
-      {CATEGORY_LABEL[article.category]}
-    </span>
-  );
-}
-
-function SectionHead({
-  label,
-  title,
-  moreHref,
-  moreText = "すべて見る",
-}: {
-  label: string;
-  title: string;
-  moreHref?: string;
-  moreText?: string;
-}) {
-  return (
-    <div className="mb-1 flex h-14 items-center justify-between gap-3">
-      <h2 className="leading-none">
-        <span className="section-label block text-ink-muted">{label}</span>
-        <span className="mt-1.5 block text-[16px] font-bold text-ink sm:text-[18px]">
-          {title}
-        </span>
-      </h2>
-      {moreHref && (
-        <Link
-          href={moreHref}
-          className="shrink-0 text-[13px] font-bold text-ocean hover:underline"
-        >
-          {moreText} →
-        </Link>
-      )}
-    </div>
-  );
-}
-
-function Avatar({ name, size = 40 }: { name: string; size?: number }) {
-  return (
-    <span
-      className="grid shrink-0 place-items-center rounded-full bg-paper-deep font-bold text-ink-soft"
-      style={{ width: size, height: size, fontSize: size * 0.32 }}
-    >
-      {name.slice(0, 1)}
-    </span>
-  );
-}
+// ── 部品 ──────────────────────────────────────────────────
 
 /** 最上部の1本。写真を大きく、見出しで読ませる。 */
 function TopStory({ article }: { article: Article }) {
@@ -127,7 +49,7 @@ function TopStory({ article }: { article: Article }) {
           )}
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-2 text-[12px] leading-tight text-ink-soft">
-          <CategoryTag article={article} />
+          <CategoryTag category={article.category} />
           <span>{formatDate(article.date)}</span>
         </div>
         <h2 className="mt-2.5 text-[22px] font-bold leading-[1.35] text-ink group-hover:text-ocean sm:text-[28px]">
@@ -143,7 +65,7 @@ function TopStory({ article }: { article: Article }) {
           <span className="block text-[13px] font-bold leading-tight text-ink">
             {name}
           </span>
-          <span className="block text-[12px] leading-tight text-ink-soft">
+          <span className="mt-[3px] block text-[12px] leading-tight text-ink-soft">
             玉野SDGsみらいづくりセンター
           </span>
         </span>
@@ -152,45 +74,6 @@ function TopStory({ article }: { article: Article }) {
         </span>
       </div>
     </article>
-  );
-}
-
-/** フィードの1行。左に写真、右にテキスト。 */
-function FeedRow({ article }: { article: Article }) {
-  return (
-    <Link
-      href={getArticleUrl(article)}
-      className="card-interactive group -mx-3 flex gap-3 rounded px-3 py-3.5"
-    >
-      <div className="relative aspect-[1.91/1] w-[120px] shrink-0 overflow-hidden rounded bg-paper-deep sm:w-[200px]">
-        {article.thumbnail ? (
-          <img
-            src={article.thumbnail}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover"
-            loading="lazy"
-          />
-        ) : (
-          <div className="absolute inset-0 grad-blog" />
-        )}
-      </div>
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-2 text-[12px] leading-tight text-ink-soft">
-          <CategoryTag article={article} />
-          <span>{formatDate(article.date)}</span>
-        </div>
-        <h3 className="mt-1.5 text-[14px] font-bold leading-[1.35] text-ink group-hover:text-ocean sm:text-[15px]">
-          {article.title}
-        </h3>
-        <p className="mt-1.5 hidden text-[12px] leading-[1.7] text-ink-soft sm:line-clamp-2">
-          {article.excerpt}
-        </p>
-        <p className="mt-1.5 text-[12px] leading-tight text-ink-soft">
-          <span className="font-bold">{authorName(article)}</span>
-          <span>・読了 {readingMinutes(article.body)}分</span>
-        </p>
-      </div>
-    </Link>
   );
 }
 
@@ -321,15 +204,10 @@ export default async function Home() {
               <SectionHead label="Latest" title="最近の動き" moreHref="/media" />
               <div className="divide-y divide-border-line border-t border-border-line">
                 {feed.map((article) => (
-                  <FeedRow key={article.slug} article={article} />
+                  <ArticleRow key={article.slug} article={article} />
                 ))}
               </div>
-              <Link
-                href="/media"
-                className="mt-4 block rounded border border-border-line py-3 text-center text-[14px] font-bold text-ink hover:bg-[rgba(34,34,34,.05)]"
-              >
-                もっと見る
-              </Link>
+              <OutlineLink href="/media">もっと見る</OutlineLink>
             </section>
           )}
 

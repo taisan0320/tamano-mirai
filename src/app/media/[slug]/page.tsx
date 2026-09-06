@@ -4,34 +4,19 @@ import { notFound } from "next/navigation";
 import {
   fetchArticlesByCategory,
   fetchArticleBySlug,
+  fetchLatestArticles,
   CATEGORY_LABEL,
   CATEGORY_ROUTE,
-  CATEGORY_GRADIENT,
+  getArticleUrl,
 } from "@/lib/articles";
-import ArticleCard from "@/components/ArticleCard";
+import ArticleRow from "@/components/ArticleRow";
+import { CategoryTag, SectionHead, Avatar } from "@/components/ui";
+import { formatDate, readingMinutes, authorName } from "@/lib/format";
 
 export const revalidate = 60;
 export const dynamicParams = true;
 
 const BASE_URL = "https://npo-tamano-mirai.com";
-
-const categoryBadgeStyle: Record<string, string> = {
-  event: "bg-amber-pale text-amber border border-amber/20",
-  interview: "bg-ocean-pale text-ocean border border-ocean/20",
-  news: "bg-forest-pale text-forest border border-forest/20",
-  story: "bg-coral-pale text-coral border border-coral/20",
-  blog: "bg-forest-pale text-forest border border-forest/20",
-  explore: "bg-ocean-pale text-ocean border border-ocean/20",
-  volunteer: "bg-coral-pale text-coral border border-coral/20",
-};
-
-function estimateReadingTime(text: string): number {
-  return Math.max(1, Math.ceil(text.replace(/<[^>]+>/g, "").length / 400));
-}
-
-function getInitial(name: string): string {
-  return name.slice(0, 1);
-}
 
 export async function generateMetadata({
   params,
@@ -75,215 +60,281 @@ export default async function ArticlePage({
   const article = await fetchArticleBySlug(slug);
   if (!article) notFound();
 
-  const formattedDate = new Date(article.date).toLocaleDateString("ja-JP", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const name = authorName(article);
+  const minutes = readingMinutes(article.body);
+  const isInterview = article.category === "interview" || article.category === "story";
 
-  const readingTime = estimateReadingTime(article.body || "");
+  const [sameCategory, latest] = await Promise.all([
+    fetchArticlesByCategory(article.category, 10),
+    fetchLatestArticles(6),
+  ]);
 
-  const allInCategory = await fetchArticlesByCategory(article.category, 10);
-  const sorted = [...allInCategory].sort(
+  const sorted = [...sameCategory].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
   const currentIndex = sorted.findIndex((a) => a.slug === article.slug);
   const newerArticle = currentIndex > 0 ? sorted[currentIndex - 1] : null;
-  const olderArticle = currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : null;
-  const related = sorted.filter((a) => a.slug !== article.slug).slice(0, 2);
+  const olderArticle =
+    currentIndex >= 0 && currentIndex < sorted.length - 1
+      ? sorted[currentIndex + 1]
+      : null;
+  const related = sorted.filter((a) => a.slug !== article.slug).slice(0, 3);
+  const pickups = latest.filter((a) => a.slug !== article.slug).slice(0, 3);
 
   const shareUrl = `${BASE_URL}/media/${article.slug}`;
-  const twitterShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(shareUrl)}`;
+  const twitterShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+    article.title
+  )}&url=${encodeURIComponent(shareUrl)}`;
 
   return (
-    <div className="bg-paper">
-      {/* Hero Header */}
-      <div
-        className={`relative ${CATEGORY_GRADIENT[article.category]} min-h-[360px] flex items-end overflow-hidden`}
-      >
-        {article.thumbnail && (
-          <img
-            src={article.thumbnail}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/45 to-black/10" />
+    <div className="mx-auto grid w-full max-w-[1232px] grid-cols-1 items-start gap-x-12 px-4 pb-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <main className="min-w-0">
+        {/* ── パンくず ── */}
+        <nav className="flex flex-wrap items-center gap-1.5 pt-4 text-[11px] text-ink-soft">
+          <Link href="/" className="hover:text-ocean">
+            HOME
+          </Link>
+          <span className="text-ink-muted">/</span>
+          <Link href={CATEGORY_ROUTE[article.category]} className="hover:text-ocean">
+            {CATEGORY_LABEL[article.category]}
+          </Link>
+          <span className="text-ink-muted">/</span>
+          <span className="truncate">{article.title}</span>
+        </nav>
 
-        <div className="relative max-w-7xl mx-auto px-6 pb-12 pt-28 w-full">
-          <nav className="section-label text-white/50 mb-6 flex items-center gap-2 flex-wrap">
-            <Link href="/" className="hover:text-white/80 transition-colors">
-              HOME
-            </Link>
-            <span>/</span>
-            <Link href="/media" className="hover:text-white/80 transition-colors">
-              NEWS &amp; MEDIA
-            </Link>
-            <span>/</span>
-            <span className="text-white/60 truncate max-w-[200px]">{article.title}</span>
-          </nav>
+        <article className="pb-6 pt-2">
+          <div className="flex flex-wrap items-center gap-2 text-[12px] leading-tight text-ink-soft">
+            <CategoryTag category={article.category} />
+            <span>{formatDate(article.date)}</span>
+          </div>
 
-          <div className="mb-4">
-            <span
-              className={`text-xs font-bold px-3 py-1 rounded-full ${categoryBadgeStyle[article.category]}`}
-            >
-              {CATEGORY_LABEL[article.category]}
+          {isInterview ? (
+            <>
+              <h1 className="my-3 text-[22px] font-bold leading-[1.5] text-ink sm:text-[28px]">
+                <span className="text-ink-muted">❝ </span>
+                {article.title}
+                <span className="text-ink-muted"> ❞</span>
+              </h1>
+              <p className="text-[14px] leading-[1.7] text-ink-soft">
+                {article.excerpt}
+              </p>
+            </>
+          ) : (
+            <h1 className="mb-3 mt-2.5 text-[24px] font-bold leading-[1.25] text-ink sm:text-[28px]">
+              {article.title}
+            </h1>
+          )}
+
+          {/* ── 署名 ── */}
+          <div className="mt-3.5 flex items-center gap-2.5 border-t border-border-line pt-3.5">
+            <Avatar name={name} />
+            <span className="min-w-0">
+              <span className="block text-[13px] font-bold leading-tight text-ink">
+                {name}
+              </span>
+              <span className="mt-[3px] block text-[12px] leading-tight text-ink-soft">
+                玉野SDGsみらいづくりセンター
+              </span>
+            </span>
+            <span className="ml-auto shrink-0 text-[12px] text-ink-soft">
+              読了 {minutes}分
             </span>
           </div>
 
-          <h1 className="text-2xl sm:text-4xl font-bold text-white mb-5 max-w-4xl leading-tight">
-            {article.title}
-          </h1>
-
-          <div className="flex flex-wrap items-center gap-3 text-white/70 text-sm">
-            <span>{formattedDate}</span>
-            {article.author && (
-              <>
-                <span className="opacity-40">｜</span>
-                <span>{article.author}</span>
-              </>
-            )}
-            <span className="opacity-40">｜</span>
-            <span>約{readingTime}分で読めます</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Body */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          <article className="lg:col-span-8">
-            {/* Lead excerpt */}
-            <div className="border-l-4 border-ocean pl-6 mb-10 bg-ocean-pale/30 py-4 pr-4 rounded-r-lg">
-              <p className="text-ink-soft text-base leading-relaxed italic">
-                {article.excerpt}
-              </p>
+          {/* ── 本文冒頭の写真 ── */}
+          {article.thumbnail && (
+            <div className="my-4 overflow-hidden rounded bg-paper-deep">
+              <img
+                src={article.thumbnail}
+                alt=""
+                className="aspect-[1.91/1] w-full object-cover"
+              />
             </div>
+          )}
 
-            {/* Article body */}
-            <div
-              className="prose-article"
-              dangerouslySetInnerHTML={{
-                __html: article.isHtml
-                  ? article.body || ""
-                  : renderMarkdown(article.body || ""),
-              }}
-            />
+          {/* ── 本文 ── */}
+          <div
+            className={`prose-article ${isInterview ? "prose-interview" : ""}`}
+            dangerouslySetInnerHTML={{
+              __html: article.isHtml
+                ? article.body || ""
+                : renderMarkdown(article.body || ""),
+            }}
+          />
 
-            {/* Tags */}
-            {article.tags && article.tags.length > 0 && (
-              <div className="mt-12 pt-8 border-t border-border-line flex flex-wrap gap-2">
-                {article.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs border border-border-line text-ink-muted px-3 py-1 rounded-full hover:border-ocean hover:text-ocean transition-colors"
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {/* Author block */}
-            {article.author && (
-              <div className="mt-10 pt-8 border-t border-border-line flex items-center gap-5">
-                <div
-                  className={`w-14 h-14 rounded-full flex items-center justify-center text-2xl font-bold shrink-0 text-white ${CATEGORY_GRADIENT[article.category]}`}
+          {/* ── タグ ── */}
+          {article.tags && article.tags.length > 0 && (
+            <div className="mt-6 flex flex-wrap gap-1.5">
+              {article.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-sm border border-border-line px-2 py-1 text-[11px] leading-none text-ink-soft"
                 >
-                  {getInitial(article.author)}
-                </div>
-                <div>
-                  <p className="section-label text-ink-muted mb-1">著者</p>
-                  <p className="font-bold text-ink text-lg">{article.author}</p>
-                </div>
-              </div>
-            )}
-
-            {/* Share */}
-            <div className="mt-8 flex items-center gap-4">
-              <span className="section-label text-ink-muted">SHARE</span>
-              <a
-                href={twitterShareUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm border border-border-line text-ink-muted px-4 py-2 rounded-full hover:border-ink hover:text-ink transition-colors"
-              >
-                𝕏 でシェア
-              </a>
+                  {tag}
+                </span>
+              ))}
             </div>
+          )}
 
-            {/* Prev / Next navigation */}
-            {(olderArticle || newerArticle) && (
-              <div className="mt-10 pt-8 border-t border-border-line grid grid-cols-2 gap-4">
-                {olderArticle ? (
-                  <Link
-                    href={`/media/${olderArticle.slug}`}
-                    className="group flex flex-col gap-1 p-4 border border-border-line rounded-xl hover:border-ocean transition-colors"
-                  >
-                    <span className="section-label text-ink-muted group-hover:text-ocean transition-colors">
-                      ← 前の記事
-                    </span>
-                    <span className="text-sm font-semibold text-ink line-clamp-2 leading-snug group-hover:text-ocean transition-colors">
-                      {olderArticle.title}
-                    </span>
-                  </Link>
-                ) : (
-                  <div />
-                )}
-                {newerArticle ? (
-                  <Link
-                    href={`/media/${newerArticle.slug}`}
-                    className="group flex flex-col gap-1 p-4 border border-border-line rounded-xl hover:border-ocean transition-colors text-right"
-                  >
-                    <span className="section-label text-ink-muted group-hover:text-ocean transition-colors">
-                      次の記事 →
-                    </span>
-                    <span className="text-sm font-semibold text-ink line-clamp-2 leading-snug group-hover:text-ocean transition-colors">
-                      {newerArticle.title}
-                    </span>
-                  </Link>
-                ) : (
-                  <div />
-                )}
-              </div>
-            )}
-
-            <Link
-              href={CATEGORY_ROUTE[article.category]}
-              className="inline-flex items-center gap-2 mt-8 section-label text-ink-muted hover:text-ink transition-colors"
+          {/* ── シェア ── */}
+          <div className="my-6 flex items-center gap-2 border-y border-border-line py-3.5">
+            <span className="text-[11px] tracking-[.12em] text-ink-muted">SHARE</span>
+            <a
+              href={twitterShareUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded border border-border-line px-3 py-2 text-[12px] font-bold text-ink hover:bg-[rgba(34,34,34,.05)]"
             >
-              ← 一覧に戻る
-            </Link>
-          </article>
+              X でシェア
+            </a>
+          </div>
 
-          {/* Sidebar */}
-          <aside className="lg:col-span-4 space-y-6">
-            {related.length > 0 && (
-              <div className="border border-border-line bg-white p-6 rounded-xl">
-                <h2 className="section-label text-ink-muted mb-4">RELATED ARTICLES</h2>
-                <div>
-                  {related.map((a) => (
-                    <ArticleCard key={a.slug} article={a} variant="compact" />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="bg-ocean p-6 rounded-xl">
-              <h2 className="font-bold text-white mb-2">お問い合わせ</h2>
-              <p className="text-sm text-white/70 mb-5 leading-relaxed">
-                この記事についてのご質問や、活動への参加はお気軽にご連絡ください。
+          {/* ── 執筆者 ── */}
+          <div className="my-6 flex gap-3.5 rounded border border-border-line p-4">
+            <Avatar name={name} size={56} />
+            <div className="min-w-0">
+              <p className="text-[14px] font-bold leading-tight text-ink">{name}</p>
+              <p className="mt-1 text-[12px] leading-tight text-ink-soft">
+                玉野SDGsみらいづくりセンター
+              </p>
+              <p className="mt-2 text-[12px] leading-[1.7] text-ink-soft">
+                市民・団体・企業・行政をつなぎ、相談・伴走・情報発信で地域の活動を支えています。
               </p>
               <Link
-                href="/contact"
-                className="block text-center bg-white text-ocean text-sm font-bold py-3 rounded-full hover:bg-paper transition-colors"
+                href={CATEGORY_ROUTE[article.category]}
+                className="mt-2 inline-block text-[12px] font-bold text-ocean hover:underline"
               >
-                お問い合わせ →
+                {CATEGORY_LABEL[article.category]}の記事をすべて見る →
               </Link>
             </div>
-          </aside>
+          </div>
+
+          {/* ── 前後の記事 ── */}
+          {(olderArticle || newerArticle) && (
+            <div className="my-6 grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {olderArticle && (
+                <Link
+                  href={getArticleUrl(olderArticle)}
+                  className="rounded border border-border-line px-3.5 py-3 hover:bg-[rgba(34,34,34,.05)]"
+                >
+                  <span className="block text-[11px] leading-tight text-ink-muted">
+                    ← 前の記事
+                  </span>
+                  <span className="mt-1.5 block text-[13px] font-bold leading-[1.5] text-ink">
+                    {olderArticle.title}
+                  </span>
+                </Link>
+              )}
+              {newerArticle && (
+                <Link
+                  href={getArticleUrl(newerArticle)}
+                  className="rounded border border-border-line px-3.5 py-3 hover:bg-[rgba(34,34,34,.05)]"
+                >
+                  <span className="block text-[11px] leading-tight text-ink-muted">
+                    次の記事 →
+                  </span>
+                  <span className="mt-1.5 block text-[13px] font-bold leading-[1.5] text-ink">
+                    {newerArticle.title}
+                  </span>
+                </Link>
+              )}
+            </div>
+          )}
+        </article>
+
+        {/* ── 関連する記事 ── */}
+        {related.length > 0 && (
+          <section className="border-t border-border-line">
+            <SectionHead
+              label="Related"
+              title="関連する記事"
+              moreHref={CATEGORY_ROUTE[article.category]}
+              moreText="一覧を見る"
+            />
+            <div className="divide-y divide-border-line border-t border-border-line">
+              {related.map((a) => (
+                <ArticleRow key={a.slug} article={a} showExcerpt={false} />
+              ))}
+            </div>
+          </section>
+        )}
+      </main>
+
+      {/* ── サイドバー ── */}
+      <aside className="min-w-0 pb-8 pt-4">
+        <div className="lg:sticky lg:top-[88px]">
+          <div className="mb-4 rounded border border-border-line p-4">
+            <h2 className="mb-1">
+              <span className="section-label block text-ink-muted">Writer</span>
+              <span className="mt-1 block text-[14px] font-bold text-ink">
+                この記事を書いた人
+              </span>
+            </h2>
+            <div className="mt-3 flex items-center gap-2.5">
+              <Avatar name={name} />
+              <span className="min-w-0">
+                <span className="block text-[13px] font-bold leading-tight text-ink">
+                  {name}
+                </span>
+                <span className="mt-[3px] block text-[12px] leading-tight text-ink-soft">
+                  玉野SDGsみらいづくりセンター
+                </span>
+              </span>
+            </div>
+          </div>
+
+          {pickups.length > 0 && (
+            <div className="mb-4 rounded border border-border-line p-4">
+              <h2 className="mb-1">
+                <span className="section-label block text-ink-muted">
+                  Editors&apos; Pick
+                </span>
+                <span className="mt-1 block text-[14px] font-bold text-ink">
+                  今週のピックアップ
+                </span>
+              </h2>
+              <ol className="mt-2 divide-y divide-border-line">
+                {pickups.map((a, index) => (
+                  <li key={a.slug}>
+                    <Link href={getArticleUrl(a)} className="group flex gap-2.5 py-2.5">
+                      <span className="w-[18px] shrink-0 text-[16px] font-bold leading-tight text-ocean">
+                        {index + 1}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block text-[13px] font-bold leading-[1.4] text-ink group-hover:text-ocean">
+                          {a.title}
+                        </span>
+                        <span className="mt-1.5 block text-[11px] leading-tight text-ink-soft">
+                          {CATEGORY_LABEL[a.category]}・読了{" "}
+                          {readingMinutes(a.body)}分
+                        </span>
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
+
+          <div className="rounded border border-membership p-4">
+            <h2 className="mb-1">
+              <span className="section-label block text-membership">Membership</span>
+              <span className="mt-1 block text-[14px] font-bold leading-tight text-ink">
+                入会・寄付でセンターを支える
+              </span>
+            </h2>
+            <p className="mt-2 text-[12px] leading-[1.7] text-ink-soft">
+              会員・寄付として、玉野のまちづくりを継続的に支えていただけませんか。
+            </p>
+            <Link
+              href="/join"
+              className="mt-3 block rounded bg-membership py-2.5 text-center text-[14px] font-bold leading-none text-white hover:opacity-90"
+            >
+              入会・寄付について
+            </Link>
+          </div>
         </div>
-      </div>
+      </aside>
     </div>
   );
 }
