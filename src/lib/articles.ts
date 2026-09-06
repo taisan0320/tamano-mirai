@@ -15,10 +15,10 @@ export interface Article {
 
 export const CATEGORY_LABEL: Record<Category, string> = {
   event: "イベント情報",
-  interview: "まちの人・団体",
+  interview: "動く人たち",
   news: "お知らせ",
   story: "玉野の話",
-  blog: "日記",
+  blog: "コーディネーター日記",
   explore: "探究学習サポート",
   volunteer: "ボランティア募集",
 };

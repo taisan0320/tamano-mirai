@@ -2,392 +2,486 @@ export const revalidate = 60;
 
 import Link from "next/link";
 import {
+  fetchLatestArticles,
   fetchArticlesByCategory,
   CATEGORY_LABEL,
+  getArticleUrl,
   type Article,
 } from "@/lib/articles";
 import { fetchAllInterviews, type Interview } from "@/lib/interviews";
-import HappeningSection from "@/components/HappeningSection";
-import BoardSection from "@/components/BoardSection";
 import StudentTrialSection from "@/components/StudentTrialSection";
 import MiraiCafeSection from "@/components/MiraiCafeSection";
-import { fetchBoardCards } from "@/lib/board";
 
-const manualHeroGalleryItems: { src: string; alt: string }[] = [
-  { src: "/images/hero-gallery/miyama-park.jpg", alt: "深山公園の緑と広場" },
-  { src: "/images/hero-gallery/pond-and-greenery.jpg", alt: "緑に囲まれた池の風景" },
-  { src: "/images/hero-gallery/uno-station.jpg", alt: "宇野駅の駅舎" },
-  { src: "/images/hero-gallery/uno-ferry.jpg", alt: "宇野港に停泊するフェリー" },
-  { src: "/images/hero-gallery/ojigadake-rocks.jpg", alt: "王子が岳から見える瀬戸内海と岩場" },
-  { src: "/images/hero-gallery/bamboo-red-door.jpg", alt: "竹林の中に立つ赤い扉" },
-];
+/* ============================================================
+   トップページ（Webマガジン型）
+   ヒーローのキャッチコピーは置かず、最上部を記事にする。
+   以降は日付順のフィードで、イベント・日記・インタビューを混ぜる。
+   ============================================================ */
 
-function buildHeroGalleryItems(sources: Article[]) {
-  if (manualHeroGalleryItems.length >= 3) {
-    return manualHeroGalleryItems.slice(0, 8);
-  }
+// ── 表示用のちいさなユーティリティ ──────────────────────────
 
-  const items = sources
-    .filter((article) => article.thumbnail)
-    .map((article) => ({
-      src: article.thumbnail as string,
-      alt: article.title,
-    }));
-
-  const uniqueItems = items.filter(
-    (item, index, array) => array.findIndex((candidate) => candidate.src === item.src) === index
-  );
-
-  return [...manualHeroGalleryItems, ...uniqueItems].slice(0, 8);
+function formatDate(value: string): string {
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value;
+  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(
+    d.getDate()
+  ).padStart(2, "0")}`;
 }
 
-function HeroGalleryStrip({ items }: { items: { src: string; alt: string }[] }) {
-  if (items.length < 3) return null;
+function formatMonthDay(value: string): { month: string; day: string } {
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return { month: "", day: "" };
+  return {
+    month: String(d.getMonth() + 1),
+    day: String(d.getDate()).padStart(2, "0"),
+  };
+}
 
-  const loopItems = [...items, ...items];
+/** 本文の文字数から読了時間を出す（日本語はおよそ500字/分） */
+function readingMinutes(body: string): number {
+  const text = body.replace(/<[^>]*>/g, "").replace(/\s+/g, "");
+  return Math.max(1, Math.round(text.length / 500));
+}
 
+function authorName(article: Article): string {
+  return article.author?.trim() || "編集部";
+}
+
+/** 日記だけクリーム、それ以外はモノクロ。色でカテゴリを分けない方針。 */
+function categoryChipClass(article: Article): string {
+  return article.category === "blog"
+    ? "bg-cream text-ink"
+    : "bg-paper-alt text-ink-soft";
+}
+
+// ── 部品 ────────────────────────────────────────────────────
+
+function SectionHead({
+  label,
+  title,
+  moreHref,
+  moreText = "すべて見る",
+}: {
+  label: string;
+  title: string;
+  moreHref?: string;
+  moreText?: string;
+}) {
   return (
-    <div className="mt-12 lg:mt-14">
-      <div className="hero-gallery-mask -mx-6 overflow-hidden px-6">
-        <div className="hero-gallery-track flex w-max gap-4">
-          {loopItems.map((item, index) => (
-            <div
-              key={`${item.src}-${index}`}
-              className="relative h-[112px] w-[180px] shrink-0 overflow-hidden rounded-sm border border-border-line bg-paper-alt shadow-[0_1px_0_#e8e2d9] sm:h-[132px] sm:w-[220px] lg:h-[148px] lg:w-[260px]"
-            >
-              <img
-                src={item.src}
-                alt={item.alt}
-                className="absolute inset-0 h-full w-full object-cover"
-                loading={index < items.length ? "eager" : "lazy"}
-              />
-            </div>
-          ))}
+    <div className="mb-5 flex items-end justify-between gap-4 border-b border-ink pb-2.5">
+      <h2 className="leading-none">
+        <span className="section-label block text-ink-muted">{label}</span>
+        <span className="mt-1.5 block text-[19px] font-bold text-ink">{title}</span>
+      </h2>
+      {moreHref && (
+        <Link
+          href={moreHref}
+          className="shrink-0 text-[13px] font-bold text-ocean hover:underline"
+        >
+          {moreText} →
+        </Link>
+      )}
+    </div>
+  );
+}
+
+function Byline({ article }: { article: Article }) {
+  const name = authorName(article);
+  return (
+    <div className="mt-4 flex items-center gap-2.5 border-t border-border-line pt-3.5">
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-paper-alt text-[12px] font-bold text-ink-soft">
+        {name.slice(0, 1)}
+      </span>
+      <span className="min-w-0">
+        <span className="block text-[13px] font-bold text-ink">{name}</span>
+        <span className="block text-[11px] text-ink-muted">
+          玉野SDGsみらいづくりセンター
+        </span>
+      </span>
+      <span className="ml-auto shrink-0 text-[11px] text-ink-muted">
+        読了 {readingMinutes(article.body)}分
+      </span>
+    </div>
+  );
+}
+
+/** 最上部の1本。写真を大きく、見出しで読ませる。 */
+function TopStory({ article }: { article: Article }) {
+  return (
+    <article className="pb-8">
+      <Link href={getArticleUrl(article)} className="group block">
+        <div className="relative aspect-[16/9] w-full overflow-hidden rounded bg-paper-deep">
+          {article.thumbnail ? (
+            <img
+              src={article.thumbnail}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover"
+              loading="eager"
+              fetchPriority="high"
+            />
+          ) : (
+            <div className="absolute inset-0 grad-blog" />
+          )}
         </div>
+        <div className="mt-3.5 flex flex-wrap items-center gap-2 text-[11px] text-ink-muted">
+          <span
+            className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${categoryChipClass(
+              article
+            )}`}
+          >
+            {CATEGORY_LABEL[article.category]}
+          </span>
+          <span>{formatDate(article.date)}</span>
+        </div>
+        <h2 className="mt-2.5 text-[26px] font-bold leading-[1.35] text-ink group-hover:text-ocean sm:text-[30px]">
+          {article.title}
+        </h2>
+        <p className="mt-3 text-[14px] leading-[1.9] text-ink-soft">
+          {article.excerpt}
+        </p>
+      </Link>
+      <Byline article={article} />
+    </article>
+  );
+}
+
+/** フィードの1行。左に写真、右にテキスト。 */
+function FeedRow({ article }: { article: Article }) {
+  return (
+    <Link
+      href={getArticleUrl(article)}
+      className="card-interactive group -mx-3 flex gap-4 rounded px-3 py-5"
+    >
+      <div className="relative aspect-[4/3] w-[104px] shrink-0 overflow-hidden rounded bg-paper-deep sm:w-[168px]">
+        {article.thumbnail ? (
+          <img
+            src={article.thumbnail}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <div className="absolute inset-0 grad-blog" />
+        )}
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-2 text-[11px] text-ink-muted">
+          <span
+            className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${categoryChipClass(
+              article
+            )}`}
+          >
+            {CATEGORY_LABEL[article.category]}
+          </span>
+          <span>{formatDate(article.date)}</span>
+        </div>
+        <h3 className="mt-1.5 text-[15px] font-bold leading-[1.5] text-ink group-hover:text-ocean sm:text-[17px]">
+          {article.title}
+        </h3>
+        <p className="mt-1.5 hidden text-[13px] leading-[1.8] text-ink-soft sm:line-clamp-2">
+          {article.excerpt}
+        </p>
+        <div className="mt-2 flex flex-wrap items-center gap-x-2 text-[11px] text-ink-muted">
+          <span className="font-bold text-ink-soft">{authorName(article)}</span>
+          <span>・読了 {readingMinutes(article.body)}分</span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+function InterviewCard({ interview }: { interview: Interview }) {
+  return (
+    <Link
+      href={`/interviews/${interview.slug}`}
+      className="group block"
+    >
+      <div className="relative aspect-[4/5] w-full overflow-hidden rounded bg-paper-deep">
+        {interview.photo ? (
+          <img
+            src={interview.photo}
+            alt={interview.name}
+            className="absolute inset-0 h-full w-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-paper-deep" />
+        )}
+      </div>
+      <p className="mt-3 text-[15px] font-bold leading-[1.6] text-ink group-hover:text-ocean">
+        ❝ {interview.catchphrase} ❞
+      </p>
+      <p className="mt-2 text-[12px] text-ink-muted">{interview.role}</p>
+      <p className="text-[13px] font-bold text-ink">{interview.name}</p>
+    </Link>
+  );
+}
+
+function EventRow({ article }: { article: Article }) {
+  const { month, day } = formatMonthDay(article.date);
+  return (
+    <Link
+      href={getArticleUrl(article)}
+      className="card-interactive group -mx-3 flex items-start gap-4 rounded px-3 py-4"
+    >
+      <div className="w-[46px] shrink-0 border-r border-border-line pr-3 text-center">
+        <span className="block text-[10px] text-ink-muted">{month}月</span>
+        <span className="block text-[24px] font-bold leading-none text-ink">
+          {day}
+        </span>
+      </div>
+      <div className="min-w-0 flex-1">
+        <h3 className="text-[14px] font-bold leading-[1.5] text-ink group-hover:text-ocean">
+          {article.title}
+        </h3>
+        <p className="mt-1 line-clamp-1 text-[12px] text-ink-muted">
+          {article.excerpt}
+        </p>
+      </div>
+    </Link>
+  );
+}
+
+// ── トピックチップ（カテゴリへの入口） ──────────────────────
+
+const TOPICS: { label: string; href: string }[] = [
+  { label: "すべて", href: "/media" },
+  { label: "イベント情報", href: "/events" },
+  { label: "動く人たち", href: "/interviews" },
+  { label: "コーディネーター日記", href: "/blog" },
+  { label: "学生トライアル", href: "#student" },
+  { label: "みらいCafe", href: "#mirai-cafe" },
+  { label: "お知らせ", href: "/news" },
+  { label: "資料・報告書", href: "/documents" },
+];
+
+function TopicBar() {
+  return (
+    <div className="border-b border-border-line bg-paper">
+      <div className="no-scrollbar mx-auto flex max-w-[1180px] gap-2 overflow-x-auto px-5 py-2.5">
+        {TOPICS.map((topic) => (
+          <Link
+            key={topic.label}
+            href={topic.href}
+            className="shrink-0 rounded-full border border-border-line px-3 py-1 text-[12px] text-ink-soft hover:border-ink hover:text-ink"
+          >
+            {topic.label}
+          </Link>
+        ))}
       </div>
     </div>
   );
 }
 
+// ── ページ本体 ──────────────────────────────────────────────
+
 export default async function Home() {
-  const [eventArticles, interviewArticles, noticeRaw, boardCards] = await Promise.all([
-    fetchArticlesByCategory("event", 10),
+  const [latest, events, diaries, interviews] = await Promise.all([
+    fetchLatestArticles(24),
+    fetchArticlesByCategory("event", 12),
+    fetchArticlesByCategory("blog", 4),
     fetchAllInterviews(3),
-    Promise.all([
-      fetchArticlesByCategory("news", 6),
-      fetchArticlesByCategory("blog", 6),
-    ]).then(([news, blog]) =>
-      [...news, ...blog].sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, 8)
-    ),
-    fetchBoardCards(12),
   ]);
 
-  const recentUpdates = [...eventArticles.slice(0, 2), ...noticeRaw.slice(0, 2)]
-    .sort((a, b) => (a.date < b.date ? 1 : -1))
-    .slice(0, 4)
-    .map((a) => ({
-    slug: a.slug,
-    categoryLabel: CATEGORY_LABEL[a.category],
-    date: new Date(a.date).toLocaleDateString("ja-JP", {
-      year: "numeric", month: "2-digit", day: "2-digit",
-    }).replace(/\//g, "."),
-    title: a.title,
-  }));
+  const [topStory, ...rest] = latest;
+  const feed = rest.slice(0, 8);
 
-  const visited = interviewArticles;
-  const [visitedFeature, ...visitedRest] = visited;
-  const visitedSliderItems = visitedFeature ? [visitedFeature, ...visitedRest] : visitedRest;
-  const heroGalleryItems = buildHeroGalleryItems([
-    ...eventArticles,
-    ...noticeRaw,
-  ]);
+  // 今週のピックアップ：将来はmicroCMSで編集部が手で選ぶ。
+  // それまでは新着の上位を暫定的に並べる。
+  const pickups = latest.slice(0, 5);
+
+  const upcoming = events.slice(0, 5);
 
   return (
     <div className="flex flex-col">
+      <TopicBar />
 
-      {/* ── HERO ── */}
-      <section className="bg-paper">
-        <div className="max-w-[1400px] mx-auto px-6 py-14 lg:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-end">
-            <div className="lg:col-span-7">
-              <h1 className="font-serif-h font-black leading-[1.12] text-[10vw] sm:text-[6.5vw] lg:text-[3.6rem] xl:text-[4.5rem] text-ink">
-                玉野の声を、<br />
-                <span className="whitespace-nowrap"><span className="accent-coral">つながる力</span>に。</span>
-              </h1>
-              <p className="mt-7 text-[15px] leading-[2.1] text-ink-soft max-w-[40rem]">
-                市民・団体・企業・行政をつなぎ、相談・伴走・情報発信で、地域の活動を支えます。
-              </p>
-              <div className="mt-9 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl">
-                <Link
-                  href="/contact"
-                  className="group rounded-sm border border-border-line bg-paper-alt px-5 py-4 hover:border-forest/50 hover:bg-forest-pale transition-colors"
-                >
-                  <span className="section-label text-forest">相談する</span>
-                  <span className="mt-2 block font-serif-h text-lg font-bold text-ink group-hover:text-forest transition-colors">話してみる</span>
-                </Link>
-                <Link
-                  href="/events"
-                  className="group rounded-sm border border-border-line bg-paper-alt px-5 py-4 hover:border-amber/50 hover:bg-amber-pale transition-colors"
-                >
-                  <span className="section-label text-amber">参加する</span>
-                  <span className="mt-2 block font-serif-h text-lg font-bold text-ink group-hover:text-amber transition-colors">イベントを見る</span>
-                </Link>
-                <Link
-                  href="/interviews"
-                  className="group rounded-sm border border-border-line bg-paper-alt px-5 py-4 hover:border-ocean/50 hover:bg-ocean-pale transition-colors"
-                >
-                  <span className="section-label text-ocean">知る</span>
-                  <span className="mt-2 block font-serif-h text-lg font-bold text-ink group-hover:text-ocean transition-colors">活動を読む</span>
-                </Link>
+      <div className="mx-auto grid w-full max-w-[1180px] grid-cols-1 gap-x-10 px-5 py-8 lg:grid-cols-[minmax(0,1fr)_300px] lg:py-10">
+        {/* ── メインカラム ── */}
+        <main className="min-w-0">
+          {topStory && <TopStory article={topStory} />}
+
+          {feed.length > 0 && (
+            <section className="border-t border-border-line pt-8">
+              <SectionHead label="Latest" title="最近の動き" moreHref="/media" />
+              <div className="divide-y divide-border-line">
+                {feed.map((article) => (
+                  <FeedRow key={article.slug} article={article} />
+                ))}
               </div>
-            </div>
-
-            <div className="lg:col-span-5">
-              <div className="border-y border-border-line">
-                <div className="flex items-center justify-between py-4">
-                  <p className="section-label text-ink-muted">最近の動き</p>
-                  <Link href="/media" className="text-sm font-bold text-ink-soft hover:text-ink border-b border-border-line hover:border-ink transition-colors pb-0.5">
-                    一覧 →
-                  </Link>
-                </div>
-                <div className="divide-y divide-border-line">
-                  {recentUpdates.map((item) => (
-                    <Link
-                      key={item.slug}
-                      href={`/media/${item.slug}`}
-                      className="group block py-4 hover:bg-paper-alt transition-colors -mx-3 px-3 rounded-sm"
-                    >
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <span className="text-[11px] text-ink-muted tracking-widest">{item.date}</span>
-                        <span className="inline-flex rounded-full bg-paper-alt px-2 py-0.5 text-[10px] font-bold tracking-[.16em] text-ink-muted">
-                          {item.categoryLabel}
-                        </span>
-                      </div>
-                      <h2 className="text-[15px] font-bold leading-snug text-ink group-hover:text-coral transition-colors">
-                        {item.title}
-                      </h2>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <HeroGalleryStrip items={heroGalleryItems} />
-        </div>
-      </section>
-
-      {/* ── VISITED — 訪ねた人・団体 ── */}
-      <section id="visited" className="bg-paper-alt blend-from-paper paper-grain">
-        <div className="max-w-[1400px] mx-auto px-6 pt-20 pb-12 lg:pt-28 lg:pb-14">
-          <div className="flex items-end justify-between mb-12 gap-6">
-            <div>
-              <p className="section-label text-ink-muted mb-4">Voices from Tamano</p>
-              <h2 className="font-serif-h text-4xl sm:text-5xl lg:text-6xl font-black leading-tight text-ink">
-                玉野で<span className="accent-coral">動く人</span>たち<span className="accent-coral">。</span>
-              </h2>
-            </div>
-            <Link
-              href="/interviews"
-              className="hidden md:inline-flex items-center gap-2 text-sm font-bold text-ink-soft hover:text-ink transition-colors whitespace-nowrap pb-2"
-            >
-              すべての対話を見る <span aria-hidden="true">→</span>
-            </Link>
-          </div>
-
-          <p className="max-w-2xl text-[15px] leading-[2] text-ink-soft mb-12">
-            玉野のまちで、自分の手で何かを動かしている人たち。<br />
-            編集部が訪ね、聞き、撮ってきた記録を、ひとつずつ。
-          </p>
-
-          {visited.length === 0 && (
-            <div className="py-16 flex flex-col items-center justify-center text-center border border-dashed border-border-line rounded-sm">
-              <p className="section-label text-ink-muted mb-3">Coming Soon</p>
-              <p className="text-[15px] text-ink-soft leading-relaxed">近日中に随時公開いたします。</p>
-            </div>
+              <Link
+                href="/media"
+                className="mt-6 block rounded border border-border-line py-3 text-center text-[13px] font-bold text-ink hover:border-ink"
+              >
+                もっと見る
+              </Link>
+            </section>
           )}
 
-          {/* Mobile: 横スクロール・オーバーレイカード */}
-          <div className="lg:hidden -mx-6 overflow-x-auto no-scrollbar snap-x snap-mandatory px-6 pb-6">
-            <div className="flex gap-3">
-              {visitedSliderItems.map((iv) => (
-                <Link
-                  key={iv.slug}
-                  href={`/interviews/${iv.slug}`}
-                  className="group relative block w-[72vw] max-w-[280px] shrink-0 snap-start overflow-hidden rounded-sm"
-                  style={{ minHeight: "340px" }}
-                >
-                  {iv.photo ? (
-                    <img src={iv.photo} alt={iv.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" />
-                  ) : (
-                    <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, #3d1f05 0%, #6b3209 40%, #c86d1a 100%)" }} />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-5">
-                    <p className="text-white/50 text-[10px] tracking-widest mb-2">{iv.role}</p>
-                    <p className="font-serif text-white leading-snug mb-2" style={{ fontSize: "clamp(1rem, 4vw, 1.15rem)" }}>
-                      ❝ {iv.catchphrase} ❞
-                    </p>
-                    <p className="text-white font-bold text-sm">{iv.name}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
+          {interviews.length > 0 && (
+            <section className="mt-12">
+              <SectionHead
+                label="Voices from Tamano"
+                title="動く人たち"
+                moreHref="/interviews"
+              />
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5">
+                {interviews.map((interview) => (
+                  <InterviewCard key={interview.slug} interview={interview} />
+                ))}
+              </div>
+            </section>
+          )}
 
-          {/* Desktop: アシンメトリー・オーバーレイグリッド */}
-          <div className="hidden lg:grid lg:grid-cols-12 gap-4 h-[580px]">
+          {upcoming.length > 0 && (
+            <section className="mt-12">
+              <SectionHead
+                label="Event Calendar"
+                title="これからの予定"
+                moreHref="/events"
+              />
+              <div className="divide-y divide-border-line">
+                {upcoming.map((article) => (
+                  <EventRow key={article.slug} article={article} />
+                ))}
+              </div>
+            </section>
+          )}
 
-            {/* フィーチャーカード（左・大） */}
-            {visitedFeature && (
-              <Link
-                href={`/interviews/${visitedFeature.slug}`}
-                className="lg:col-span-7 group relative overflow-hidden rounded-sm h-full"
-              >
-                {visitedFeature.photo ? (
-                  <img src={visitedFeature.photo} alt={visitedFeature.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700" />
-                ) : (
-                  <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, #3d1f05 0%, #6b3209 40%, #c86d1a 100%)" }} />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/5" />
-                <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10">
-                  <p className="section-label text-white/40 mb-4">INTERVIEW</p>
-                  <p
-                    className="font-serif text-white leading-tight mb-5"
-                    style={{ fontSize: "clamp(1.5rem, 2.5vw, 2rem)" }}
+          {diaries.length > 0 && (
+            <section className="mt-12 rounded bg-cream p-5 sm:p-7">
+              <SectionHead
+                label="Coordinator's Journal"
+                title="コーディネーター日記"
+                moreHref="/blog"
+              />
+              <div className="divide-y divide-border-line">
+                {diaries.map((article) => (
+                  <Link
+                    key={article.slug}
+                    href={getArticleUrl(article)}
+                    className="group block py-3.5"
                   >
-                    ❝ {visitedFeature.catchphrase} ❞
-                  </p>
-                  <div className="w-8 h-px mb-4" style={{ background: "#c86d1a" }} />
-                  <p className="text-white/50 text-xs tracking-widest mb-1">{visitedFeature.role}</p>
-                  <p className="text-white font-bold text-lg font-serif">{visitedFeature.name}</p>
-                </div>
+                    <span className="text-[11px] text-ink-muted">
+                      {formatDate(article.date)}
+                    </span>
+                    <h3 className="mt-1 text-[15px] font-bold leading-[1.5] text-ink group-hover:text-ocean">
+                      {article.title}
+                    </h3>
+                    <span className="mt-1 block text-[11px] text-ink-muted">
+                      {authorName(article)}・読了 {readingMinutes(article.body)}分
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
+        </main>
+
+        {/* ── サイドバー（PCのみ・スマホでは本文の下に回る） ── */}
+        <aside className="mt-12 min-w-0 lg:mt-0">
+          <div className="lg:sticky lg:top-6">
+            <section>
+              <SectionHead label="Editors' Pick" title="今週のピックアップ" />
+              <ol className="divide-y divide-border-line">
+                {pickups.map((article, index) => (
+                  <li key={article.slug}>
+                    <Link
+                      href={getArticleUrl(article)}
+                      className="group flex gap-3 py-3.5"
+                    >
+                      <span className="w-4 shrink-0 text-[15px] font-bold text-ink-muted">
+                        {index + 1}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block text-[13px] font-bold leading-[1.6] text-ink group-hover:text-ocean">
+                          {article.title}
+                        </span>
+                        <span className="mt-1 block text-[11px] text-ink-muted">
+                          {CATEGORY_LABEL[article.category]}・
+                          {formatDate(article.date)}
+                        </span>
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+            </section>
+
+            <section className="mt-10">
+              <SectionHead label="About" title="センターについて" />
+              <div className="flex flex-col divide-y divide-border-line">
+                {[
+                  { label: "理念・法人概要", href: "/about" },
+                  { label: "事業内容", href: "/services" },
+                  { label: "資料・報告書", href: "/documents" },
+                  { label: "入会・寄付", href: "/join" },
+                  { label: "お問い合わせ", href: "/contact" },
+                ].map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="py-3 text-[13px] font-bold text-ink hover:text-ocean"
+                  >
+                    {item.label} →
+                  </Link>
+                ))}
+              </div>
+            </section>
+          </div>
+        </aside>
+      </div>
+
+      {/* ── 幅いっぱいで見せるセクション ── */}
+      <div id="mirai-cafe">
+        <MiraiCafeSection />
+      </div>
+
+      <div id="student">
+        <StudentTrialSection />
+      </div>
+
+      {/* ── 下部CTA ── */}
+      <section className="border-t border-border-line bg-paper-alt">
+        <div className="mx-auto max-w-[1180px] px-5 py-12">
+          <h2 className="text-[20px] font-bold text-ink">次の一歩を、ここから。</h2>
+          <p className="mt-2 text-[13px] leading-[1.9] text-ink-soft">
+            相談、参加、支援。目的に合わせて、必要な入口へ進めます。
+          </p>
+          <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            {[
+              {
+                href: "/contact",
+                label: "相談する",
+                text: "連携・協力・取材のご相談、イベントのお申し込み。",
+              },
+              {
+                href: "/join",
+                label: "入会・寄付",
+                text: "会員・寄付で、玉野のまちづくりを継続的に支える。",
+              },
+              {
+                href: "/documents",
+                label: "資料・報告書",
+                text: "調査報告書・機関誌・定款・決算書を公開しています。",
+              },
+            ].map((cta) => (
+              <Link
+                key={cta.href}
+                href={cta.href}
+                className="group rounded border border-border-line bg-paper p-5 hover:border-ink"
+              >
+                <span className="block text-[15px] font-bold text-ink group-hover:text-ocean">
+                  {cta.label} →
+                </span>
+                <span className="mt-2 block text-[12px] leading-[1.8] text-ink-soft">
+                  {cta.text}
+                </span>
               </Link>
-            )}
-
-            {/* サブカード（右・縦2分割） */}
-            <div className="lg:col-span-5 flex flex-col gap-4 h-full">
-              {visitedRest.map((iv) => (
-                <Link
-                  key={iv.slug}
-                  href={`/interviews/${iv.slug}`}
-                  className="group relative overflow-hidden rounded-sm flex-1"
-                >
-                  {iv.photo ? (
-                    <img src={iv.photo} alt={iv.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700" />
-                  ) : (
-                    <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, #3d1f05 0%, #6b3209 40%, #c86d1a 100%)" }} />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <p className="text-white/50 text-[10px] tracking-widest mb-2">{iv.role}</p>
-                    <p className="font-serif text-white leading-snug mb-2" style={{ fontSize: "clamp(1rem, 1.5vw, 1.25rem)" }}>
-                      ❝ {iv.catchphrase} ❞
-                    </p>
-                    <p className="text-white font-bold text-sm">{iv.name}</p>
-                  </div>
-                </Link>
-              ))}
-
-              {/* 記事が2件未満のときは「すべて見る」タイル */}
-              {visitedRest.length < 2 && (
-                <Link
-                  href="/interviews"
-                  className="group relative overflow-hidden rounded-sm flex-1 bg-ink flex items-center justify-between px-7 py-6 hover:bg-ink-night transition-colors"
-                >
-                  <div>
-                    <p className="section-label text-paper/40 mb-2">Archive</p>
-                    <p className="font-serif-h text-xl font-bold text-paper leading-tight">
-                      もっと、たくさんの<br />対話を読む。
-                    </p>
-                  </div>
-                  <span className="text-3xl font-light text-paper/60 group-hover:translate-x-1 transition-transform" aria-hidden="true">→</span>
-                </Link>
-              )}
-            </div>
+            ))}
           </div>
         </div>
       </section>
-
-      {/* ── MIRAI CAFE ── */}
-      <MiraiCafeSection />
-
-      {/* ── HAPPENING ── */}
-      <HappeningSection articles={eventArticles} notices={noticeRaw} />
-
-      {/* ── STUDENT TRIAL ── */}
-      <StudentTrialSection />
-
-      {/* ── BOARD ── */}
-      <BoardSection cards={boardCards} />
-
-
-      {/* ── CTA TRIO ── */}
-      <section className="bg-paper-alt blend-from-paper">
-        <div className="max-w-[1400px] mx-auto px-6 py-16 lg:py-20">
-          <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="section-label text-ink-muted mb-3">センターに関わる</p>
-              <h2 className="font-serif-h text-3xl lg:text-4xl font-bold text-ink leading-tight">
-                次の一歩を、ここから<span className="accent-coral">。</span>
-              </h2>
-            </div>
-            <p className="max-w-md text-[14px] leading-[2] text-ink-soft">
-              支援、相談、資料の確認。目的に合わせて、必要な入口へ進めます。
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
-
-          <Link href="/join" className="group flex min-h-[230px] flex-col gap-6 rounded-sm border border-border-line bg-paper px-6 py-7 lg:px-8 lg:py-9 shadow-[0_1px_0_#e8e2d9] hover:border-amber/50 hover:shadow-[0_1px_0_#d6b98b,0_16px_36px_-28px_rgba(0,0,0,0.22)] transition-all">
-            <span className="section-label text-amber">01 · Support</span>
-            <div>
-              <h3 className="font-serif-h text-2xl lg:text-[28px] font-bold text-ink leading-snug mb-3">
-                寄付・入会
-              </h3>
-              <p className="text-[13px] text-ink-soft leading-[1.9]">
-                寄付・賛助会員として、玉野のまちづくりを継続的にサポートしていただけませんか。
-              </p>
-            </div>
-            <span className="mt-auto inline-flex items-center gap-2 text-amber text-[13px] font-bold group-hover:gap-3 transition-all">
-              くわしく見る →
-            </span>
-          </Link>
-
-          <Link href="/contact" className="group flex min-h-[230px] flex-col gap-6 rounded-sm border border-border-line bg-paper px-6 py-7 lg:px-8 lg:py-9 shadow-[0_1px_0_#e8e2d9] hover:border-ocean/50 hover:shadow-[0_1px_0_#9ccadb,0_16px_36px_-28px_rgba(0,0,0,0.22)] transition-all">
-            <span className="section-label text-ocean">02 · Contact</span>
-            <div>
-              <h3 className="font-serif-h text-2xl lg:text-[28px] font-bold text-ink leading-snug mb-3">
-                お問い合わせ
-              </h3>
-              <p className="text-[13px] text-ink-soft leading-[1.9]">
-                連携・協力・取材のご相談、イベントへのお申し込みなど、お気軽にご連絡ください。
-              </p>
-            </div>
-            <span className="mt-auto inline-flex items-center gap-2 text-ocean text-[13px] font-bold group-hover:gap-3 transition-all">
-              フォームを開く →
-            </span>
-          </Link>
-
-          <Link href="/documents" className="group flex min-h-[230px] flex-col gap-6 rounded-sm border border-border-line bg-paper px-6 py-7 lg:px-8 lg:py-9 shadow-[0_1px_0_#e8e2d9] hover:border-forest/50 hover:shadow-[0_1px_0_#a7c9b6,0_16px_36px_-28px_rgba(0,0,0,0.22)] transition-all">
-            <span className="section-label text-forest">03 · Documents</span>
-            <div>
-              <h3 className="font-serif-h text-2xl lg:text-[28px] font-bold text-ink leading-snug mb-3">
-                資料・報告書
-              </h3>
-              <p className="text-[13px] text-ink-soft leading-[1.9]">
-                調査報告書・機関誌・定款・決算書など、センターの活動記録を公開しています。
-              </p>
-            </div>
-            <span className="mt-auto inline-flex items-center gap-2 text-forest text-[13px] font-bold group-hover:gap-3 transition-all">
-              一覧を見る →
-            </span>
-          </Link>
-
-          </div>
-        </div>
-      </section>
-
     </div>
   );
 }
