@@ -5,24 +5,42 @@ import Image from "next/image";
 import { useState } from "react";
 import { Menu, X, Search } from "lucide-react";
 
-/* ヘッダー：高さ64px・追従。影はサイト内でここだけに使う。 */
+/* ヘッダー：高さ64px・追従。影はサイト内でここだけに使う。
+
+   役割分担：
+   - ヘッダー   ＝「この団体は何者か・どう関われるか」（組織への入口）
+   - TopicBar   ＝「今日は何を読もうか」（記事カテゴリの絞り込み）
+   同じ項目を両方に置かないこと。以前は7項目中6項目が重複していた。 */
 
 const navLinks = [
-  { href: "/media", label: "最新" },
-  { href: "/interviews", label: "動く人たち" },
-  { href: "/events", label: "イベント" },
-  { href: "/lessons", label: "学校と、つくる" },
-  { href: "/#student", label: "学生トライアル" },
-  { href: "/blog", label: "日記" },
   { href: "/about", label: "センターについて" },
+  { href: "/services", label: "事業内容" },
+  { href: "/members", label: "役員・講演のご依頼" },
+  { href: "/join", label: "入会・寄付" },
 ];
 
-const menuLinks = [
-  ...navLinks,
-  { href: "/news", label: "お知らせ" },
-  { href: "/documents", label: "資料・報告書" },
-  { href: "/join", label: "入会・寄付" },
-  { href: "/contact", label: "お問い合わせ" },
+// メニューは、上のバーに入りきらない項目もここで補う
+const menuGroups = [
+  {
+    heading: "読む",
+    links: [
+      { href: "/media", label: "すべての記事" },
+      { href: "/events", label: "イベント情報" },
+      { href: "/interviews", label: "動く人たち" },
+      { href: "/blog", label: "コーディネーター日記" },
+      { href: "/lessons", label: "学校と、つくる" },
+      { href: "/news", label: "お知らせ" },
+    ],
+  },
+  {
+    heading: "センターを知る・関わる",
+    links: [
+      ...navLinks,
+      { href: "/history", label: "沿革" },
+      { href: "/documents", label: "資料・報告書" },
+      { href: "/contact", label: "お問い合わせ" },
+    ],
+  },
 ];
 
 export default function Header() {
@@ -68,7 +86,7 @@ export default function Header() {
           </Link>
           <button
             type="button"
-            className="grid h-11 w-11 place-items-center rounded text-ink hover:bg-[rgba(34,34,34,.05)] lg:hidden"
+            className="grid h-11 w-11 place-items-center rounded text-ink hover:bg-[rgba(34,34,34,.05)]"
             onClick={() => setOpen(!open)}
             aria-label={open ? "メニューを閉じる" : "メニューを開く"}
             aria-expanded={open}
@@ -85,17 +103,24 @@ export default function Header() {
       </div>
 
       {open && (
-        <div className="border-t border-border-line bg-paper lg:hidden">
-          <nav className="mx-auto flex max-w-[1232px] flex-col px-4 py-2">
-            {menuLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="border-b border-border-line py-3.5 text-[14px] font-bold text-ink last:border-b-0 hover:text-ocean"
-                onClick={() => setOpen(false)}
-              >
-                {link.label}
-              </Link>
+        <div className="border-t border-border-line bg-paper">
+          <nav className="mx-auto grid max-w-[1232px] gap-6 px-4 py-4 sm:grid-cols-2">
+            {menuGroups.map((group) => (
+              <div key={group.heading}>
+                <p className="mb-1 text-[10px] tracking-[.12em] text-ink-muted">
+                  {group.heading}
+                </p>
+                {group.links.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="block border-b border-border-line py-3 text-[14px] font-bold text-ink last:border-b-0 hover:text-ocean"
+                    onClick={() => setOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
             ))}
           </nav>
         </div>

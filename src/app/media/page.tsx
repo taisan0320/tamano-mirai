@@ -22,12 +22,6 @@ export const metadata: Metadata = {
     "玉野SDGsみらいづくりセンターのイベント情報・動く人たち・コーディネーター日記・お知らせをまとめて読めます。",
 };
 
-const categories: { key: Category | "all"; label: string }[] = [
-  { key: "all", label: "すべて" },
-  { key: "event", label: CATEGORY_LABEL.event },
-  { key: "blog", label: CATEGORY_LABEL.blog },
-  { key: "news", label: CATEGORY_LABEL.news },
-];
 
 export default async function MediaPage({
   searchParams,
@@ -55,28 +49,6 @@ export default async function MediaPage({
 
   return (
     <div className="flex flex-col">
-      {/* ── カテゴリの絞り込み ── */}
-      <div className="border-b border-border-line bg-paper">
-        <div className="no-scrollbar mx-auto flex max-w-[1232px] gap-2 overflow-x-auto px-4 py-2.5">
-          {categories.map((c) => {
-            const isActive = activeCategory === c.key;
-            return (
-              <Link
-                key={c.key}
-                href={c.key === "all" ? "/media" : `/media?category=${c.key}`}
-                className={`shrink-0 rounded-full border px-3 py-1 text-[12px] ${
-                  isActive
-                    ? "border-ink bg-ink text-white"
-                    : "border-border-line text-ink-soft hover:border-ink hover:text-ink"
-                }`}
-              >
-                {c.label}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-
       <div className="mx-auto grid w-full max-w-[1232px] grid-cols-1 items-start gap-x-12 px-4 pb-8 lg:grid-cols-[minmax(0,1fr)_320px]">
         <main className="min-w-0">
           <nav className="flex flex-wrap items-center gap-1.5 pt-4 text-[11px] text-ink-soft">

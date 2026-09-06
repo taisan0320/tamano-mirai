@@ -149,38 +149,6 @@ function EventRow({ article }: { article: Article }) {
   );
 }
 
-// ── トピックチップ（カテゴリへの入口） ──────────────────────
-
-const TOPICS: { label: string; href: string }[] = [
-  { label: "すべて", href: "/media" },
-  { label: "イベント情報", href: "/events" },
-  { label: "動く人たち", href: "/interviews" },
-  { label: "コーディネーター日記", href: "/blog" },
-  { label: "学校と、つくる", href: "/lessons" },
-  { label: "学生トライアル", href: "#student" },
-  { label: "みらいCafe", href: "#mirai-cafe" },
-  { label: "お知らせ", href: "/news" },
-  { label: "資料・報告書", href: "/documents" },
-];
-
-function TopicBar() {
-  return (
-    <div className="border-b border-border-line bg-paper">
-      <div className="no-scrollbar mx-auto flex max-w-[1232px] gap-2 overflow-x-auto px-4 py-2.5">
-        {TOPICS.map((topic) => (
-          <Link
-            key={topic.label}
-            href={topic.href}
-            className="shrink-0 rounded-full border border-border-line px-3 py-1 text-[12px] text-ink-soft hover:border-ink hover:text-ink"
-          >
-            {topic.label}
-          </Link>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 // ── ページ本体 ──────────────────────────────────────────────
 
 export default async function Home() {
@@ -202,8 +170,6 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col">
-      <TopicBar />
-
       <div className="mx-auto grid w-full max-w-[1232px] grid-cols-1 items-start gap-x-12 px-4 pb-8 lg:grid-cols-[minmax(0,1fr)_320px]">
         {/* ── メインカラム ── */}
         <main className="min-w-0">
