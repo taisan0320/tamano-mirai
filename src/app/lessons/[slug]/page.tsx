@@ -62,6 +62,16 @@ export default async function LessonDetailPage({
     { term: "学校", value: lesson.school },
     { term: "対象", value: lesson.target },
     ...(lesson.period ? [{ term: "実施", value: lesson.period }] : []),
+    ...(lesson.guestCount
+      ? [
+          {
+            term: "参加人数",
+            value: `地域の大人 ${lesson.guestCount}名${
+              lesson.guestCountNote ? `（${lesson.guestCountNote}）` : ""
+            }`,
+          },
+        ]
+      : []),
     ...(lesson.organizer ? [{ term: "企画・運営", value: lesson.organizer }] : []),
     { term: "センターの役割", value: lesson.roles.join("／") },
     ...(lesson.coordinator ? [{ term: "担当", value: lesson.coordinator }] : []),

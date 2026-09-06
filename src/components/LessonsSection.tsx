@@ -3,7 +3,7 @@ import {
   fetchAllLessons,
   countSchools,
   diariesForLesson,
-  LESSON_STATS,
+  totalGuests,
   type Lesson,
 } from "@/lib/lessons";
 import { fetchArticlesByCategory, getArticleUrl } from "@/lib/articles";
@@ -88,14 +88,14 @@ export default async function LessonsSection() {
   const rest = lessons.filter((l) => l.slug !== lead.slug).slice(0, 4);
   const leadDiaries = diariesForLesson(lead, diaryArticles);
 
+  // 人数は数えられる授業だけが持つ。1つもなければ枠自体を出さない。
+  const guests = totalGuests(lessons);
   const stats = [
     { value: String(countSchools(lessons)), unit: "校", label: "連携している学校" },
     { value: String(lessons.length), unit: "本", label: "今年度の授業・講座" },
-    {
-      value: String(LESSON_STATS.guestCount),
-      unit: "名",
-      label: "参加した地域の大人",
-    },
+    ...(guests > 0
+      ? [{ value: String(guests), unit: "名", label: "参加した地域の大人" }]
+      : []),
   ];
 
   return (

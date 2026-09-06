@@ -21,8 +21,11 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // html に scroll-smooth は付けない。付けると、ページ移動のときに
+  // Next.js が行う「先頭へ戻すスクロール」がアニメーションになり、
+  // 新しいページが前の位置（ページ中ほど）から上へスーッと動いて見えてしまう。
   return (
-    <html lang="ja" className="h-full scroll-smooth">
+    <html lang="ja" className="h-full">
       <body className="min-h-full flex flex-col antialiased">
         <Header />
         <main className="flex-1">{children}</main>

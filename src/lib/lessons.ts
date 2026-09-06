@@ -35,6 +35,10 @@ export interface Lesson {
   organizer: string;
   /** 担当コーディネーター */
   coordinator: string;
+  /** 参加した地域の大人の人数。数えられる授業だけ入れる（任意） */
+  guestCount?: number;
+  /** 人数の数え方の補足。例：「前年度実績」 */
+  guestCountNote?: string;
   mainPhoto?: LessonPhoto;
   subPhotos: LessonPhoto[];
   /** 何を狙った授業か */
@@ -71,7 +75,9 @@ const staticLessons: Lesson[] = [
       "振り返りの設計",
       "実行委員会への伴走",
     ],
-    period: "2026年10月（予定）／前年度は40名の地域の大人が参加",
+    period: "2026年10月（予定）",
+    guestCount: 40,
+    guestCountNote: "前年度実績",
     organizer: "2年生「エジソン実行委員会」＋ 玉野高校の先生方",
     coordinator: "西田井 祐也（地域学校連携コーディネーター）",
     mainPhoto: {
@@ -185,11 +191,11 @@ const staticLessons: Lesson[] = [
   },
 ];
 
-/** 数値の実績。学校数と本数はデータから数え、人数だけ実績値を持つ。 */
-export const LESSON_STATS = {
-  /** 前年度エジソンに参加した地域の大人の人数（暫定値・要確認） */
-  guestCount: 40,
-};
+/** 参加した地域の大人の合計。人数を入れている授業だけを足す。
+    どの授業にも人数がなければ0を返し、表示側はその項目を出さない。 */
+export function totalGuests(lessons: Lesson[]): number {
+  return lessons.reduce((sum, l) => sum + (l.guestCount ?? 0), 0);
+}
 
 // ─── microCMS 連携 ───────────────────────────────────────────
 
@@ -203,6 +209,8 @@ type CMSLesson = MicroCMSListContent & {
   period?: string;
   organizer?: string;
   coordinator?: string;
+  guestCount?: number;
+  guestCountNote?: string;
   mainPhoto?: { url: string };
   mainPhotoCaption?: string;
   subPhotos?: { photo?: { url: string }; caption?: string }[];
@@ -236,6 +244,8 @@ function cmsToLesson(item: CMSLesson): Lesson {
     period: item.period ?? "",
     organizer: item.organizer ?? "",
     coordinator: item.coordinator ?? "",
+    guestCount: item.guestCount,
+    guestCountNote: item.guestCountNote,
     mainPhoto: item.mainPhoto
       ? { url: item.mainPhoto.url, caption: item.mainPhotoCaption ?? "" }
       : undefined,
