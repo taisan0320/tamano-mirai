@@ -27,6 +27,7 @@ const footerNav = [
     links: [
       { label: "入会・寄付", href: "/join" },
       { label: "学生トライアル", href: "/#student" },
+      { label: "学校と、つくる", href: "/lessons" },
       { label: "講演のご依頼", href: "/about#speakers" },
       { label: "資料・報告書", href: "/documents" },
       { label: "お問い合わせ", href: "/contact" },

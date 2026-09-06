@@ -11,6 +11,7 @@ import {
 import { fetchAllInterviews, type Interview } from "@/lib/interviews";
 import StudentTrialSection from "@/components/StudentTrialSection";
 import MiraiCafeSection, { NEXT_CAFE } from "@/components/MiraiCafeSection";
+import LessonsSection from "@/components/LessonsSection";
 import {
   AboutCard,
   PickupCard,
@@ -156,6 +157,7 @@ const TOPICS: { label: string; href: string }[] = [
   { label: "イベント情報", href: "/events" },
   { label: "動く人たち", href: "/interviews" },
   { label: "コーディネーター日記", href: "/blog" },
+  { label: "学校と、つくる", href: "/lessons" },
   { label: "学生トライアル", href: "#student" },
   { label: "みらいCafe", href: "#mirai-cafe" },
   { label: "お知らせ", href: "/news" },
@@ -249,6 +251,8 @@ export default async function Home() {
               </div>
             </section>
           )}
+
+          <LessonsSection />
 
           <MiraiCafeSection />
 

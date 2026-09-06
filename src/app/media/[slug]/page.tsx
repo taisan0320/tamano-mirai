@@ -19,7 +19,9 @@ import {
   PickupCard,
   MembershipCard,
   FollowCard,
+  SidebarCard,
 } from "@/components/Sidebar";
+import { fetchAllLessons, lessonForArticle } from "@/lib/lessons";
 
 export const revalidate = 60;
 export const dynamicParams = true;
@@ -73,10 +75,14 @@ export default async function ArticlePage({
   const minutes = readingMinutes(article.body);
   const isInterview = article.category === "interview" || article.category === "story";
 
-  const [sameCategory, allArticles] = await Promise.all([
+  const [sameCategory, allArticles, lessons] = await Promise.all([
     fetchArticlesByCategory(article.category, 10),
     fetchLatestArticles(100),
+    fetchAllLessons(100),
   ]);
+
+  // この記事が書かれた授業（記事のタグと授業の合言葉が一致したもの）
+  const lesson = lessonForArticle(article, lessons);
 
   // この執筆者が書いた本数（サイドバーの表示に使う）
   const writerCount = allArticles.filter((a) => authorName(a) === name).length;
@@ -117,6 +123,14 @@ export default async function ArticlePage({
         <article className="pb-6 pt-2">
           <div className="flex flex-wrap items-center gap-2 text-[12px] leading-tight text-ink-soft">
             <CategoryTag category={article.category} />
+            {lesson && (
+              <Link
+                href={`/lessons/${lesson.slug}`}
+                className="rounded-sm border border-border-line px-1.5 py-[3px] text-[11px] font-bold leading-tight text-ink-soft hover:border-ink hover:text-ink"
+              >
+                {lesson.programTag}
+              </Link>
+            )}
             <span>{formatDate(article.date)}</span>
           </div>
 
@@ -202,6 +216,39 @@ export default async function ArticlePage({
             <CopyLinkButton url={shareUrl} />
           </div>
 
+          {/* ── この日記が書かれた授業 ── */}
+          {lesson && (
+            <div className="my-6 overflow-hidden rounded border border-border-line">
+              {lesson.mainPhoto && (
+                <img
+                  src={lesson.mainPhoto.url}
+                  alt=""
+                  className="aspect-[2.6/1] w-full object-cover"
+                  loading="lazy"
+                />
+              )}
+              <div className="px-4 pb-4 pt-3.5">
+                <p className="text-[10px] leading-tight tracking-[.12em] text-ink-muted">
+                  この日記が書かれた授業
+                </p>
+                <h2 className="my-1.5 text-[15px] font-bold leading-[1.25] text-ink">
+                  <Link href={`/lessons/${lesson.slug}`} className="hover:text-ocean">
+                    {lesson.title}
+                  </Link>
+                </h2>
+                <p className="text-[12px] leading-[1.7] text-ink-soft">
+                  {lesson.school} ・ {lesson.target}。{lesson.roles.join("、")}まで伴走しています。
+                </p>
+                <Link
+                  href={`/lessons/${lesson.slug}`}
+                  className="mt-2.5 inline-block text-[13px] font-bold text-ocean hover:underline"
+                >
+                  授業の記録を読む →
+                </Link>
+              </div>
+            </div>
+          )}
+
           {/* ── 執筆者 ── */}
           <div className="my-6 flex gap-3.5 rounded border border-border-line p-4">
             <Avatar name={name} size={56} />
@@ -277,6 +324,19 @@ export default async function ArticlePage({
       <aside className="min-w-0 pb-8 pt-4">
         <div className="lg:sticky lg:top-[88px]">
           <SingleWriterCard writer={{ name, role, count: writerCount }} />
+          {lesson && (
+            <SidebarCard label="Program" title="この授業について">
+              <p className="mt-2 text-[12px] leading-[1.7] text-ink-soft">
+                {lesson.summary}
+              </p>
+              <Link
+                href={`/lessons/${lesson.slug}`}
+                className="mt-3 block rounded bg-ocean py-2.5 text-center text-[14px] font-bold leading-none text-white hover:bg-ocean-dark"
+              >
+                授業の記録を見る
+              </Link>
+            </SidebarCard>
+          )}
           <PickupCard articles={pickups} />
           <MembershipCard />
           <FollowCard />

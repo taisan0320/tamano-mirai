@@ -11,6 +11,7 @@ const navLinks = [
   { href: "/media", label: "最新" },
   { href: "/interviews", label: "動く人たち" },
   { href: "/events", label: "イベント" },
+  { href: "/lessons", label: "学校と、つくる" },
   { href: "/#student", label: "学生トライアル" },
   { href: "/blog", label: "日記" },
   { href: "/about", label: "センターについて" },
