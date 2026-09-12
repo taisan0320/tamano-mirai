@@ -1,12 +1,13 @@
-import { createClient, type MicroCMSListContent } from "microcms-js-sdk";
+import { fetchTopObject } from "@/lib/top";
 
 /* ============================================================
    みらいCafe（独自企画の定例会）
 
    ■ データの入れ方
    1. いまは下の staticEvents を編集すると反映される。
-   2. microCMS に「cafe」エンドポイントを作ると、自動でそちらを読む。
-      必要なフィールド名は CMSCafe の型のとおり。
+   2. microCMS の「トップページ設定」（top）に繰り返しフィールド cafeEvents を作り、
+      1回分ずつ入れると、自動でそちらを読む。無料プランの API 数の上限（5つ）に
+      収めるため、みらいCafe専用の API は作らない。中身は CMSCafeEvent の型のとおり。
 
    ■ 表示のしかた
    今日の日付より後の回だけを、近い順に表示する。
@@ -119,11 +120,13 @@ export function cafeDateParts(value: string): { month: string; day: string; week
   return { month: pick("month"), day: pick("day"), weekday: pick("weekday") };
 }
 
-// ─── microCMS 連携 ───────────────────────────────────────────
+// ─── microCMS 連携（「トップページ設定」の繰り返しフィールド cafeEvents） ──
 
-type CMSCafe = MicroCMSListContent & {
-  date: string;
-  title: string;
+type CMSCafeEvent = {
+  /** 繰り返しフィールドの各行に付くカスタムフィールドのID（cafeEvent） */
+  fieldId?: string;
+  date?: string;
+  title?: string;
   venue?: string;
   fee?: string | string[];
   detail?: string;
@@ -132,19 +135,11 @@ type CMSCafe = MicroCMSListContent & {
   tbd?: boolean;
 };
 
-const client =
-  process.env.MICROCMS_SERVICE_DOMAIN &&
-  process.env.MICROCMS_API_KEY &&
-  !process.env.MICROCMS_SERVICE_DOMAIN.startsWith("your-")
-    ? createClient({
-        serviceDomain: process.env.MICROCMS_SERVICE_DOMAIN,
-        apiKey: process.env.MICROCMS_API_KEY,
-      })
-    : null;
-
-function cmsToCafe(item: CMSCafe): CafeEvent {
+function cmsToCafe(item: CMSCafeEvent, index: number): CafeEvent | null {
+  // 日付とタイトルがない行（入力途中）は出さない
+  if (!item.date || !item.title) return null;
   return {
-    id: item.id,
+    id: `cms-${index}-${item.date}`,
     date: item.date,
     title: item.title,
     venue: item.venue ?? "",
@@ -157,20 +152,14 @@ function cmsToCafe(item: CMSCafe): CafeEvent {
   };
 }
 
-/** 年間のすべての回（古い順） */
+/** 年間のすべての回（古い順）。microCMS に1件でもあればそちら、なければ静的データ */
 export async function fetchAllCafeEvents(): Promise<CafeEvent[]> {
-  if (client) {
-    try {
-      const res = await client.getList<CMSCafe>({
-        endpoint: "cafe",
-        queries: { limit: 100, orders: "date" },
-      });
-      if (res.contents.length > 0) return res.contents.map(cmsToCafe);
-    } catch {
-      // cafe エンドポイントが未作成のときは静的データを使う
-    }
-  }
-  return [...staticEvents].sort((a, b) => a.date.localeCompare(b.date));
+  const top = await fetchTopObject<{ cafeEvents?: CMSCafeEvent[] }>();
+  const fromCms = (top?.cafeEvents ?? [])
+    .map(cmsToCafe)
+    .filter((e): e is CafeEvent => e !== null);
+  const events = fromCms.length > 0 ? fromCms : staticEvents;
+  return [...events].sort((a, b) => tokyoDay(a.date).localeCompare(tokyoDay(b.date)));
 }
 
 /** 今日以降の回を、近い順に n 件 */

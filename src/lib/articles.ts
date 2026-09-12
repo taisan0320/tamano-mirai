@@ -196,6 +196,7 @@ import {
   type MicroCMSListContent,
   type MicroCMSObjectContent,
 } from "microcms-js-sdk";
+import { fetchTopObject } from "@/lib/top";
 
 type CMSArticle = MicroCMSListContent & {
   title: string;
@@ -321,21 +322,14 @@ export interface TopSettings {
 }
 
 export async function fetchTopSettings(): Promise<TopSettings> {
-  if (client) {
-    try {
-      const res = await client.getObject<CMSTopSettings>({ endpoint: "top" });
-      return {
-        hero: res.hero ? cmsToArticle(res.hero) : null,
-        // 参照先の記事が非公開・削除されていると null が混ざるので除く
-        pickups: (res.pickups ?? [])
-          .filter((p): p is CMSArticle => Boolean(p))
-          .map(cmsToArticle),
-      };
-    } catch {
-      // top API が未作成のときは自動表示にする
-    }
-  }
-  return { hero: null, pickups: [] };
+  const res = await fetchTopObject<CMSTopSettings>();
+  if (!res) return { hero: null, pickups: [] };
+  // 参照先の記事が非公開・削除されていると、null や中身の欠けたものが混ざるので除く
+  const usable = (p: CMSArticle | null | undefined): p is CMSArticle => Boolean(p?.title);
+  return {
+    hero: usable(res.hero) ? cmsToArticle(res.hero) : null,
+    pickups: (res.pickups ?? []).filter(usable).map(cmsToArticle),
+  };
 }
 
 /** 今週のピックアップ。手で選んだものがあればそれ、なければ新着順 */

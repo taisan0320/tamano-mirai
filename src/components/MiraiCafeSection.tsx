@@ -4,7 +4,7 @@ import {
   DEFAULT_CAFE_TIME,
 } from "@/lib/cafe";
 
-/* みらいCafe。データは lib/cafe.ts（将来は microCMS の cafe エンドポイント）。
+/* みらいCafe。データは lib/cafe.ts（microCMS では「トップページ設定」の cafeEvents）。
    今日以降の回だけを近い順に3件出す。終わった回は自動で消える。 */
 
 const EMAIL = "info@npo-tamano-mirai.com";
