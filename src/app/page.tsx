@@ -4,6 +4,7 @@ import Link from "next/link";
 import {
   fetchLatestArticles,
   fetchArticlesByCategory,
+  fetchTopSettings,
   getArticleUrl,
   type Article,
 } from "@/lib/articles";
@@ -12,6 +13,7 @@ import StudentTrialSection from "@/components/StudentTrialSection";
 import MiraiCafeSection from "@/components/MiraiCafeSection";
 import { fetchUpcomingCafeEvents, cafeDateParts, DEFAULT_CAFE_TIME } from "@/lib/cafe";
 import LessonsSection from "@/components/LessonsSection";
+import LearningSection from "@/components/LearningSection";
 import {
   AboutCard,
   PickupCard,
@@ -154,20 +156,22 @@ function EventRow({ article }: { article: Article }) {
 // ── ページ本体 ──────────────────────────────────────────────
 
 export default async function Home() {
-  const [latest, events, diaries, interviews, [nextCafe]] = await Promise.all([
+  const [latest, events, diaries, interviews, [nextCafe], top] = await Promise.all([
     fetchLatestArticles(24),
     fetchArticlesByCategory("event", 12),
     fetchArticlesByCategory("blog", 6),
     fetchAllInterviews(4),
     fetchUpcomingCafeEvents(1),
+    fetchTopSettings(),
   ]);
 
-  const [topStory, ...rest] = latest;
-  const feed = rest.slice(0, 8);
+  // トップの記事：microCMS の「トップページ設定」で選んだものを優先し、
+  // 未設定なら新着の1本目。フィードには同じ記事を重ねて出さない。
+  const topStory = top.hero ?? latest[0];
+  const feed = latest.filter((a) => a.slug !== topStory?.slug).slice(0, 8);
 
-  // 今週のピックアップ：将来はmicroCMSで編集部が手で選ぶ。
-  // それまでは新着の上位を暫定的に並べる。
-  const pickups = latest.slice(0, 5);
+  // 今週のピックアップ：「トップページ設定」で選んだもの。未設定なら新着の上位5本
+  const pickups = top.pickups.length > 0 ? top.pickups.slice(0, 5) : latest.slice(0, 5);
 
   const upcoming = events.slice(0, 5);
 
@@ -245,6 +249,8 @@ export default async function Home() {
           <MiraiCafeSection />
 
           <StudentTrialSection />
+
+          <LearningSection />
         </main>
 
         {/* ── サイドバー（PCのみ・スマホでは本文の下に回る） ── */}

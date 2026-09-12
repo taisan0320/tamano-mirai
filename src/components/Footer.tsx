@@ -9,6 +9,7 @@ const footerNav = [
       { label: "イベント情報", href: "/events" },
       { label: "動く人たち", href: "/interviews" },
       { label: "コーディネーター日記", href: "/blog" },
+      { label: "学びを、考える", href: "/learning" },
       { label: "お知らせ", href: "/news" },
       { label: "すべての記事", href: "/media" },
     ],

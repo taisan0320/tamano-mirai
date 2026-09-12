@@ -9,9 +9,12 @@ import { CategoryTag } from "@/components/ui";
 export default function ArticleRow({
   article,
   showExcerpt = true,
+  labels = [],
 }: {
   article: Article;
   showExcerpt?: boolean;
+  /** カテゴリの横に出す小さなラベル（例：「AI」「教育」） */
+  labels?: string[];
 }) {
   return (
     <Link
@@ -33,6 +36,14 @@ export default function ArticleRow({
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2 text-[12px] leading-tight text-ink-soft">
           <CategoryTag category={article.category} />
+          {labels.map((label) => (
+            <span
+              key={label}
+              className="rounded-sm border border-border-line px-1.5 py-[3px] text-[11px] leading-tight text-ink-soft"
+            >
+              {label}
+            </span>
+          ))}
           <span>{formatDate(article.date)}</span>
         </div>
         <h3 className="mt-1.5 text-[14px] font-bold leading-[1.35] text-ink group-hover:text-ocean sm:text-[15px]">

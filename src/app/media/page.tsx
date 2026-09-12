@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   fetchLatestArticles,
   fetchArticlesByCategory,
+  fetchPickups,
   CATEGORY_LABEL,
   type Category,
 } from "@/lib/articles";
@@ -45,7 +46,7 @@ export default async function MediaPage({
       )
     : base;
 
-  const pickups = await fetchLatestArticles(5);
+  const pickups = await fetchPickups(5);
 
   return (
     <div className="flex flex-col">

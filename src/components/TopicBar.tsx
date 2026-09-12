@@ -10,6 +10,7 @@ const TOPICS: { label: string; href: string }[] = [
   { label: "イベント情報", href: "/events" },
   { label: "動く人たち", href: "/interviews" },
   { label: "コーディネーター日記", href: "/blog" },
+  { label: "学びを、考える", href: "/learning" },
   { label: "学校と、つくる", href: "/lessons" },
   { label: "学生トライアル", href: "/#student" },
   { label: "みらいCafe", href: "/#mirai-cafe" },

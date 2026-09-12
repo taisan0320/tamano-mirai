@@ -6,7 +6,7 @@ import {
   fetchAllInterviews,
   fetchAllInterviewSlugs,
 } from "@/lib/interviews";
-import { fetchLatestArticles } from "@/lib/articles";
+import { fetchPickups } from "@/lib/articles";
 import { Avatar } from "@/components/ui";
 import { formatDate, readingMinutes } from "@/lib/format";
 import CopyLinkButton from "@/components/CopyLinkButton";
@@ -50,7 +50,7 @@ export default async function InterviewDetailPage({
   const [interview, allInterviews, latest] = await Promise.all([
     fetchInterviewBySlug(slug),
     fetchAllInterviews(),
-    fetchLatestArticles(5),
+    fetchPickups(5),
   ]);
 
   if (!interview) notFound();

@@ -5,6 +5,7 @@ import {
   fetchArticlesByCategory,
   fetchArticleBySlug,
   fetchLatestArticles,
+  fetchPickups,
   CATEGORY_LABEL,
   CATEGORY_ROUTE,
   getArticleUrl,
@@ -75,10 +76,11 @@ export default async function ArticlePage({
   const minutes = readingMinutes(article.body);
   const isInterview = article.category === "interview" || article.category === "story";
 
-  const [sameCategory, allArticles, lessons] = await Promise.all([
+  const [sameCategory, allArticles, lessons, pickupPool] = await Promise.all([
     fetchArticlesByCategory(article.category, 10),
     fetchLatestArticles(100),
     fetchAllLessons(100),
+    fetchPickups(4),
   ]);
 
   // この記事が書かれた授業（記事のタグと授業の合言葉が一致したもの）
@@ -97,7 +99,8 @@ export default async function ArticlePage({
       ? sorted[currentIndex + 1]
       : null;
   const related = sorted.filter((a) => a.slug !== article.slug).slice(0, 3);
-  const pickups = allArticles.filter((a) => a.slug !== article.slug).slice(0, 3);
+  // いま読んでいる記事はピックアップから外す
+  const pickups = pickupPool.filter((a) => a.slug !== article.slug).slice(0, 3);
 
   const shareUrl = `${BASE_URL}/media/${article.slug}`;
   const twitterShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(

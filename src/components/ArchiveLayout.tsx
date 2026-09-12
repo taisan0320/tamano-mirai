@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { fetchLatestArticles } from "@/lib/articles";
+import { fetchPickups } from "@/lib/articles";
 import {
   AboutCard,
   PickupCard,
@@ -22,7 +22,7 @@ export default async function ArchiveLayout({
   description: string;
   children: React.ReactNode;
 }) {
-  const pickups = await fetchLatestArticles(5);
+  const pickups = await fetchPickups(5);
 
   return (
     <div className="mx-auto grid w-full max-w-[1232px] grid-cols-1 items-start gap-x-12 px-4 pb-8 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -87,7 +87,7 @@ export async function StaticPageLayout({
   children: React.ReactNode;
   sidebar?: React.ReactNode;
 }) {
-  const pickups = await fetchLatestArticles(5);
+  const pickups = await fetchPickups(5);
 
   return (
     <div className="mx-auto grid w-full max-w-[1232px] grid-cols-1 items-start gap-x-12 px-4 pb-8 lg:grid-cols-[minmax(0,1fr)_320px]">

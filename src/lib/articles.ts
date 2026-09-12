@@ -1,4 +1,12 @@
-export type Category = "event" | "interview" | "news" | "story" | "blog" | "explore" | "volunteer";
+export type Category =
+  | "event"
+  | "interview"
+  | "news"
+  | "story"
+  | "blog"
+  | "learning"
+  | "explore"
+  | "volunteer";
 
 export interface Article {
   slug: string;
@@ -19,57 +27,28 @@ export const CATEGORY_LABEL: Record<Category, string> = {
   news: "お知らせ",
   story: "玉野の話",
   blog: "コーディネーター日記",
+  learning: "学びを、考える",
   explore: "探究学習サポート",
   volunteer: "ボランティア募集",
-};
-
-export const CATEGORY_COLOR: Record<Category, string> = {
-  event: "bg-amber-pale text-amber",
-  interview: "bg-ocean-pale text-ocean",
-  news: "bg-forest-pale text-forest",
-  story: "bg-coral-pale text-coral",
-  blog: "bg-forest-pale text-forest",
-  explore: "bg-ocean-pale text-ocean",
-  volunteer: "bg-coral-pale text-coral",
-};
-
-export const CATEGORY_GRADIENT: Record<Category, string> = {
-  event: "grad-event",
-  interview: "grad-interview",
-  news: "grad-news",
-  story: "grad-story",
-  blog: "grad-blog",
-  explore: "grad-explore",
-  volunteer: "grad-volunteer",
 };
 
 export const CATEGORY_ROUTE: Record<Category, string> = {
   event: "/events",
   interview: "/interviews",
   blog: "/blog",
+  learning: "/learning",
   news: "/news",
   story: "/interviews",
   explore: "/programs",
   volunteer: "/join",
 };
 
+/** 「学びを、考える。」の中を見分けるタグ */
+export const LEARNING_TAGS: readonly string[] = ["AI", "教育"];
+
 export function getArticleUrl(article: Pick<Article, "category" | "slug">): string {
   return `/media/${article.slug}`;
 }
-
-export function getCategoryListUrl(category: Category): string {
-  return CATEGORY_ROUTE[category];
-}
-
-export const CATEGORY_BADGE: Record<Category, string> = {
-  event: "bg-amber-pale text-amber border border-amber/30",
-  interview: "bg-ocean-pale text-ocean border border-ocean/30",
-  news: "bg-forest-pale text-forest border border-forest/30",
-  story: "bg-coral-pale text-coral border border-coral/30",
-  blog: "bg-forest-pale text-forest border border-forest/30",
-  explore: "bg-ocean-pale text-ocean border border-ocean/30",
-  volunteer: "bg-coral-pale text-coral border border-coral/30",
-};
 
 export const articles: Article[] = [
   {
@@ -212,7 +191,11 @@ export function getFeaturedArticle(): Article {
 
 // ─── microCMS integration ────────────────────────────────────────────────────
 
-import { createClient, type MicroCMSListContent } from "microcms-js-sdk";
+import {
+  createClient,
+  type MicroCMSListContent,
+  type MicroCMSObjectContent,
+} from "microcms-js-sdk";
 
 type CMSArticle = MicroCMSListContent & {
   title: string;
@@ -222,7 +205,7 @@ type CMSArticle = MicroCMSListContent & {
   author?: string;
   thumbnail?: { url: string };
   body: string;
-  tags?: string[];
+  tags?: string[] | string;
 };
 
 const client =
@@ -235,18 +218,29 @@ const client =
       })
     : null;
 
+/** タグ欄を配列にそろえる。文字入力で「エジソン, AI」のように書かれても分解する */
+function normalizeTags(tags: string[] | string | undefined): string[] {
+  if (!tags) return [];
+  const list = Array.isArray(tags) ? tags : tags.split(/[,、，\s]+/);
+  return list.map((t) => t.trim()).filter(Boolean);
+}
+
 function cmsToArticle(item: CMSArticle): Article {
   const category = Array.isArray(item.category) ? item.category[0] : item.category;
   return {
     slug: item.id,
     title: item.title,
     excerpt: item.excerpt,
-    category: category ?? "news",
+    // 未知のカテゴリ（入力ミスや、コードより先にCMSへ追加した値）はお知らせ扱い
+    category:
+      category && Object.prototype.hasOwnProperty.call(CATEGORY_LABEL, category)
+        ? category
+        : "news",
     date: item.date ?? item.publishedAt ?? new Date().toISOString(),
     author: item.author,
     thumbnail: item.thumbnail?.url,
     body: item.body,
-    tags: item.tags,
+    tags: normalizeTags(item.tags),
     isHtml: true,
   };
 }
@@ -308,4 +302,45 @@ export async function fetchAllSlugs(): Promise<string[]> {
     return res.contents.map((a) => a.id);
   }
   return articles.map((a) => a.slug);
+}
+
+// ─── トップページ設定（microCMS のオブジェクト形式 API「top」） ─────────────
+// 編集部が「トップの一番大きな記事」と「今週のピックアップ」を手で選ぶための画面。
+// 未作成・未設定のときは、これまでどおり新着順で自動表示する。
+
+type CMSTopSettings = MicroCMSObjectContent & {
+  /** トップの記事（コンテンツ参照・1件） */
+  hero?: CMSArticle | null;
+  /** 今週のピックアップ（複数コンテンツ参照・最大5件） */
+  pickups?: (CMSArticle | null)[];
+};
+
+export interface TopSettings {
+  hero: Article | null;
+  pickups: Article[];
+}
+
+export async function fetchTopSettings(): Promise<TopSettings> {
+  if (client) {
+    try {
+      const res = await client.getObject<CMSTopSettings>({ endpoint: "top" });
+      return {
+        hero: res.hero ? cmsToArticle(res.hero) : null,
+        // 参照先の記事が非公開・削除されていると null が混ざるので除く
+        pickups: (res.pickups ?? [])
+          .filter((p): p is CMSArticle => Boolean(p))
+          .map(cmsToArticle),
+      };
+    } catch {
+      // top API が未作成のときは自動表示にする
+    }
+  }
+  return { hero: null, pickups: [] };
+}
+
+/** 今週のピックアップ。手で選んだものがあればそれ、なければ新着順 */
+export async function fetchPickups(n = 5): Promise<Article[]> {
+  const { pickups } = await fetchTopSettings();
+  if (pickups.length > 0) return pickups.slice(0, n);
+  return fetchLatestArticles(n);
 }
