@@ -13,21 +13,32 @@ const WRITER_ROLES: Record<string, string> = {
   "玉野SDGsみらいづくりセンター": "玉野SDGsみらいづくりセンター",
 };
 
-export function writerRole(name: string): string {
-  return WRITER_ROLES[name] ?? "玉野SDGsみらいづくりセンター";
-}
-
 /* 執筆者の顔写真（丸いアイコン用の正方形。public/writers/ に置く）。
-   ここにない人は頭文字の丸で表示する。
-   名前は空白と後ろの（肩書き）を除いて照合するので、
-   「西田井祐也」「西田井 祐也」「西田井 祐也（地域学校連携コーディネーター）」のどれでもよい。 */
+   ここにない人は頭文字の丸で表示する。 */
 const WRITER_PHOTOS: Record<string, string> = {
-  西田井祐也: "/writers/nishidai.jpg",
+  "西田井 祐也": "/writers/nishidai.jpg",
 };
 
+/* 名前の照合用キー。記事や授業では同じ人が
+   「西田井祐也｜社会教育士」「西田井 祐也」「西田井 祐也（地域学校連携コーディネーター）」
+   のように書かれるので、｜や（ より後ろの肩書きと空白を除いてから比べる。 */
+function writerKey(name: string): string {
+  return name.replace(/[｜|（(].*$/, "").replace(/\s+/g, "");
+}
+
+function byKey<T>(table: Record<string, T>): Map<string, T> {
+  return new Map(Object.entries(table).map(([name, value]) => [writerKey(name), value]));
+}
+
+const ROLE_BY_KEY = byKey(WRITER_ROLES);
+const PHOTO_BY_KEY = byKey(WRITER_PHOTOS);
+
+export function writerRole(name: string): string {
+  return ROLE_BY_KEY.get(writerKey(name)) ?? "玉野SDGsみらいづくりセンター";
+}
+
 export function writerPhoto(name: string): string | undefined {
-  const key = name.replace(/[（(].*$/, "").replace(/\s+/g, "");
-  return WRITER_PHOTOS[key];
+  return PHOTO_BY_KEY.get(writerKey(name));
 }
 
 export interface WriterSummary {
