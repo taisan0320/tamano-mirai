@@ -290,3 +290,10 @@ h1, h2, h3 {
 /* Hide scrollbar utility */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Instagram の導線だけに使う例外（公式アプリのグラデーション）。
+   白い文字が乗る中央付近はピンク〜紫になるよう配分している */
+@utility bg-instagram {
+  background-color: #dd2a7b;
+  background-image: linear-gradient(45deg, #f58529 0%, #dd2a7b 40%, #8134af 75%, #515bd4 100%);
+}

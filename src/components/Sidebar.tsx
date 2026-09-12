@@ -3,6 +3,7 @@ import { CATEGORY_LABEL, getArticleUrl, type Article } from "@/lib/articles";
 import { readingMinutes } from "@/lib/format";
 import { summarizeWriters, type WriterSummary } from "@/lib/writers";
 import { Avatar } from "@/components/ui";
+import { InstagramButton, INSTAGRAM_HANDLE } from "@/components/Instagram";
 
 /* サイドバーのカード群。
    トップページと記事詳細で並べ方を変えられるよう、1枚ずつ部品にしてある。
@@ -202,14 +203,10 @@ export function FollowCard() {
       <p className="mt-2 text-[12px] leading-[1.7] text-ink-soft">
         イベントの追加や当日の様子は、Instagramでいちばん早くお知らせしています。
       </p>
-      <a
-        href="https://www.instagram.com/tamano.miraizukuri/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-3 block rounded border border-border-line py-2.5 text-center text-[14px] font-bold leading-none text-ink hover:bg-[rgba(34,34,34,.05)]"
-      >
-        Instagram
-      </a>
+      <InstagramButton className="mt-3 w-full text-[14px]">
+        Instagramをフォローする
+      </InstagramButton>
+      <p className="mt-2 text-center text-[11px] text-ink-muted">{INSTAGRAM_HANDLE}</p>
     </SidebarCard>
   );
 }

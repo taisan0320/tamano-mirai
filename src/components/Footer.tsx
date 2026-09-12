@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { InstagramBadge, INSTAGRAM_URL } from "@/components/Instagram";
 
 /* フッター：4カラムのリンク集＋連絡先。装飾は置かず、罫線だけで区切る。 */
 
@@ -80,12 +81,13 @@ export default function Footer() {
               <li className="mb-2">平日 9:00〜18:00</li>
               <li className="mb-2">
                 <a
-                  href="https://www.instagram.com/tamano.miraizukuri/"
+                  href={INSTAGRAM_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-ocean"
+                  className="inline-flex items-center gap-2 font-bold text-ink hover:text-ocean"
                 >
-                  Instagram →
+                  <InstagramBadge size={20} />
+                  Instagram
                 </a>
               </li>
             </ul>

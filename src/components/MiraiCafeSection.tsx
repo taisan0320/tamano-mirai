@@ -3,12 +3,12 @@ import {
   cafeDateParts,
   DEFAULT_CAFE_TIME,
 } from "@/lib/cafe";
+import { InstagramButton } from "@/components/Instagram";
 
 /* みらいCafe。データは lib/cafe.ts（microCMS では「トップページ設定」の cafeEvents）。
    今日以降の回だけを近い順に3件出す。終わった回は自動で消える。 */
 
 const EMAIL = "info@npo-tamano-mirai.com";
-const INSTAGRAM_URL = "https://www.instagram.com/tamano.miraizukuri/";
 const MAIL_HREF = `mailto:${EMAIL}?subject=${encodeURIComponent(
   "みらいCafeについてのお問い合わせ"
 )}`;
@@ -99,15 +99,7 @@ export default async function MiraiCafeSection() {
           <MailIcon />
           メールで申し込む
         </a>
-        <a
-          href={INSTAGRAM_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex flex-1 items-center justify-center gap-2 rounded border border-border-line py-2.5 text-[13px] font-bold text-ink hover:bg-[rgba(34,34,34,.05)]"
-        >
-          <InstagramIcon />
-          InstagramのDM
-        </a>
+        <InstagramButton className="flex-1 text-[13px]">InstagramのDM</InstagramButton>
       </div>
     </section>
   );
@@ -119,17 +111,6 @@ function MailIcon({ size = 13 }: { size?: number }) {
       stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <rect x="1" y="3" width="14" height="10" rx="1.5" />
       <path d="M1 4.5 8 9.5l7-5" />
-    </svg>
-  );
-}
-
-function InstagramIcon({ size = 13 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="2" y="2" width="20" height="20" rx="5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none" />
     </svg>
   );
 }
