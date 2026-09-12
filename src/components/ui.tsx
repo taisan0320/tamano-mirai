@@ -1,5 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { CATEGORY_LABEL, type Article } from "@/lib/articles";
+import { writerPhoto } from "@/lib/writers";
 
 /* サイト全体で使い回す小さな表示部品。
    NewsPicks型の決め事（塗らない・影を使わない・罫線で区切る）をここで守る。 */
@@ -60,8 +62,21 @@ export function SectionHead({
   );
 }
 
-/** 頭文字の丸アイコン。写真がない執筆者・話し手に使う。 */
+/** 人の丸アイコン。lib/writers.ts に顔写真があれば写真、なければ頭文字。 */
 export function Avatar({ name, size = 40 }: { name: string; size?: number }) {
+  const photo = writerPhoto(name);
+  if (photo) {
+    return (
+      <Image
+        src={photo}
+        alt=""
+        width={size}
+        height={size}
+        className="shrink-0 rounded-full border border-border-line object-cover"
+        style={{ width: size, height: size }}
+      />
+    );
+  }
   return (
     <span
       className="grid shrink-0 place-items-center rounded-full border border-border-line bg-paper-alt font-bold text-ink-soft"

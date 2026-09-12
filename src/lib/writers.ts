@@ -17,6 +17,19 @@ export function writerRole(name: string): string {
   return WRITER_ROLES[name] ?? "玉野SDGsみらいづくりセンター";
 }
 
+/* 執筆者の顔写真（丸いアイコン用の正方形。public/writers/ に置く）。
+   ここにない人は頭文字の丸で表示する。
+   名前は空白と後ろの（肩書き）を除いて照合するので、
+   「西田井祐也」「西田井 祐也」「西田井 祐也（地域学校連携コーディネーター）」のどれでもよい。 */
+const WRITER_PHOTOS: Record<string, string> = {
+  西田井祐也: "/writers/nishidai.jpg",
+};
+
+export function writerPhoto(name: string): string | undefined {
+  const key = name.replace(/[（(].*$/, "").replace(/\s+/g, "");
+  return WRITER_PHOTOS[key];
+}
+
 export interface WriterSummary {
   name: string;
   role: string;
