@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Claude Code のローカル設定
 /.claude/
+
+# 記事の下書き置き場（公開リポジトリに送らない）
+/Claude outputs/

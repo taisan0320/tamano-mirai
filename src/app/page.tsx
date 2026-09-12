@@ -9,7 +9,8 @@ import {
 } from "@/lib/articles";
 import { fetchAllInterviews, type Interview } from "@/lib/interviews";
 import StudentTrialSection from "@/components/StudentTrialSection";
-import MiraiCafeSection, { NEXT_CAFE } from "@/components/MiraiCafeSection";
+import MiraiCafeSection from "@/components/MiraiCafeSection";
+import { fetchUpcomingCafeEvents, cafeDateParts, DEFAULT_CAFE_TIME } from "@/lib/cafe";
 import LessonsSection from "@/components/LessonsSection";
 import {
   AboutCard,
@@ -152,11 +153,12 @@ function EventRow({ article }: { article: Article }) {
 // ── ページ本体 ──────────────────────────────────────────────
 
 export default async function Home() {
-  const [latest, events, diaries, interviews] = await Promise.all([
+  const [latest, events, diaries, interviews, [nextCafe]] = await Promise.all([
     fetchLatestArticles(24),
     fetchArticlesByCategory("event", 12),
     fetchArticlesByCategory("blog", 4),
     fetchAllInterviews(4),
+    fetchUpcomingCafeEvents(1),
   ]);
 
   const [topStory, ...rest] = latest;
@@ -219,42 +221,29 @@ export default async function Home() {
 
           <LessonsSection />
 
-          <MiraiCafeSection />
-
-          <StudentTrialSection />
-
           {diaries.length > 0 && (
-            <section className="my-6 rounded bg-cream px-4 pb-4 pt-1">
+            <section id="diary" className="mt-12 border-t border-border-line">
               <SectionHead
                 label="Coordinator's Journal"
                 title="コーディネーター日記"
                 moreHref="/blog"
                 moreText="日記を読む"
               />
-              <p className="mb-1 text-[12px] leading-[1.7] text-ink-soft">
-                現場の途中で考えていたことの記録です。
+              <p className="mb-1 text-[13px] leading-[1.7] text-ink-soft">
+                玉野市の地域学校連携コーディネーターとして、学校と地域のあいだで考えていたことの記録です。
               </p>
-              <div className="divide-y divide-border-line">
+              <div className="divide-y divide-border-line border-t border-border-line">
                 {diaries.map((article) => (
-                  <Link
-                    key={article.slug}
-                    href={getArticleUrl(article)}
-                    className="group block py-3"
-                  >
-                    <span className="block text-[12px] leading-tight text-ink-soft">
-                      {formatDate(article.date)}
-                    </span>
-                    <h3 className="mt-1.5 text-[14px] font-bold leading-[1.35] text-ink group-hover:text-ocean">
-                      {article.title}
-                    </h3>
-                    <p className="mt-1.5 text-[12px] leading-[1.7] text-ink-soft">
-                      {authorName(article)}・読了 {readingMinutes(article.body)}分
-                    </p>
-                  </Link>
+                  <ArticleRow key={article.slug} article={article} />
                 ))}
               </div>
+              <OutlineLink href="/blog">コーディネーター日記をすべて読む</OutlineLink>
             </section>
           )}
+
+          <MiraiCafeSection />
+
+          <StudentTrialSection />
         </main>
 
         {/* ── サイドバー（PCのみ・スマホでは本文の下に回る） ── */}
@@ -263,10 +252,12 @@ export default async function Home() {
             <AboutCard />
             <PickupCard articles={pickups} />
             <WritersCard articles={latest} />
-            <MiraiCafeCard
-              date={`${NEXT_CAFE.num}/${NEXT_CAFE.date.replace(/日.*$/, "")}`}
-              note={`${NEXT_CAFE.date.replace(/^\d+日/, "")} 13:00〜16:00`}
-            />
+            {nextCafe && (
+              <MiraiCafeCard
+                date={`${cafeDateParts(nextCafe.date).month}/${cafeDateParts(nextCafe.date).day}`}
+                note={`(${cafeDateParts(nextCafe.date).weekday}) ${nextCafe.time ?? DEFAULT_CAFE_TIME}`}
+              />
+            )}
             <MembershipCard />
             <FollowCard />
             <DocumentsCard />

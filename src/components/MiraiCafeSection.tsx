@@ -1,171 +1,21 @@
+import {
+  fetchUpcomingCafeEvents,
+  cafeDateParts,
+  DEFAULT_CAFE_TIME,
+} from "@/lib/cafe";
+
+/* みらいCafe。データは lib/cafe.ts（将来は microCMS の cafe エンドポイント）。
+   今日以降の回だけを近い順に3件出す。終わった回は自動で消える。 */
 
 const EMAIL = "info@npo-tamano-mirai.com";
 const INSTAGRAM_URL = "https://www.instagram.com/tamano.miraizukuri/";
+const MAIL_HREF = `mailto:${EMAIL}?subject=${encodeURIComponent(
+  "みらいCafeについてのお問い合わせ"
+)}`;
 
-const EVENTS = [
-  {
-    id: "apr",
-    month: "4月",
-    num: "4",
-    date: "15日(水)",
-    venue: "船越町集会所",
-    title: "地域を語る①",
-    detail: null,
-    fee: "無料" as const,
-    special: false,
-    tbd: false,
-  },
-  {
-    id: "may",
-    month: "5月",
-    num: "5",
-    date: "18日(月)",
-    venue: "深山イギリス庭園",
-    title: "深山イギリス庭園ツアー",
-    detail: "庭園の管理や歴史を学ぶ1時間ツアー。13:00 庭園前集合 / 13:30〜スタート。入園料：65歳以上100円・大人200円",
-    fee: "入園料" as const,
-    special: true,
-    tbd: false,
-  },
-  {
-    id: "jun",
-    month: "6月",
-    num: "6",
-    date: "17日(水)",
-    venue: "船越町集会所",
-    title: "地域を語る②",
-    detail: null,
-    fee: "無料" as const,
-    special: false,
-    tbd: false,
-  },
-  {
-    id: "jul",
-    month: "7月",
-    num: "7",
-    date: "15日(水)",
-    venue: "中央公民館",
-    title: "Canvaを使って楽しみましょう！",
-    detail: "定員10名",
-    fee: "無料" as const,
-    special: true,
-    tbd: false,
-  },
-  {
-    id: "aug",
-    month: "8月",
-    num: "8",
-    date: "19日(水)",
-    venue: "船越町集会所",
-    title: "地域を語る③",
-    detail: null,
-    fee: "無料" as const,
-    special: false,
-    tbd: false,
-  },
-  {
-    id: "sep",
-    month: "9月",
-    num: "9",
-    date: "16日(水)",
-    venue: "未定",
-    title: "内容未定",
-    detail: "詳細が決まり次第インスタグラムでお知らせします。お楽しみに！",
-    fee: "未定" as const,
-    special: false,
-    tbd: true,
-  },
-  {
-    id: "oct",
-    month: "10月",
-    num: "10",
-    date: "21日(水)",
-    venue: "船越町集会所",
-    title: "地域を語る④",
-    detail: null,
-    fee: "無料" as const,
-    special: false,
-    tbd: false,
-  },
-  {
-    id: "nov",
-    month: "11月",
-    num: "11",
-    date: "15日(日)",
-    venue: "片山産婦人科2階",
-    title: "地域で健康に暮らすためには",
-    detail: "講師：片山典子医院長（玉野市医尾229-1）",
-    fee: "無料" as const,
-    special: true,
-    tbd: false,
-  },
-  {
-    id: "dec",
-    month: "12月",
-    num: "12",
-    date: "16日(水)",
-    venue: "船越町集会所",
-    title: "地域を語る⑤",
-    detail: null,
-    fee: "無料" as const,
-    special: false,
-    tbd: false,
-  },
-  {
-    id: "jan",
-    month: "1月",
-    num: "1",
-    date: "20日(水)",
-    venue: "船越町集会所",
-    title: "短歌を作って楽しみましょう！",
-    detail: "講師：藤原多惠子",
-    fee: "無料" as const,
-    special: false,
-    tbd: false,
-  },
-  {
-    id: "feb",
-    month: "2月",
-    num: "2",
-    date: "17日(水)",
-    venue: "船越町集会所",
-    title: "地域を語る⑥",
-    detail: null,
-    fee: "無料" as const,
-    special: false,
-    tbd: false,
-  },
-  {
-    id: "mar",
-    month: "3月",
-    num: "3",
-    date: "17日(水)",
-    venue: "船越町集会所",
-    title: "地域を語る⑦",
-    detail: null,
-    fee: "無料" as const,
-    special: false,
-    tbd: false,
-  },
-] satisfies {
-  id: string;
-  month: string;
-  num: string;
-  date: string;
-  venue: string;
-  title: string;
-  detail: string | null;
-  fee: "無料" | "入園料" | "未定";
-  special: boolean;
-  tbd: boolean;
-}[];
+export default async function MiraiCafeSection() {
+  const events = await fetchUpcomingCafeEvents(3);
 
-const QUARTER = EVENTS.filter((e) => ["jul", "aug", "sep"].includes(e.id));
-
-/** サイドバーの「次回のみらいCafe」カードで使う直近1件 */
-export const NEXT_CAFE = QUARTER[0];
-
-export default function MiraiCafeSection() {
   return (
     <section id="mirai-cafe" className="mt-12 border-t border-border-line pt-8">
       <div className="mb-4 flex items-end justify-between gap-4">
@@ -178,9 +28,7 @@ export default function MiraiCafeSection() {
           </span>
         </h2>
         <a
-          href={`mailto:${EMAIL}?subject=${encodeURIComponent(
-            "みらいCafeについてのお問い合わせ"
-          )}`}
+          href={MAIL_HREF}
           className="shrink-0 text-[13px] font-bold text-ocean hover:underline"
         >
           申し込む →
@@ -188,42 +36,64 @@ export default function MiraiCafeSection() {
       </div>
 
       <p className="text-[13px] leading-[1.7] text-ink-soft">
-        毎回 13:00〜16:00。地域のことを気軽に話す場です。予約なしでも参加できます。
+        毎月開く、地域のことを気軽に話す場です。予約なしでも参加できます。
         主催：玉野SDGsみらいづくりセンター
       </p>
 
-      <div className="mt-4 divide-y divide-border-line border-t border-border-line">
-        {QUARTER.map((event) => (
-          <div key={event.id} className="flex items-start gap-3.5 py-3">
-            <div className="w-14 shrink-0 border-r border-border-line pr-2 text-center">
-              <span className="block text-[10px] text-ink-muted">{event.month}</span>
-              <span className="block text-[20px] font-bold leading-none text-ink">
-                {event.date.replace(/日.*$/, "")}
-              </span>
-            </div>
-            <div className="min-w-0 flex-1">
-              <h3 className="text-[14px] font-bold leading-tight text-ink">
-                {event.title}
-              </h3>
-              <p className="mt-1 text-[12px] leading-[1.7] text-ink-muted">
-                {event.venue}
-                {event.fee ? `・${event.fee}` : ""}
-              </p>
-              {event.detail && (
-                <p className="mt-1 text-[12px] leading-[1.7] text-ink-soft">
-                  {event.detail}
-                </p>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
+      {events.length === 0 ? (
+        <p className="mt-4 rounded border border-border-line py-6 text-center text-[13px] text-ink-soft">
+          次回の予定は、決まり次第お知らせします。
+        </p>
+      ) : (
+        <div className="mt-4 divide-y divide-border-line border-t border-border-line">
+          {events.map((event) => {
+            const { month, day, weekday } = cafeDateParts(event.date);
+            return (
+              <div key={event.id} className="flex items-start gap-3.5 py-3">
+                <div className="w-14 shrink-0 border-r border-border-line pr-2 text-center">
+                  <span className="block text-[10px] text-ink-muted">{month}月</span>
+                  <span className="block text-[20px] font-bold leading-none text-ink">
+                    {day}
+                  </span>
+                  <span className="mt-0.5 block text-[10px] text-ink-muted">
+                    （{weekday}）
+                  </span>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {event.special && (
+                      <span className="rounded-sm border border-border-line px-1.5 py-[3px] text-[10px] font-bold leading-tight text-ink">
+                        特別回
+                      </span>
+                    )}
+                    <h3
+                      className={`text-[14px] font-bold leading-tight ${
+                        event.tbd ? "text-ink-muted" : "text-ink"
+                      }`}
+                    >
+                      {event.title}
+                    </h3>
+                  </div>
+                  <p className="mt-1 text-[12px] leading-[1.7] text-ink-muted">
+                    {event.time ?? DEFAULT_CAFE_TIME}
+                    {event.venue ? `・${event.venue}` : ""}
+                    {event.fee ? `・${event.fee}` : ""}
+                  </p>
+                  {event.detail && (
+                    <p className="mt-1 text-[12px] leading-[1.7] text-ink-soft">
+                      {event.detail}
+                    </p>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       <div className="mt-4 flex gap-2">
         <a
-          href={`mailto:${EMAIL}?subject=${encodeURIComponent(
-            "みらいCafeについてのお問い合わせ"
-          )}`}
+          href={MAIL_HREF}
           className="inline-flex flex-1 items-center justify-center gap-2 rounded border border-border-line py-2.5 text-[13px] font-bold text-ink hover:bg-[rgba(34,34,34,.05)]"
         >
           <MailIcon />
