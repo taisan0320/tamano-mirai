@@ -282,6 +282,8 @@ export default async function Home() {
               text: "寄付・賛助会員として、玉野のまちづくりを継続的にサポートしていただけませんか。",
               linkText: "くわしく見る",
               href: "/join",
+              // 入会・寄付の緑。白い文字が読めるよう #00b357 より一段濃くしている
+              tone: "bg-[#00873f]",
             },
             {
               key: "02 · CONTACT",
@@ -289,6 +291,8 @@ export default async function Home() {
               text: "連携・協力・取材のご相談、イベントへのお申し込みなど、お気軽にご連絡ください。",
               linkText: "フォームを開く",
               href: "/contact",
+              // 「相談する」ボタンと同じ青
+              tone: "bg-ocean",
             },
             {
               key: "03 · SPEAKER",
@@ -296,23 +300,25 @@ export default async function Home() {
               text: "理事長・副理事長が講演やワークショップのファシリテーターを承ります。",
               linkText: "依頼について",
               href: "/members#speakers",
+              // 記事カテゴリやみらいCafeの色とかぶらない墨色
+              tone: "bg-[#2b2b2b]",
             },
           ].map((cta) => (
             <Link
               key={cta.key}
               href={cta.href}
-              className="group rounded border border-border-line p-4 hover:bg-[rgba(34,34,34,.05)]"
+              className={`group rounded p-4 text-white hover:opacity-90 ${cta.tone}`}
             >
-              <span className="block text-[10px] leading-tight tracking-[.12em] text-ink-muted">
+              <span className="block text-[10px] leading-tight tracking-[.12em] text-white/75">
                 {cta.key}
               </span>
-              <span className="mt-1.5 block text-[14px] font-bold leading-tight text-ink">
+              <span className="mt-1.5 block text-[14px] font-bold leading-tight">
                 {cta.title}
               </span>
-              <span className="mt-1.5 block text-[12px] leading-[1.7] text-ink-soft">
+              <span className="mt-1.5 block text-[12px] leading-[1.7] text-white/90">
                 {cta.text}
               </span>
-              <span className="mt-2.5 block text-[13px] font-bold text-ocean">
+              <span className="mt-2.5 block text-[13px] font-bold group-hover:underline">
                 {cta.linkText} →
               </span>
             </Link>
