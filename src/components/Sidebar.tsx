@@ -18,20 +18,22 @@ export function SidebarCard({
   label: string;
   title: string;
   children: React.ReactNode;
-  tone?: "default" | "membership";
+  tone?: "default" | "membership" | "cafe";
 }) {
+  const frame = {
+    default: "border-border-line",
+    membership: "border-membership",
+    cafe: "border-cafe-line bg-cafe",
+  }[tone];
+  const labelColor = {
+    default: "text-ink-muted",
+    membership: "text-membership",
+    cafe: "text-cafe-label",
+  }[tone];
   return (
-    <div
-      className={`mb-4 rounded border p-4 ${
-        tone === "membership" ? "border-membership" : "border-border-line"
-      }`}
-    >
+    <div className={`mb-4 rounded border p-4 ${frame}`}>
       <h2 className="mb-1">
-        <span
-          className={`section-label block ${
-            tone === "membership" ? "text-membership" : "text-ink-muted"
-          }`}
-        >
+        <span className={`section-label block ${labelColor}`}>
           {label}
         </span>
         <span className="mt-1 block text-[14px] font-bold leading-tight text-ink">
@@ -164,15 +166,20 @@ export function MiraiCafeCard({
   note: string;
 }) {
   return (
-    <SidebarCard label="Original Event" title="次回のみらいCafe">
-      <div className="mt-2 flex items-baseline gap-1.5">
-        <span className="text-[24px] font-bold leading-none text-ink">{date}</span>
-        <span className="text-[12px] text-ink-soft">{note}</span>
+    <SidebarCard label="Original Event" title="次回のみらいCafe" tone="cafe">
+      <div className="mt-2 flex items-baseline gap-1.5 text-cafe-ink">
+        <span className="text-[24px] font-bold leading-none">{date}</span>
+        <span className="text-[12px]">{note}</span>
       </div>
-      <p className="mt-2 text-[12px] leading-[1.7] text-ink-soft">
+      <p className="mt-2 text-[12px] leading-[1.7] text-cafe-soft">
         玉野のことを話す場です。内容が決まり次第Instagramでお知らせします。
       </p>
-      <GhostButton href="/#mirai-cafe">みらいCafeの予定を見る</GhostButton>
+      <Link
+        href="/#mirai-cafe"
+        className="mt-3 block rounded border border-cafe-button bg-[#fffaf4] py-2.5 text-center text-[14px] font-bold leading-none text-cafe-ink hover:bg-white"
+      >
+        みらいCafeの予定を見る
+      </Link>
     </SidebarCard>
   );
 }

@@ -27,6 +27,14 @@
   --color-membership: #00b357; /* 入会・寄付 */
   --color-cream: #f7f3eb;      /* コーディネーター日記 */
 
+  /* みらいCafe（独自事業）のカード。明るいラテ色の地にコーヒー色の文字 */
+  --color-cafe: #f5ede3;        /* 地 */
+  --color-cafe-line: #e3d3bf;   /* 枠 */
+  --color-cafe-label: #8a6a4e;  /* 英字ラベル */
+  --color-cafe-ink: #5b3a22;    /* 日付・ボタンの文字 */
+  --color-cafe-soft: #6b5a4a;   /* 説明文 */
+  --color-cafe-button: #b08a66; /* ボタンの枠 */
+
   /* カテゴリ色（記事ラベルの枠と文字だけに使う。塗りには使わない）
      上の青・金・緑とかぶらない色を選んでいる */
   --color-cat-event: #c2410c;     /* イベント情報：朱 */
