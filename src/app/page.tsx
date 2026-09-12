@@ -22,6 +22,7 @@ import {
   DocumentsCard,
 } from "@/components/Sidebar";
 import ArticleRow from "@/components/ArticleRow";
+import ArticleTile from "@/components/ArticleTile";
 import { CategoryTag, SectionHead, Avatar, OutlineLink } from "@/components/ui";
 import {
   formatDate,
@@ -156,7 +157,7 @@ export default async function Home() {
   const [latest, events, diaries, interviews, [nextCafe]] = await Promise.all([
     fetchLatestArticles(24),
     fetchArticlesByCategory("event", 12),
-    fetchArticlesByCategory("blog", 4),
+    fetchArticlesByCategory("blog", 6),
     fetchAllInterviews(4),
     fetchUpcomingCafeEvents(1),
   ]);
@@ -232,9 +233,9 @@ export default async function Home() {
               <p className="mb-1 text-[13px] leading-[1.7] text-ink-soft">
                 玉野市の地域学校連携コーディネーターとして、学校と地域のあいだで考えていたことの記録です。
               </p>
-              <div className="divide-y divide-border-line border-t border-border-line">
+              <div className="grid grid-cols-2 gap-x-3 gap-y-6 border-t border-border-line pt-4 sm:grid-cols-3 sm:gap-x-4">
                 {diaries.map((article) => (
-                  <ArticleRow key={article.slug} article={article} />
+                  <ArticleTile key={article.slug} article={article} hideSeriesPrefix />
                 ))}
               </div>
               <OutlineLink href="/blog">コーディネーター日記をすべて読む</OutlineLink>
