@@ -4,17 +4,24 @@ import { CATEGORY_LABEL, type Article } from "@/lib/articles";
 /* サイト全体で使い回す小さな表示部品。
    NewsPicks型の決め事（塗らない・影を使わない・罫線で区切る）をここで守る。 */
 
-/** カテゴリ表示。塗りつぶさず、細い枠だけで示す。 */
+/* カテゴリごとの枠と文字の色。ここにないカテゴリ（お知らせなど）はグレー */
+const CATEGORY_TONE: Partial<Record<Article["category"], string>> = {
+  event: "border-cat-event text-cat-event",
+  interview: "border-cat-interview text-cat-interview",
+  blog: "border-cat-blog text-cat-blog",
+  learning: "border-cat-learning text-cat-learning",
+};
+
+/** カテゴリ表示。塗りつぶさず、枠と文字の色だけで種類を示す。 */
 export function CategoryTag({
   category,
 }: {
   category: Article["category"];
 }) {
+  const tone = CATEGORY_TONE[category] ?? "border-[#bdbdbd] text-ink-soft";
   return (
     <span
-      className={`rounded-sm border border-border-line px-1.5 py-[3px] text-[11px] font-bold leading-tight tracking-[.06em] text-ink ${
-        category === "blog" ? "bg-cream" : ""
-      }`}
+      className={`rounded-sm border px-1.5 py-[3px] text-[11px] font-bold leading-tight tracking-[.06em] ${tone}`}
     >
       {CATEGORY_LABEL[category]}
     </span>

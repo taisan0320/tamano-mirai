@@ -12,7 +12,7 @@
   --color-ocean-dark: #0032ca;
   --color-ocean-pale: #e8f0fe;
 
-  /* 旧カテゴリ色 → モノクロに集約（色でカテゴリを分けない） */
+  /* 旧カテゴリ色 → モノクロに集約（カテゴリの色分けは下の cat-* で行う） */
   --color-forest: #444444;
   --color-forest-light: #5a5a5a;
   --color-forest-pale: #f2f2f2;
@@ -26,6 +26,13 @@
   --color-gold: #886c0f;       /* 学生トライアル */
   --color-membership: #00b357; /* 入会・寄付 */
   --color-cream: #f7f3eb;      /* コーディネーター日記 */
+
+  /* カテゴリ色（記事ラベルの枠と文字だけに使う。塗りには使わない）
+     上の青・金・緑とかぶらない色を選んでいる */
+  --color-cat-event: #c2410c;     /* イベント情報：朱 */
+  --color-cat-interview: #0f766e; /* 動く人たち：青緑 */
+  --color-cat-blog: #a8325e;      /* コーディネーター日記：臙脂 */
+  --color-cat-learning: #6b3fb5;  /* 学びを、考える：紫 */
 
   /* ニュートラル */
   --color-ink: #222222;
