@@ -7,6 +7,7 @@ import ArchiveLayout, { EmptyState } from "@/components/ArchiveLayout";
 import { formatDate } from "@/lib/format";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/news" },
   title: "お知らせ",
   description: "玉野SDGsみらいづくりセンターからのお知らせ・活動報告です。",
 };

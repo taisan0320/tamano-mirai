@@ -3,6 +3,7 @@ import Link from "next/link";
 import { StaticPageLayout } from "@/components/ArchiveLayout";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/contact/thanks" },
   title: "送信完了",
   description: "お問い合わせを受け付けました。",
 };

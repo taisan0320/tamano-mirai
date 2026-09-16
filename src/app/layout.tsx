@@ -3,8 +3,12 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TopicBar from "@/components/TopicBar";
+import JsonLd from "@/components/JsonLd";
+import { organizationJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  // 相対パスの基準。これがないと SNS 用の画像や正式URLが正しく出ない
+  metadataBase: new URL("https://npo-tamano-mirai.com"),
   title: {
     default: "玉野SDGsみらいづくりセンター",
     template: "%s | 玉野SDGsみらいづくりセンター",
@@ -16,6 +20,12 @@ export const metadata: Metadata = {
     siteName: "玉野SDGsみらいづくりセンター",
     locale: "ja_JP",
     type: "website",
+    // 記事ページは自分のサムネイルで上書きする。それ以外はロゴ画像
+    images: ["/og.jpg"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og.jpg"],
   },
 };
 
@@ -32,6 +42,7 @@ export default function RootLayout({
         <TopicBar />
         <main className="flex-1">{children}</main>
         <Footer />
+        <JsonLd data={organizationJsonLd()} />
       </body>
     </html>
   );

@@ -12,6 +12,7 @@ import { formatDate } from "@/lib/format";
    食い違っていたため、入会・寄付を主にして募集はその中の1ブロックにした。 */
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/join" },
   title: "入会・寄付",
   description:
     "玉野SDGsみらいづくりセンターの会員制度と寄付のご案内です。会員としてまちづくりを継続的に支えられます。",

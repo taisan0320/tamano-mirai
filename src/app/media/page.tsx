@@ -18,6 +18,7 @@ import {
 } from "@/components/Sidebar";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/media" },
   title: "すべての記事",
   description:
     "玉野SDGsみらいづくりセンターのイベント情報・動く人たち・コーディネーター日記・お知らせをまとめて読めます。",

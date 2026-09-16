@@ -3,6 +3,7 @@ import Link from "next/link";
 import { StaticPageLayout, PageSection, FactList } from "@/components/ArchiveLayout";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/contact" },
   title: "お問い合わせ",
   description: "玉野SDGsみらいづくりセンターへのご相談・お問い合わせはこちらから。",
 };

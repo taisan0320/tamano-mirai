@@ -7,6 +7,7 @@ import { StaticPageLayout, PageSection } from "@/components/ArchiveLayout";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/documents" },
   title: "資料・報告書",
   description:
     "玉野SDGsみらいづくりセンターが発行した調査報告書・機関誌・定款・決算書などの資料一覧です。",

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { StaticPageLayout } from "@/components/ArchiveLayout";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/privacy" },
   title: "プライバシーポリシー",
 };
 

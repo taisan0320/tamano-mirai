@@ -155,6 +155,8 @@ function EventRow({ article }: { article: Article }) {
 
 // ── ページ本体 ──────────────────────────────────────────────
 
+export const metadata = { alternates: { canonical: "/" } };
+
 export default async function Home() {
   const [latest, events, diaries, interviews, [nextCafe], top] = await Promise.all([
     fetchLatestArticles(24),
@@ -180,6 +182,11 @@ export default async function Home() {
       <div className="mx-auto grid w-full max-w-[1232px] grid-cols-1 items-start gap-x-12 px-4 pb-8 lg:grid-cols-[minmax(0,1fr)_320px]">
         {/* ── メインカラム ── */}
         <main className="min-w-0">
+          {/* ページの主題を示す見出し。検索エンジンはここでページの中身を判断する */}
+          <h1 className="pt-4 text-[13px] leading-[1.7] text-ink-soft">
+            岡山県玉野市のまちづくりNPO「玉野SDGsみらいづくりセンター」。
+            地域のイベント、学校とつくる授業、まちで動く人たちのことを発信しています。
+          </h1>
           {topStory && <TopStory article={topStory} />}
 
           {feed.length > 0 && (

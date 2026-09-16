@@ -7,6 +7,7 @@ import { StaticPageLayout, PageSection, FactList } from "@/components/ArchiveLay
 import { formatDate } from "@/lib/format";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/programs" },
   title: "参加できるプログラム",
   description:
     "市民のみなさんが参加できる、玉野SDGsみらいづくりセンターの常設プログラムです。",

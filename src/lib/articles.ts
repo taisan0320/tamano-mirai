@@ -294,6 +294,23 @@ export async function fetchArticleBySlug(slug: string): Promise<Article | null> 
   return getArticleBySlug(slug) ?? null;
 }
 
+/** サイトマップ用：記事のURLと最終更新日。microCMS の revisedAt（最終更新）を使う */
+export async function fetchAllSlugsWithDates(): Promise<
+  { slug: string; lastModified: string }[]
+> {
+  if (client) {
+    const res = await client.getList<CMSArticle & { revisedAt?: string }>({
+      endpoint: "articles",
+      queries: { limit: 100, fields: "id,revisedAt,publishedAt,date" },
+    });
+    return res.contents.map((a) => ({
+      slug: a.id,
+      lastModified: a.revisedAt ?? a.publishedAt ?? a.date ?? "",
+    }));
+  }
+  return articles.map((a) => ({ slug: a.slug, lastModified: a.date }));
+}
+
 export async function fetchAllSlugs(): Promise<string[]> {
   if (client) {
     const res = await client.getList<CMSArticle>({

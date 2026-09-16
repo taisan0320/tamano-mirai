@@ -8,6 +8,7 @@ import ArchiveLayout, { EmptyState } from "@/components/ArchiveLayout";
 import { RoleTags } from "@/components/LessonsSection";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/lessons" },
   title: "学校と、つくる。",
   description:
     "地域学校連携コーディネーターとして、学校の先生と一緒につくってきた授業の記録です。誰と組み、何を設計し、どこまで伴走したのかを残しています。",

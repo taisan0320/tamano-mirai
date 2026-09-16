@@ -8,6 +8,7 @@ import { Avatar } from "@/components/ui";
 import { formatDate } from "@/lib/format";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/interviews" },
   title: "動く人たち",
   description:
     "玉野で地域を動かしている人たちのインタビュー。まちに根ざした活動を続ける方々の言葉と想いを届けます。",

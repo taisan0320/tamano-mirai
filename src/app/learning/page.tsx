@@ -12,6 +12,7 @@ import ArticleRow from "@/components/ArticleRow";
    本数が少ないうちは棚を分けず、付箋で見分ける方針。 */
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/learning" },
   title: "学びを、考える。",
   description:
     "教育全般のことや、AIのこと。学校に限らない「学び」について考えたことを書いています。",

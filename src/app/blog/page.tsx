@@ -6,6 +6,7 @@ import ArchiveLayout, { EmptyState } from "@/components/ArchiveLayout";
 import ArticleRow from "@/components/ArticleRow";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/blog" },
   title: "コーディネーター日記",
   description:
     "学校地域連携コーディネーターによる活動日記。地域と学校をつなぐ現場の記録です。",

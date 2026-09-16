@@ -10,6 +10,7 @@ import { MEMBERSHIP_TYPES } from "@/lib/membership";
    ここには理事長メッセージ・法人概要・入会案内を残している。 */
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/about" },
   title: "センターについて",
   description:
     "玉野SDGsみらいづくりセンターの理念・法人概要・入会案内です。事業内容・役員名簿・沿革は各ページでご覧いただけます。",

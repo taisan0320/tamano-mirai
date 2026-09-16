@@ -6,6 +6,7 @@ import ArchiveLayout, { EmptyState } from "@/components/ArchiveLayout";
 import ArticleRow from "@/components/ArticleRow";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/events" },
   title: "イベント情報",
   description:
     "玉野市で開催されるイベント・お祭り・体験プログラムの最新情報をお届けします。",

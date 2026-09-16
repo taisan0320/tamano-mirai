@@ -5,6 +5,7 @@ import { StaticPageLayout, PageSection } from "@/components/ArchiveLayout";
 import { MEMBERS, SPEAKERS } from "@/lib/organization";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/members" },
   title: "役員名簿・講演のご依頼",
   description:
     "玉野SDGsみらいづくりセンターの役員名簿と、講演・ワークショップのファシリテーターのご依頼についてご案内します。",

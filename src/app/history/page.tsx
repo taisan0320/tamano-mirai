@@ -3,6 +3,7 @@ import { StaticPageLayout } from "@/components/ArchiveLayout";
 import { TIMELINE } from "@/lib/organization";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/history" },
   title: "沿革",
   description:
     "2011年の協働のまちづくり基本条例の制定から、2024年のNPO法人認証まで。玉野SDGsみらいづくりセンターのあゆみです。",

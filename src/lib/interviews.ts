@@ -156,6 +156,27 @@ export async function fetchInterviewBySlug(slug: string): Promise<Interview | nu
   return staticInterviews.find((i) => i.slug === slug) ?? null;
 }
 
+/** サイトマップ用：インタビューのURLと最終更新日 */
+export async function fetchAllInterviewSlugsWithDates(): Promise<
+  { slug: string; lastModified: string }[]
+> {
+  if (client) {
+    try {
+      const res = await client.getList<CMSInterview & { revisedAt?: string }>({
+        endpoint: "interviews",
+        queries: { limit: 100, fields: "id,revisedAt,publishedAt" },
+      });
+      return res.contents.map((i) => ({
+        slug: i.id,
+        lastModified: i.revisedAt ?? i.publishedAt ?? "",
+      }));
+    } catch {
+      // endpoint がまだ無いときは静的データへ
+    }
+  }
+  return staticInterviews.map((i) => ({ slug: i.slug, lastModified: "" }));
+}
+
 export async function fetchAllInterviewSlugs(): Promise<string[]> {
   if (client) {
     try {

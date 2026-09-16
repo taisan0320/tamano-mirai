@@ -4,6 +4,7 @@ import { StaticPageLayout } from "@/components/ArchiveLayout";
 import { BUSINESSES } from "@/lib/organization";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/services" },
   title: "事業内容",
   description:
     "地域づくり連携事業・団体基盤整備事業・調査政策提言事業・公共施設の有効活用推進事業の4つの柱で、玉野の地域活動を支えています。",

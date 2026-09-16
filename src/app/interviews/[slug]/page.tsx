@@ -33,6 +33,7 @@ export async function generateMetadata({
   return {
     title: `${interview.name}「${interview.catchphrase}」| 動く人たち`,
     description: interview.subtitle,
+    alternates: { canonical: `/interviews/${slug}` },
     openGraph: {
       title: `${interview.name}「${interview.catchphrase}」`,
       description: interview.subtitle,
