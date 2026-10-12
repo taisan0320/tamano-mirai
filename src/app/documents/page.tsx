@@ -4,7 +4,7 @@ import { ExternalLink, FileText } from "lucide-react";
 import { fetchDocuments, type DocumentCategory } from "@/lib/documents";
 import { StaticPageLayout, PageSection } from "@/components/ArchiveLayout";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   alternates: { canonical: "/documents" },

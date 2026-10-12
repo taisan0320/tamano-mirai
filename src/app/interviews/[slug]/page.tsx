@@ -12,7 +12,7 @@ import { formatDate, readingMinutes } from "@/lib/format";
 import CopyLinkButton from "@/components/CopyLinkButton";
 import { PickupCard, MembershipCard, FollowCard } from "@/components/Sidebar";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 export const dynamicParams = true;
 
 const BASE_URL = "https://npo-tamano-mirai.com";

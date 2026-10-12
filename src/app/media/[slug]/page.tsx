@@ -26,7 +26,7 @@ import { fetchAllLessons, lessonForArticle } from "@/lib/lessons";
 import JsonLd from "@/components/JsonLd";
 import { articleJsonLd } from "@/lib/seo";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 export const dynamicParams = true;
 
 const BASE_URL = "https://npo-tamano-mirai.com";

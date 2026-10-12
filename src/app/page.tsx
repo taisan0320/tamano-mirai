@@ -1,4 +1,5 @@
-export const revalidate = 60;
+// 1時間ごとの保険。記事の公開・更新は microCMS の Webhook（/api/revalidate）で即時反映する
+export const revalidate = 3600;
 
 import Link from "next/link";
 import {
