@@ -45,7 +45,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
    - URL: `https://npo-tamano-mirai.com/api/revalidate`
    - シークレット: 1 と同じ文字列
    - 通知タイミング: 「公開時・更新時」「公開終了時」「削除時」（下書き保存は不要）
-   - `articles` `interviews` `lessons` `student-teams` `documents` `top` の各 API で同じ設定を行う
+   - サイトに表示している API（`articles` `top` など、作成済みのものすべて）で同じ設定を行う
 3. 記事を公開して1分以内にトップページへ反映されれば完了
 
 Webhook が届くと全ページが「古い」印になり、次に開かれたときに1回だけ作り直されます。
