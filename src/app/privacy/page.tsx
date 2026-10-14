@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { StaticPageLayout } from "@/components/ArchiveLayout";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, BASE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/privacy" },
@@ -8,7 +10,9 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <StaticPageLayout label="PRIVACY POLICY" title="プライバシーポリシー">
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "プライバシーポリシー", url: `${BASE_URL}/privacy` }])} />
+      <StaticPageLayout label="PRIVACY POLICY" title="プライバシーポリシー">
       <div className="prose-article">
       <p>
         特定非営利活動法人 玉野SDGsみらいづくりセンター（以下「当法人」）は、
@@ -61,5 +65,6 @@ export default function PrivacyPage() {
         <p className="mt-8 text-[12px] text-ink-muted">制定日：2024年1月1日</p>
       </div>
     </StaticPageLayout>
+    </>
   );
 }

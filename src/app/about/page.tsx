@@ -4,6 +4,8 @@ import Link from "next/link";
 import { StaticPageLayout, PageSection, FactList } from "@/components/ArchiveLayout";
 import { ORGANIZATION_FACTS } from "@/lib/organization";
 import { MEMBERSHIP_TYPES } from "@/lib/membership";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, BASE_URL } from "@/lib/seo";
 
 /* センターについて（ハブ）。
    事業内容・役員名簿・沿革はそれぞれ独立ページに分けた。
@@ -41,7 +43,9 @@ const CONTENTS = [
 
 export default function AboutPage() {
   return (
-    <StaticPageLayout
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "センターについて", url: `${BASE_URL}/about` }])} />
+      <StaticPageLayout
       label="ABOUT"
       title="センターについて"
       description="市民・団体・企業・行政をつなぎ、相談・伴走・情報発信で、地域の活動を支える中間支援NPOです。"
@@ -135,5 +139,6 @@ export default function AboutPage() {
         </Link>
       </PageSection>
     </StaticPageLayout>
+    </>
   );
 }

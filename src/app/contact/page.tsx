@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { StaticPageLayout, PageSection, FactList } from "@/components/ArchiveLayout";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, faqJsonLd, BASE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/contact" },
@@ -24,7 +26,15 @@ const labelClass = "mb-1.5 block text-[12px] font-bold text-ink";
 
 export default function ContactPage() {
   return (
-    <StaticPageLayout
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "お問い合わせ", url: `${BASE_URL}/contact` }])} />
+      <JsonLd data={faqJsonLd([
+        { question: "センターはどこにありますか？", answer: "〒706-0142 岡山県玉野市迫間2252番地３にあります。" },
+        { question: "受付時間は何時ですか？", answer: "平日9:00〜18:00です。土日祝日は定休となっております。" },
+        { question: "問い合わせへの返信はいつ来ますか？", answer: "通常2〜3営業日以内にご返信します。お急ぎの場合はお電話（090-1356-3655）でご連絡ください。" },
+        { question: "電話番号を教えてください。", answer: "090-1356-3655です。平日9:00〜18:00にお電話ください。" },
+      ])} />
+      <StaticPageLayout
       label="CONTACT"
       title="お問い合わせ"
       description="ご相談・ご質問・連携のご提案など、お気軽にご連絡ください。"
@@ -194,5 +204,6 @@ export default function ContactPage() {
         />
       </PageSection>
     </StaticPageLayout>
+    </>
   );
 }

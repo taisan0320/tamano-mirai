@@ -5,6 +5,8 @@ import Link from "next/link";
 import { fetchArticlesByCategory, LEARNING_TAGS } from "@/lib/articles";
 import ArchiveLayout, { EmptyState } from "@/components/ArchiveLayout";
 import ArticleRow from "@/components/ArticleRow";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, BASE_URL } from "@/lib/seo";
 
 /* 学びを、考える。
    教育全般の記事とAIの記事を1つのカテゴリ（learning）にまとめ、
@@ -36,7 +38,9 @@ export default async function LearningPage({
   ];
 
   return (
-    <ArchiveLayout
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "学びを、考える。", url: `${BASE_URL}/learning` }])} />
+      <ArchiveLayout
       label="LEARNING"
       title="学びを、考える。"
       description="教育全般のことや、AIのこと。学校に限らない「学び」について考えたことを書いています。"
@@ -77,5 +81,6 @@ export default async function LearningPage({
         </div>
       )}
     </ArchiveLayout>
+    </>
   );
 }

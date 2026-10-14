@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { StaticPageLayout } from "@/components/ArchiveLayout";
 import { TIMELINE } from "@/lib/organization";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, BASE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/history" },
@@ -11,7 +13,9 @@ export const metadata: Metadata = {
 
 export default function HistoryPage() {
   return (
-    <StaticPageLayout
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "沿革", url: `${BASE_URL}/history` }])} />
+      <StaticPageLayout
       label="HISTORY"
       title="沿革"
       description="協働のまちづくり基本条例の制定から、NPO法人としての認証まで。"
@@ -35,5 +39,6 @@ export default function HistoryPage() {
         ))}
       </div>
     </StaticPageLayout>
+    </>
   );
 }

@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import { fetchArticlesByCategory } from "@/lib/articles";
 import ArchiveLayout, { EmptyState } from "@/components/ArchiveLayout";
 import ArticleRow from "@/components/ArticleRow";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, BASE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/blog" },
@@ -16,7 +18,9 @@ export default async function BlogPage() {
   const posts = await fetchArticlesByCategory("blog", 100);
 
   return (
-    <ArchiveLayout
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "コーディネーター日記", url: `${BASE_URL}/blog` }])} />
+      <ArchiveLayout
       label="COORDINATOR'S JOURNAL"
       title="コーディネーター日記"
       description="地域と学校のあいだで考えていたことの記録です。授業づくりの途中で書いています。"
@@ -31,5 +35,6 @@ export default async function BlogPage() {
         </div>
       )}
     </ArchiveLayout>
+    </>
   );
 }

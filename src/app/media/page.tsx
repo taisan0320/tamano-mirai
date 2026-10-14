@@ -16,6 +16,8 @@ import {
   MembershipCard,
   DocumentsCard,
 } from "@/components/Sidebar";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, BASE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/media" },
@@ -50,7 +52,9 @@ export default async function MediaPage({
   const pickups = await fetchPickups(5);
 
   return (
-    <div className="flex flex-col">
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "すべての記事", url: `${BASE_URL}/media` }])} />
+      <div className="flex flex-col">
       <div className="mx-auto grid w-full max-w-[1232px] grid-cols-1 items-start gap-x-12 px-4 pb-8 lg:grid-cols-[minmax(0,1fr)_320px]">
         <main className="min-w-0">
           <nav className="flex flex-wrap items-center gap-1.5 pt-4 text-[11px] text-ink-soft">
@@ -133,5 +137,6 @@ export default async function MediaPage({
         </aside>
       </div>
     </div>
+    </>
   );
 }

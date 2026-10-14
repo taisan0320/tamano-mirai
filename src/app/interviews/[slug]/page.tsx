@@ -11,6 +11,8 @@ import { Avatar } from "@/components/ui";
 import { formatDate, readingMinutes } from "@/lib/format";
 import CopyLinkButton from "@/components/CopyLinkButton";
 import { PickupCard, MembershipCard, FollowCard } from "@/components/Sidebar";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd } from "@/lib/seo";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -66,7 +68,12 @@ export default async function InterviewDetailPage({
   )}&url=${encodeURIComponent(shareUrl)}`;
 
   return (
-    <div className="mx-auto grid w-full max-w-[1232px] grid-cols-1 items-start gap-x-12 px-4 pb-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+    <>
+      <JsonLd data={breadcrumbJsonLd([
+        { name: "インタビュー", url: `${BASE_URL}/interviews` },
+        { name: interview.name, url: `${BASE_URL}/interviews/${interview.slug}` },
+      ])} />
+      <div className="mx-auto grid w-full max-w-[1232px] grid-cols-1 items-start gap-x-12 px-4 pb-8 lg:grid-cols-[minmax(0,1fr)_320px]">
       <main className="min-w-0">
         <nav className="flex flex-wrap items-center gap-1.5 pt-4 text-[11px] text-ink-soft">
           <Link href="/" className="hover:text-ocean">
@@ -237,5 +244,6 @@ export default async function InterviewDetailPage({
         </div>
       </aside>
     </div>
+    </>
   );
 }

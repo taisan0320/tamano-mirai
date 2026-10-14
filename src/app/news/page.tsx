@@ -5,6 +5,8 @@ import Link from "next/link";
 import { fetchArticlesByCategory, getArticleUrl } from "@/lib/articles";
 import ArchiveLayout, { EmptyState } from "@/components/ArchiveLayout";
 import { formatDate } from "@/lib/format";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, BASE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/news" },
@@ -25,7 +27,9 @@ export default async function NewsPage() {
   const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
 
   return (
-    <ArchiveLayout
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "お知らせ", url: `${BASE_URL}/news` }])} />
+      <ArchiveLayout
       label="NEWS"
       title="お知らせ"
       description="センターからのお知らせ・活動報告です。"
@@ -61,5 +65,6 @@ export default async function NewsPage() {
         </section>
       ))}
     </ArchiveLayout>
+    </>
   );
 }

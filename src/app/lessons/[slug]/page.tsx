@@ -15,6 +15,8 @@ import { formatDate, readingMinutes, authorName } from "@/lib/format";
 import { RoleTags } from "@/components/LessonsSection";
 import { FactList } from "@/components/ArchiveLayout";
 import { SidebarCard, MembershipCard } from "@/components/Sidebar";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, BASE_URL } from "@/lib/seo";
 import { Avatar } from "@/components/ui";
 
 export async function generateStaticParams() {
@@ -79,7 +81,12 @@ export default async function LessonDetailPage({
   ];
 
   return (
-    <div className="mx-auto grid w-full max-w-[1232px] grid-cols-1 items-start gap-x-12 px-4 pb-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+    <>
+      <JsonLd data={breadcrumbJsonLd([
+        { name: "学校と、つくる。", url: `${BASE_URL}/lessons` },
+        { name: lesson.title, url: `${BASE_URL}/lessons/${lesson.slug}` },
+      ])} />
+      <div className="mx-auto grid w-full max-w-[1232px] grid-cols-1 items-start gap-x-12 px-4 pb-8 lg:grid-cols-[minmax(0,1fr)_320px]">
       <main className="min-w-0">
         <nav className="flex flex-wrap items-center gap-1.5 pt-4 text-[11px] text-ink-soft">
           <Link href="/" className="hover:text-ocean">
@@ -297,5 +304,6 @@ export default async function LessonDetailPage({
         </div>
       </aside>
     </div>
+    </>
   );
 }

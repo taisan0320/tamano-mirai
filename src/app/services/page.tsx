@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { StaticPageLayout } from "@/components/ArchiveLayout";
 import { BUSINESSES } from "@/lib/organization";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, BASE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/services" },
@@ -12,7 +14,9 @@ export const metadata: Metadata = {
 
 export default function ServicesPage() {
   return (
-    <StaticPageLayout
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "事業内容", url: `${BASE_URL}/services` }])} />
+      <StaticPageLayout
       label="SERVICES"
       title="事業内容"
       description="4つの柱で、玉野の地域活動を支えています。"
@@ -49,5 +53,6 @@ export default function ServicesPage() {
         連携・委託についてご相談する
       </Link>
     </StaticPageLayout>
+    </>
   );
 }

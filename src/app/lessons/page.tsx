@@ -6,6 +6,8 @@ import { fetchAllLessons, diariesForLesson, countSchools } from "@/lib/lessons";
 import { fetchArticlesByCategory } from "@/lib/articles";
 import ArchiveLayout, { EmptyState } from "@/components/ArchiveLayout";
 import { RoleTags } from "@/components/LessonsSection";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, BASE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/lessons" },
@@ -21,7 +23,9 @@ export default async function LessonsPage() {
   ]);
 
   return (
-    <ArchiveLayout
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "学校と、つくる。", url: `${BASE_URL}/lessons` }])} />
+      <ArchiveLayout
       label="WITH SCHOOLS"
       title="学校と、つくる。"
       description="学校の先生と一緒につくってきた授業の記録です。誰と組み、何を設計し、どこまで伴走したのか。授業が立ち上がるまでの過程を残しています。"
@@ -81,5 +85,6 @@ export default async function LessonsPage() {
         </>
       )}
     </ArchiveLayout>
+    </>
   );
 }

@@ -24,7 +24,7 @@ import {
 } from "@/components/Sidebar";
 import { fetchAllLessons, lessonForArticle } from "@/lib/lessons";
 import JsonLd from "@/components/JsonLd";
-import { articleJsonLd } from "@/lib/seo";
+import { articleJsonLd, breadcrumbJsonLd } from "@/lib/seo";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -114,6 +114,10 @@ export default async function ArticlePage({
     <div className="mx-auto grid w-full max-w-[1232px] grid-cols-1 items-start gap-x-12 px-4 pb-8 lg:grid-cols-[minmax(0,1fr)_320px]">
       {/* 検索エンジン向けの記事情報（見た目には出ない） */}
       <JsonLd data={articleJsonLd(article, `${BASE_URL}/media/${slug}`)} />
+      <JsonLd data={breadcrumbJsonLd([
+        { name: CATEGORY_LABEL[article.category], url: `${BASE_URL}${CATEGORY_ROUTE[article.category]}` },
+        { name: article.title, url: `${BASE_URL}/media/${slug}` },
+      ])} />
       <main className="min-w-0">
         {/* ── パンくず ── */}
         <nav className="flex flex-wrap items-center gap-1.5 pt-4 text-[11px] text-ink-soft">

@@ -6,6 +6,8 @@ import { fetchAllInterviews } from "@/lib/interviews";
 import ArchiveLayout, { EmptyState } from "@/components/ArchiveLayout";
 import { Avatar } from "@/components/ui";
 import { formatDate } from "@/lib/format";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, BASE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/interviews" },
@@ -18,7 +20,9 @@ export default async function InterviewsPage() {
   const interviews = await fetchAllInterviews();
 
   return (
-    <ArchiveLayout
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "インタビュー", url: `${BASE_URL}/interviews` }])} />
+      <ArchiveLayout
       label="VOICES FROM TAMANO"
       title="動く人たち"
       description="玉野のまちで、自分の手で何かを動かしている人たち。編集部が訪ね、聞き、撮ってきた記録です。"
@@ -72,5 +76,6 @@ export default async function InterviewsPage() {
         </div>
       )}
     </ArchiveLayout>
+    </>
   );
 }

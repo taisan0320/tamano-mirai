@@ -3,6 +3,8 @@ import Link from "next/link";
 import { ExternalLink, FileText } from "lucide-react";
 import { fetchDocuments, type DocumentCategory } from "@/lib/documents";
 import { StaticPageLayout, PageSection } from "@/components/ArchiveLayout";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, BASE_URL } from "@/lib/seo";
 
 export const revalidate = 3600;
 
@@ -43,7 +45,9 @@ export default async function DocumentsPage() {
   const docs = await fetchDocuments();
 
   return (
-    <StaticPageLayout
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "資料・報告書", url: `${BASE_URL}/documents` }])} />
+      <StaticPageLayout
       label="DOCUMENTS"
       title="資料・報告書"
       description="調査報告書・機関誌・定款・決算書など、センターの活動記録を公開しています。"
@@ -116,5 +120,6 @@ export default async function DocumentsPage() {
         </p>
       </div>
     </StaticPageLayout>
+    </>
   );
 }

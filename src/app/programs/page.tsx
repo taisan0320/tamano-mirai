@@ -5,6 +5,8 @@ import Link from "next/link";
 import { fetchArticlesByCategory, getArticleUrl } from "@/lib/articles";
 import { StaticPageLayout, PageSection, FactList } from "@/components/ArchiveLayout";
 import { formatDate } from "@/lib/format";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, BASE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/programs" },
@@ -98,7 +100,9 @@ export default async function ProgramsPage() {
   const exploreArticles = await fetchArticlesByCategory("explore", 6);
 
   return (
-    <StaticPageLayout
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "プログラム", url: `${BASE_URL}/programs` }])} />
+      <StaticPageLayout
       label="PROGRAMS"
       title="参加できるプログラム"
       description="市民のみなさんが参加できる常設のプログラムです。学校の授業の記録は「学校と、つくる。」にまとめています。"
@@ -175,5 +179,6 @@ export default async function ProgramsPage() {
         </PageSection>
       )}
     </StaticPageLayout>
+    </>
   );
 }

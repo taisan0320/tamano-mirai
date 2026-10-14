@@ -44,6 +44,36 @@ function personName(name: string): string {
   return name.replace(/[｜|（(].*$/, "").trim();
 }
 
+/** パンくずリスト。表示用の配列と同じデータから生成する */
+export function breadcrumbJsonLd(items: { name: string; url: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "ホーム", item: BASE_URL },
+      ...items.map((item, i) => ({
+        "@type": "ListItem",
+        position: i + 2,
+        name: item.name,
+        item: item.url,
+      })),
+    ],
+  };
+}
+
+/** FAQページの構造化データ */
+export function faqJsonLd(items: { question: string; answer: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
+    })),
+  };
+}
+
 /** 記事ページの情報 */
 export function articleJsonLd(article: Article, url: string) {
   return {

@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import { fetchArticlesByCategory } from "@/lib/articles";
 import ArchiveLayout, { EmptyState } from "@/components/ArchiveLayout";
 import ArticleRow from "@/components/ArticleRow";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, BASE_URL } from "@/lib/seo";
 
 // 検索実態にあわせた文言。Search Consoleでこのページに着地したクエリは
 // 「渋川」系271回・「花火」系270回・「玉野 イベント（今日/明日/予定）」系60回で、
@@ -25,7 +27,9 @@ export default async function EventsPage() {
   const past = events.filter((e) => new Date(e.date) < now);
 
   return (
-    <ArchiveLayout
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "イベント情報", url: `${BASE_URL}/events` }])} />
+      <ArchiveLayout
       label="EVENTS"
       title="玉野市のイベント情報"
       description="玉野まつりの花火大会、渋川海岸の催し、ちっこう夜市など、玉野市で開かれるイベントの情報です。"
@@ -58,5 +62,6 @@ export default async function EventsPage() {
         </section>
       )}
     </ArchiveLayout>
+    </>
   );
 }

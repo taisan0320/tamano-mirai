@@ -6,6 +6,8 @@ import { fetchArticlesByCategory, getArticleUrl } from "@/lib/articles";
 import { StaticPageLayout, PageSection, FactList } from "@/components/ArchiveLayout";
 import { MEMBERSHIP_TYPES, BANK_ACCOUNT } from "@/lib/membership";
 import { formatDate } from "@/lib/format";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, BASE_URL } from "@/lib/seo";
 
 /* 入会・寄付。
    以前はページ名が「ボランティア募集」で、フッターの表記（入会・寄付）と
@@ -22,7 +24,9 @@ export default async function JoinPage() {
   const volunteerPosts = await fetchArticlesByCategory("volunteer", 50);
 
   return (
-    <StaticPageLayout
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "参加・入会", url: `${BASE_URL}/join` }])} />
+      <StaticPageLayout
       label="MEMBERSHIP"
       title="入会・寄付"
       description="会員になることで、センターの活動を支援し、議決権（正会員）や各種情報を得られます。どなたでもお気軽にご参加ください。"
@@ -101,5 +105,6 @@ export default async function JoinPage() {
         </Link>
       </PageSection>
     </StaticPageLayout>
+    </>
   );
 }

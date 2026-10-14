@@ -3,6 +3,8 @@ import Link from "next/link";
 import SpeakerPhoto from "@/components/SpeakerPhoto";
 import { StaticPageLayout, PageSection } from "@/components/ArchiveLayout";
 import { MEMBERS, SPEAKERS } from "@/lib/organization";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, BASE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/members" },
@@ -13,7 +15,9 @@ export const metadata: Metadata = {
 
 export default function MembersPage() {
   return (
-    <StaticPageLayout
+    <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "役員名簿・講演のご依頼", url: `${BASE_URL}/members` }])} />
+      <StaticPageLayout
       label="MEMBERS"
       title="役員名簿・講演のご依頼"
       description={`役員${MEMBERS.length}名の名簿と、講演・ファシリテーターのご依頼についてご案内します。`}
@@ -102,5 +106,6 @@ export default function MembersPage() {
         </Link>
       </PageSection>
     </StaticPageLayout>
+    </>
   );
 }
