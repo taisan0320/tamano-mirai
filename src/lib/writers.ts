@@ -18,6 +18,7 @@ const WRITER_ROLES: Record<string, string> = {
 const WRITER_PHOTOS: Record<string, string> = {
   "西田井 祐也": "/writers/nishidai.jpg",
   編集部: "/writers/center.png",
+  みらいづくりセンター: "/writers/center.png",
   "玉野SDGsみらいづくりセンター": "/writers/center.png",
 };
 
