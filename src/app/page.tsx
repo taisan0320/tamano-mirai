@@ -191,14 +191,8 @@ export default async function Home() {
           </h1>
           {topStory && <TopStory article={topStory} />}
 
-          <section className="border-t border-border-line">
-            <SectionHead label="Latest" title="最近の動き" moreHref="/media" />
-            <LatestTabs all={feed} events={events} blog={diaries} />
-            <OutlineLink href="/media">もっと見る</OutlineLink>
-          </section>
-
           {interviews.length > 0 && (
-            <section className="mt-8 border-t border-border-line">
+            <section className="border-t border-border-line">
               <SectionHead
                 label="Voices from Tamano"
                 title="動く人たち"
@@ -211,6 +205,12 @@ export default async function Home() {
               </div>
             </section>
           )}
+
+          <section className="mt-8 border-t border-border-line">
+            <SectionHead label="Latest" title="最近の動き" moreHref="/media" />
+            <LatestTabs all={feed} events={events} blog={diaries} />
+            <OutlineLink href="/media">もっと見る</OutlineLink>
+          </section>
 
           {upcoming.length > 0 && (
             <section className="mt-12 border-t border-border-line">
