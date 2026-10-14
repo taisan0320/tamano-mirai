@@ -23,6 +23,7 @@ import {
   MembershipCard,
   FollowCard,
   DocumentsCard,
+  EventsCard,
 } from "@/components/Sidebar";
 import ArticleRow from "@/components/ArticleRow";
 import LatestTabs from "@/components/LatestTabs";
@@ -260,6 +261,7 @@ export default async function Home() {
         <aside className="min-w-0 pb-8 pt-4">
           <div className="lg:sticky lg:top-[88px]">
             <AboutCard />
+            <EventsCard articles={upcoming} />
             <PickupCard articles={pickups} />
             <WritersCard articles={latest} />
             {nextCafe && (

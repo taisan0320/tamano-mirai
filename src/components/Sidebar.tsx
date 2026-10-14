@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { CATEGORY_LABEL, getArticleUrl, type Article } from "@/lib/articles";
-import { readingMinutes } from "@/lib/format";
+import { readingMinutes, formatMonthDay } from "@/lib/format";
 import { summarizeWriters, type WriterSummary } from "@/lib/writers";
 import { Avatar } from "@/components/ui";
 import { InstagramButton, INSTAGRAM_HANDLE } from "@/components/Instagram";
@@ -214,6 +214,35 @@ export function FollowCard() {
         Instagramをフォローする
       </InstagramButton>
       <p className="mt-2 text-center text-[11px] text-ink-muted">{INSTAGRAM_HANDLE}</p>
+    </SidebarCard>
+  );
+}
+
+export function EventsCard({ articles }: { articles: Article[] }) {
+  if (articles.length === 0) return null;
+  return (
+    <SidebarCard label="Events" title="イベント情報">
+      <div className="mt-2 divide-y divide-border-line">
+        {articles.map((article) => {
+          const { month, day } = formatMonthDay(article.date);
+          return (
+            <Link
+              key={article.slug}
+              href={getArticleUrl(article)}
+              className="group -mx-3 flex items-center gap-3 rounded px-3 py-2.5 hover:bg-paper-deep"
+            >
+              <div className="w-10 shrink-0 border-r border-border-line pr-2 text-center">
+                <span className="block text-[10px] leading-tight text-ink-muted">{month}月</span>
+                <span className="block text-[18px] font-bold leading-none text-ink">{day}</span>
+              </div>
+              <p className="line-clamp-2 text-[12px] font-bold leading-[1.4] text-ink group-hover:text-ocean">
+                {article.title}
+              </p>
+            </Link>
+          );
+        })}
+      </div>
+      <GhostButton href="/events">イベント一覧を見る</GhostButton>
     </SidebarCard>
   );
 }
