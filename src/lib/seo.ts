@@ -9,7 +9,7 @@ import { authorName } from "@/lib/format";
 export const BASE_URL = "https://npo-tamano-mirai.com";
 
 export const ORG_NAME = "特定非営利活動法人 玉野SDGsみらいづくりセンター";
-const OG_IMAGE = `${BASE_URL}/og.png`;
+const OG_IMAGE = `${BASE_URL}/og.jpg`;
 
 /** 団体情報。全ページの土台として1回だけ出す */
 export function organizationJsonLd() {
