@@ -114,15 +114,12 @@ function InterviewCard({ interview }: { interview: Interview }) {
       <h3 className="mb-2 mt-2.5 text-[14px] font-bold leading-[1.35] text-ink group-hover:text-ocean">
         ❝ {interview.catchphrase} ❞
       </h3>
-      <div className="mt-auto flex items-center gap-2">
-        <Avatar name={interview.name} size={36} />
-        <span className="min-w-0">
-          <span className="block text-[13px] font-bold leading-tight text-ink">
-            {interview.name}
-          </span>
-          <span className="block text-[12px] leading-tight text-ink-soft">
-            {interview.role}
-          </span>
+      <div className="mt-auto">
+        <span className="block text-[13px] font-bold leading-tight text-ink">
+          {interview.name}
+        </span>
+        <span className="block text-[12px] leading-tight text-ink-soft">
+          {interview.role}
         </span>
       </div>
     </Link>
