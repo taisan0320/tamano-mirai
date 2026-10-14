@@ -52,9 +52,9 @@ export default function LatestTabs({
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-x-3 gap-y-6 border-t border-border-line pt-4">
+        <div className={`grid gap-x-3 gap-y-6 border-t border-border-line pt-4 ${active === "blog" ? "grid-cols-3" : "grid-cols-2"}`}>
           {items.length === 0 ? (
-            <p className="col-span-2 py-8 text-center text-[13px] text-ink-muted">記事がありません</p>
+            <p className="col-span-3 py-8 text-center text-[13px] text-ink-muted">記事がありません</p>
           ) : (
             items.map((article) => <ArticleTile key={article.slug} article={article} />)
           )}
