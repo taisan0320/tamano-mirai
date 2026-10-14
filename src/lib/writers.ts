@@ -17,6 +17,8 @@ const WRITER_ROLES: Record<string, string> = {
    ここにない人は頭文字の丸で表示する。 */
 const WRITER_PHOTOS: Record<string, string> = {
   "西田井 祐也": "/writers/nishidai.jpg",
+  編集部: "/writers/center.png",
+  "玉野SDGsみらいづくりセンター": "/writers/center.png",
 };
 
 /* 名前の照合用キー。記事や授業では同じ人が
