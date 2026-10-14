@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ArticleRow from "@/components/ArticleRow";
+import ArticleTile from "@/components/ArticleTile";
 import type { Article } from "@/lib/articles";
 
 type Tab = "blog" | "event" | "all";
@@ -42,13 +43,23 @@ export default function LatestTabs({
           </button>
         ))}
       </div>
-      <div className="divide-y divide-border-line border-t border-border-line">
-        {items.length === 0 ? (
-          <p className="py-8 text-center text-[13px] text-ink-muted">記事がありません</p>
-        ) : (
-          items.map((article) => <ArticleRow key={article.slug} article={article} />)
-        )}
-      </div>
+      {active === "event" ? (
+        <div className="grid grid-cols-2 gap-x-3 gap-y-6 border-t border-border-line pt-4 sm:grid-cols-2">
+          {events.length === 0 ? (
+            <p className="col-span-2 py-8 text-center text-[13px] text-ink-muted">記事がありません</p>
+          ) : (
+            events.map((article) => <ArticleTile key={article.slug} article={article} />)
+          )}
+        </div>
+      ) : (
+        <div className="divide-y divide-border-line border-t border-border-line">
+          {items.length === 0 ? (
+            <p className="py-8 text-center text-[13px] text-ink-muted">記事がありません</p>
+          ) : (
+            items.map((article) => <ArticleRow key={article.slug} article={article} />)
+          )}
+        </div>
+      )}
     </>
   );
 }
