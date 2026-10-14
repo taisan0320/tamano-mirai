@@ -25,6 +25,7 @@ import {
   DocumentsCard,
 } from "@/components/Sidebar";
 import ArticleRow from "@/components/ArticleRow";
+import LatestTabs from "@/components/LatestTabs";
 import ArticleTile from "@/components/ArticleTile";
 import { CategoryTag, SectionHead, Avatar, OutlineLink } from "@/components/ui";
 import {
@@ -190,17 +191,11 @@ export default async function Home() {
           </h1>
           {topStory && <TopStory article={topStory} />}
 
-          {feed.length > 0 && (
-            <section className="border-t border-border-line">
-              <SectionHead label="Latest" title="最近の動き" moreHref="/media" />
-              <div className="divide-y divide-border-line border-t border-border-line">
-                {feed.map((article) => (
-                  <ArticleRow key={article.slug} article={article} />
-                ))}
-              </div>
-              <OutlineLink href="/media">もっと見る</OutlineLink>
-            </section>
-          )}
+          <section className="border-t border-border-line">
+            <SectionHead label="Latest" title="最近の動き" moreHref="/media" />
+            <LatestTabs all={feed} events={events} blog={diaries} />
+            <OutlineLink href="/media">もっと見る</OutlineLink>
+          </section>
 
           {interviews.length > 0 && (
             <section className="mt-8 border-t border-border-line">
