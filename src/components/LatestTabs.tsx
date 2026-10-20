@@ -8,7 +8,7 @@ import type { Article } from "@/lib/articles";
 type Tab = "blog" | "event" | "all";
 
 const TABS: { id: Tab; label: string }[] = [
-  { id: "blog", label: "ブログ" },
+  // { id: "blog", label: "ブログ" }, // 一時非表示
   { id: "event", label: "イベント" },
   { id: "all", label: "すべて" },
 ];
@@ -22,7 +22,7 @@ export default function LatestTabs({
   events: Article[];
   blog: Article[];
 }) {
-  const [active, setActive] = useState<Tab>("blog");
+  const [active, setActive] = useState<Tab>("event");
 
   const items = active === "all" ? all : active === "event" ? events : blog;
 
