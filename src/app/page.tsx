@@ -225,8 +225,9 @@ export default async function Home() {
             </section>
           )}
 
-          <LessonsSection />
+          {/* <LessonsSection /> */}
 
+          {/* コーディネーター日記（一時非表示）
           {diaries.length > 0 && (
             <section id="diary" className="mt-12 border-t border-border-line">
               <SectionHead
@@ -246,12 +247,13 @@ export default async function Home() {
               <OutlineLink href="/blog">コーディネーター日記をすべて読む</OutlineLink>
             </section>
           )}
+          */}
 
           <MiraiCafeSection />
 
           <StudentTrialSection />
 
-          <LearningSection />
+          {/* <LearningSection /> */}
         </main>
 
         {/* ── サイドバー（PCのみ・スマホでは本文の下に回る） ── */}
