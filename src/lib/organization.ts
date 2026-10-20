@@ -77,12 +77,13 @@ export const SPEAKERS = [
       "地域と教育機関の連携（高校魅力化、地域学連携など）",
     ],
   },
-  {
-    name: "西田井 祐也",
-    role: "副理事長",
-    credential: "玉野市 地域学校連携コーディネーター / 社会教育士",
-    photo: "/speaker-nishidai.jpg",
-    initial: "西",
-    topics: ["探究学習とは"],
-  },
+  // 一時非表示
+  // {
+  //   name: "西田井 祐也",
+  //   role: "副理事長",
+  //   credential: "玉野市 地域学校連携コーディネーター / 社会教育士",
+  //   photo: "/speaker-nishidai.jpg",
+  //   initial: "西",
+  //   topics: ["探究学習とは"],
+  // },
 ];
