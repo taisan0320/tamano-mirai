@@ -9,8 +9,8 @@ const footerNav = [
     links: [
       { label: "イベント情報", href: "/events" },
       { label: "動く人たち", href: "/interviews" },
-      { label: "コーディネーター日記", href: "/blog" },
-      { label: "学びを、考える", href: "/learning" },
+      // { label: "コーディネーター日記", href: "/blog" },  // 一時非表示
+      // { label: "学びを、考える", href: "/learning" },   // 一時非表示
       { label: "お知らせ", href: "/news" },
       { label: "すべての記事", href: "/media" },
     ],
@@ -29,7 +29,7 @@ const footerNav = [
     links: [
       { label: "入会・寄付", href: "/join" },
       { label: "学生トライアル", href: "/#student" },
-      { label: "学校と、つくる", href: "/lessons" },
+      // { label: "学校と、つくる", href: "/lessons" },  // 一時非表示
       { label: "講演のご依頼", href: "/members#speakers" },
       { label: "資料・報告書", href: "/documents" },
       { label: "お問い合わせ", href: "/contact" },
