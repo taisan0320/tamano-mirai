@@ -171,7 +171,7 @@ export default async function Home() {
   // トップの記事：microCMS の「トップページ設定」で選んだものを優先し、
   // 未設定なら新着の1本目。フィードには同じ記事を重ねて出さない。
   const topStory = top.hero ?? latest[0];
-  const feed = latest.filter((a) => a.slug !== topStory?.slug).slice(0, 8);
+  const feed = latest.filter((a) => a.slug !== topStory?.slug && a.category !== "blog").slice(0, 8);
 
   // 今週のピックアップ：「トップページ設定」で選んだもの。未設定なら新着の上位5本
   const pickups = top.pickups.length > 0 ? top.pickups.slice(0, 5) : latest.slice(0, 5);
