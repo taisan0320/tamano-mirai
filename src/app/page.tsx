@@ -11,6 +11,7 @@ import {
 } from "@/lib/articles";
 import { fetchAllInterviews, type Interview } from "@/lib/interviews";
 import StudentTrialSection from "@/components/StudentTrialSection";
+import NewsSection from "@/components/NewsSection";
 import MiraiCafeSection from "@/components/MiraiCafeSection";
 import { fetchUpcomingCafeEvents, cafeDateParts, DEFAULT_CAFE_TIME } from "@/lib/cafe";
 import LessonsSection from "@/components/LessonsSection";
@@ -329,6 +330,8 @@ export default async function Home() {
           ))}
         </div>
       </section>
+
+      <NewsSection />
     </div>
   );
 }
