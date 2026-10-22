@@ -205,6 +205,8 @@ export default async function Home() {
             </section>
           )}
 
+          <NewsSection />
+
           <section className="mt-8 border-t border-border-line">
             <SectionHead label="Latest" title="最近の動き" moreHref="/media" />
             <LatestTabs all={feed} events={events} blog={diaries} />
@@ -331,7 +333,6 @@ export default async function Home() {
         </div>
       </section>
 
-      <NewsSection />
     </div>
   );
 }

@@ -50,6 +50,9 @@ export interface WriterSummary {
   count: number;
 }
 
+// 一時非表示にする執筆者名（前方一致）
+const HIDDEN_WRITERS = ["西田井"];
+
 /** 記事一覧から「書いている人」を本数つきで集計する */
 export function summarizeWriters(
   articles: Article[],
@@ -61,6 +64,7 @@ export function summarizeWriters(
     counts.set(name, (counts.get(name) ?? 0) + 1);
   }
   return [...counts.entries()]
+    .filter(([name]) => !HIDDEN_WRITERS.some((h) => writerKey(name).startsWith(writerKey(h))))
     .sort((a, b) => b[1] - a[1])
     .slice(0, limit)
     .map(([name, count]) => ({ name, role: writerRole(name), count }));

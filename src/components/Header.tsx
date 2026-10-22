@@ -27,7 +27,7 @@ const menuGroups = [
       { href: "/media", label: "すべての記事" },
       { href: "/events", label: "イベント情報" },
       { href: "/interviews", label: "動く人たち" },
-      { href: "/blog", label: "コーディネーター日記" },
+      // { href: "/blog", label: "コーディネーター日記" },  // 一時非表示
       { href: "/learning", label: "学びを、考える" },
       { href: "/lessons", label: "学校と、つくる" },
       { href: "/news", label: "お知らせ" },

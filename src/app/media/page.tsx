@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/media" },
   title: "すべての記事",
   description:
-    "玉野SDGsみらいづくりセンターのイベント情報・動く人たち・コーディネーター日記・お知らせをまとめて読めます。",
+    "玉野SDGsみらいづくりセンターのイベント情報・動く人たち・お知らせをまとめて読めます。",
 };
 
 
@@ -75,7 +75,7 @@ export default async function MediaPage({
                 : CATEGORY_LABEL[activeCategory]}
             </h1>
             <p className="text-[14px] leading-[1.8] text-ink-soft">
-              イベント情報・動く人たち・コーディネーター日記・お知らせを、日付順にまとめています。
+              イベント情報・動く人たち・お知らせを、日付順にまとめています。
             </p>
           </div>
 
