@@ -41,13 +41,16 @@ export default async function MediaPage({
       ? await fetchLatestArticles(100)
       : await fetchArticlesByCategory(activeCategory, 100);
 
+  // コーディネーター日記（blog）は一時非表示
+  const filtered = base.filter((a) => a.category !== "blog");
+
   const articles = keyword
-    ? base.filter((article) =>
+    ? filtered.filter((article) =>
         `${article.title} ${article.excerpt} ${(article.tags || []).join(" ")}`
           .toLowerCase()
           .includes(keyword.toLowerCase())
       )
-    : base;
+    : filtered;
 
   const pickups = await fetchPickups(5);
 
